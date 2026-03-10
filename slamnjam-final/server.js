@@ -319,9 +319,36 @@ app.get('/api/scores', async (req, res) => {
   res.json({ live, overrides, merged: { ...live, ...overrides }, liveCount: Object.keys(live).length });
 });
 
-// History
+// History — inline fallback guarantees data is always returned
+const HISTORY_DATA = { winners: [
+  {year:2025,winner:"Nutty Professor"},{year:2024,winner:"Studio K"},
+  {year:2023,winner:"Shy Ballers"},    {year:2022,winner:"Team McCarty"},
+  {year:2021,winner:"Shy Ballers"},    {year:2020,winner:"*Vacant*"},
+  {year:2019,winner:"One Putt Jackson"},{year:2018,winner:"Team McCarty"},
+  {year:2017,winner:"Team McCarty"},   {year:2016,winner:"All World"},
+  {year:2015,winner:"Itchy Ron"},      {year:2014,winner:"Itchy Ron"},
+  {year:2013,winner:"One Legler Up"},  {year:2012,winner:"Money Bross"},
+  {year:2011,winner:"Old School"},     {year:2010,winner:"Morley Brothers"},
+  {year:2009,winner:"Juice / Steve Dyer"},{year:2008,winner:"One Legler Up"},
+  {year:2007,winner:"Dream Team"},     {year:2006,winner:"Old School"},
+  {year:2005,winner:"Dream Team"},     {year:2004,winner:"Jim & Frank"},
+  {year:2003,winner:"Committee"},      {year:2002,winner:"Reese"},
+  {year:2001,winner:"Committee"},      {year:2000,winner:"Morley Brothers"},
+  {year:1999,winner:"Slam Dunks"},     {year:1998,winner:"Juice / Steve Dyer"},
+  {year:1997,winner:"Team McCarty"},   {year:1996,winner:"Montreal Jacques"},
+  {year:1995,winner:"Frank & Bill"},   {year:1994,winner:"Special K McNutt"},
+  {year:1993,winner:"Charles Snowden"},{year:1992,winner:"Juice / Steve Dyer"},
+  {year:1991,winner:"Rick Clark"},     {year:1990,winner:"John Snipes"},
+  {year:1989,winner:"Juice / Steve Dyer"},{year:1988,winner:"Committee"},
+  {year:1987,winner:"Bill Mac Attack McCarty"},{year:1986,winner:"Scott Marsden"},
+  {year:1985,winner:"Jack Baltimore Thorpe"},{year:1984,winner:"Jack Baltimore Thorpe"},
+  {year:1983,winner:"Special K McNutt"}
+]};
+
 app.get('/api/history', (req, res) => {
-  res.json(readJSON(HISTORY_F, { winners: [] }));
+  // Try disk first (allows future edits), fall back to inline data
+  const saved = readJSON(HISTORY_F, null);
+  res.json(saved && saved.winners && saved.winners.length ? saved : HISTORY_DATA);
 });
 
 // ── Admin: Login ──────────────────────────────────────
