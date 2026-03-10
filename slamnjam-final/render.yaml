@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: slam-n-jam
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ADMIN_PASSWORD
+        generateValue: false
+        value: slamnjam2026
+    disk:
+      name: data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

@@ -1,0 +1,114 @@
+{
+  "_source": "seed",
+  "_note": "This is demo data shown during off-season. Replaced automatically by ESPN API during the tournament.",
+  "east": {
+    "r64": [
+      {"id":"e1","t1":{"seed":1,"name":"Duke","score":92,"won":true},"t2":{"seed":16,"name":"Longwood","score":54,"won":false}},
+      {"id":"e2","t1":{"seed":8,"name":"Miss. St.","score":67,"won":false},"t2":{"seed":9,"name":"Boise St.","score":71,"won":true}},
+      {"id":"e3","t1":{"seed":5,"name":"Illinois","score":80,"won":true},"t2":{"seed":12,"name":"Morehead St.","score":63,"won":false}},
+      {"id":"e4","t1":{"seed":4,"name":"Tennessee","score":75,"won":true},"t2":{"seed":13,"name":"Samford","score":60,"won":false}},
+      {"id":"e5","t1":{"seed":6,"name":"Texas A&M","score":78,"won":true},"t2":{"seed":11,"name":"Dayton","score":70,"won":false}},
+      {"id":"e6","t1":{"seed":3,"name":"Creighton","score":82,"won":true},"t2":{"seed":14,"name":"Akron","score":55,"won":false}},
+      {"id":"e7","t1":{"seed":7,"name":"Indiana","score":68,"won":false},"t2":{"seed":10,"name":"Auburn","score":74,"won":true}},
+      {"id":"e8","t1":{"seed":2,"name":"Marquette","score":88,"won":true},"t2":{"seed":15,"name":"Holy Cross","score":49,"won":false}}
+    ],
+    "r32": [
+      {"id":"e9","t1":{"seed":1,"name":"Duke","score":74,"won":true},"t2":{"seed":9,"name":"Boise St.","score":61,"won":false}},
+      {"id":"e10","t1":{"seed":5,"name":"Illinois","score":69,"won":false},"t2":{"seed":4,"name":"Tennessee","score":73,"won":true}},
+      {"id":"e11","t1":{"seed":6,"name":"Texas A&M","score":71,"won":true},"t2":{"seed":3,"name":"Creighton","score":65,"won":false}},
+      {"id":"e12","t1":{"seed":10,"name":"Auburn","score":66,"won":false},"t2":{"seed":2,"name":"Marquette","score":79,"won":true}}
+    ],
+    "r16": [
+      {"id":"e13","t1":{"seed":1,"name":"Duke","score":81,"won":true},"t2":{"seed":4,"name":"Tennessee","score":72,"won":false}},
+      {"id":"e14","t1":{"seed":6,"name":"Texas A&M","score":58,"won":false},"t2":{"seed":2,"name":"Marquette","score":75,"won":true}}
+    ],
+    "r8": [
+      {"id":"e15","t1":{"seed":1,"name":"Duke","score":null,"won":null},"t2":{"seed":2,"name":"Marquette","score":null,"won":null}}
+    ]
+  },
+  "west": {
+    "r64": [
+      {"id":"w1","t1":{"seed":1,"name":"Kansas","score":87,"won":true},"t2":{"seed":16,"name":"Howard","score":52,"won":false}},
+      {"id":"w2","t1":{"seed":8,"name":"Arkansas","score":72,"won":true},"t2":{"seed":9,"name":"Utah","score":65,"won":false}},
+      {"id":"w3","t1":{"seed":5,"name":"Gonzaga","score":83,"won":true},"t2":{"seed":12,"name":"McNeese","score":61,"won":false}},
+      {"id":"w4","t1":{"seed":4,"name":"Arizona","score":77,"won":true},"t2":{"seed":13,"name":"VCU","score":66,"won":false}},
+      {"id":"w5","t1":{"seed":6,"name":"Texas","score":69,"won":false},"t2":{"seed":11,"name":"Nevada","score":74,"won":true}},
+      {"id":"w6","t1":{"seed":3,"name":"Baylor","score":80,"won":true},"t2":{"seed":14,"name":"Colgate","score":58,"won":false}},
+      {"id":"w7","t1":{"seed":7,"name":"Northwestern","score":63,"won":false},"t2":{"seed":10,"name":"UCLA","score":71,"won":true}},
+      {"id":"w8","t1":{"seed":2,"name":"UConn","score":90,"won":true},"t2":{"seed":15,"name":"Quinnipiac","score":47,"won":false}}
+    ],
+    "r32": [
+      {"id":"w9","t1":{"seed":1,"name":"Kansas","score":76,"won":true},"t2":{"seed":8,"name":"Arkansas","score":68,"won":false}},
+      {"id":"w10","t1":{"seed":5,"name":"Gonzaga","score":70,"won":false},"t2":{"seed":4,"name":"Arizona","score":74,"won":true}},
+      {"id":"w11","t1":{"seed":11,"name":"Nevada","score":65,"won":false},"t2":{"seed":3,"name":"Baylor","score":80,"won":true}},
+      {"id":"w12","t1":{"seed":10,"name":"UCLA","score":66,"won":false},"t2":{"seed":2,"name":"UConn","score":78,"won":true}}
+    ],
+    "r16": [
+      {"id":"w13","t1":{"seed":1,"name":"Kansas","score":null,"won":null},"t2":{"seed":4,"name":"Arizona","score":null,"won":null}},
+      {"id":"w14","t1":{"seed":3,"name":"Baylor","score":null,"won":null},"t2":{"seed":2,"name":"UConn","score":null,"won":null}}
+    ],
+    "r8": [
+      {"id":"w15","t1":{"seed":null,"name":"TBD","score":null,"won":null},"t2":{"seed":null,"name":"TBD","score":null,"won":null}}
+    ]
+  },
+  "south": {
+    "r64": [
+      {"id":"s1","t1":{"seed":1,"name":"Houston","score":89,"won":true},"t2":{"seed":16,"name":"SIUE","score":41,"won":false}},
+      {"id":"s2","t1":{"seed":8,"name":"Florida","score":74,"won":true},"t2":{"seed":9,"name":"Iowa","score":68,"won":false}},
+      {"id":"s3","t1":{"seed":5,"name":"Wisconsin","score":71,"won":true},"t2":{"seed":12,"name":"Drake","score":64,"won":false}},
+      {"id":"s4","t1":{"seed":4,"name":"Auburn","score":79,"won":true},"t2":{"seed":13,"name":"Yale","score":57,"won":false}},
+      {"id":"s5","t1":{"seed":6,"name":"Michigan","score":66,"won":true},"t2":{"seed":11,"name":"Ole Miss","score":62,"won":false}},
+      {"id":"s6","t1":{"seed":3,"name":"Kentucky","score":85,"won":true},"t2":{"seed":14,"name":"ETSU","score":52,"won":false}},
+      {"id":"s7","t1":{"seed":7,"name":"Missouri","score":55,"won":false},"t2":{"seed":10,"name":"Utah St.","score":68,"won":true}},
+      {"id":"s8","t1":{"seed":2,"name":"Purdue","score":86,"won":true},"t2":{"seed":15,"name":"Montana","score":50,"won":false}}
+    ],
+    "r32": [
+      {"id":"s9","t1":{"seed":1,"name":"Houston","score":72,"won":true},"t2":{"seed":8,"name":"Florida","score":63,"won":false}},
+      {"id":"s10","t1":{"seed":5,"name":"Wisconsin","score":64,"won":false},"t2":{"seed":4,"name":"Auburn","score":71,"won":true}},
+      {"id":"s11","t1":{"seed":6,"name":"Michigan","score":60,"won":false},"t2":{"seed":3,"name":"Kentucky","score":77,"won":true}},
+      {"id":"s12","t1":{"seed":10,"name":"Utah St.","score":55,"won":false},"t2":{"seed":2,"name":"Purdue","score":75,"won":true}}
+    ],
+    "r16": [
+      {"id":"s13","t1":{"seed":1,"name":"Houston","score":null,"won":null},"t2":{"seed":4,"name":"Auburn","score":null,"won":null}},
+      {"id":"s14","t1":{"seed":3,"name":"Kentucky","score":null,"won":null},"t2":{"seed":2,"name":"Purdue","score":null,"won":null}}
+    ],
+    "r8": [
+      {"id":"s15","t1":{"seed":null,"name":"TBD","score":null,"won":null},"t2":{"seed":null,"name":"TBD","score":null,"won":null}}
+    ]
+  },
+  "midwest": {
+    "r64": [
+      {"id":"m1","t1":{"seed":1,"name":"Michigan St.","score":84,"won":true},"t2":{"seed":16,"name":"NJIT","score":47,"won":false}},
+      {"id":"m2","t1":{"seed":8,"name":"LSU","score":70,"won":true},"t2":{"seed":9,"name":"Wake Forest","score":65,"won":false}},
+      {"id":"m3","t1":{"seed":5,"name":"Ohio St.","score":75,"won":true},"t2":{"seed":12,"name":"Liberty","score":63,"won":false}},
+      {"id":"m4","t1":{"seed":4,"name":"Virginia","score":69,"won":false},"t2":{"seed":13,"name":"Clemson","score":72,"won":true}},
+      {"id":"m5","t1":{"seed":6,"name":"St. John's","score":81,"won":true},"t2":{"seed":11,"name":"New Mexico","score":68,"won":false}},
+      {"id":"m6","t1":{"seed":3,"name":"UCLA","score":76,"won":true},"t2":{"seed":14,"name":"Wofford","score":55,"won":false}},
+      {"id":"m7","t1":{"seed":7,"name":"Oklahoma","score":73,"won":true},"t2":{"seed":10,"name":"Penn St.","score":64,"won":false}},
+      {"id":"m8","t1":{"seed":2,"name":"Alabama","score":90,"won":true},"t2":{"seed":15,"name":"Bucknell","score":48,"won":false}}
+    ],
+    "r32": [
+      {"id":"m9","t1":{"seed":1,"name":"Michigan St.","score":79,"won":true},"t2":{"seed":8,"name":"LSU","score":61,"won":false}},
+      {"id":"m10","t1":{"seed":5,"name":"Ohio St.","score":66,"won":false},"t2":{"seed":13,"name":"Clemson","score":70,"won":true}},
+      {"id":"m11","t1":{"seed":6,"name":"St. John's","score":74,"won":true},"t2":{"seed":3,"name":"UCLA","score":68,"won":false}},
+      {"id":"m12","t1":{"seed":7,"name":"Oklahoma","score":62,"won":false},"t2":{"seed":2,"name":"Alabama","score":84,"won":true}}
+    ],
+    "r16": [
+      {"id":"m13","t1":{"seed":1,"name":"Michigan St.","score":null,"won":null},"t2":{"seed":13,"name":"Clemson","score":null,"won":null}},
+      {"id":"m14","t1":{"seed":6,"name":"St. John's","score":null,"won":null},"t2":{"seed":2,"name":"Alabama","score":null,"won":null}}
+    ],
+    "r8": [
+      {"id":"m15","t1":{"seed":null,"name":"TBD","score":null,"won":null},"t2":{"seed":null,"name":"TBD","score":null,"won":null}}
+    ]
+  },
+  "final4": {
+    "sf": [
+      {"id":"f1","t1":{"seed":null,"name":"East Winner","score":null,"won":null},"t2":{"seed":null,"name":"West Winner","score":null,"won":null}},
+      {"id":"f2","t1":{"seed":null,"name":"South Winner","score":null,"won":null},"t2":{"seed":null,"name":"Midwest Winner","score":null,"won":null}}
+    ],
+    "final": [
+      {"id":"f3","t1":{"seed":null,"name":"TBD","score":null,"won":null},"t2":{"seed":null,"name":"TBD","score":null,"won":null}}
+    ],
+    "champion": "TBD"
+  }
+}
