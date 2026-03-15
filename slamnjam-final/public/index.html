@@ -324,45 +324,20 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
       <button class="nb active"  onclick="showPage('dashboard')">Dashboard</button>
       <button class="nb"         onclick="showPage('teams')">Teams</button>
       <button class="nb"         onclick="showPage('players')">Players</button>
-      <button class="nb bkt" onclick="showPage('bracket')">
-      <svg width="22" height="16" viewBox="0 0 44 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:5px">
-        <!-- LEFT SIDE: 4 slots → 2 → 1 -->
-        <!-- Slot 1 -->
-        <line x1="0" y1="4"  x2="6" y2="4"/>
-        <!-- Slot 2 -->
-        <line x1="0" y1="10" x2="6" y2="10"/>
-        <!-- Bracket 1-2 -->
-        <line x1="6" y1="4"  x2="6" y2="10"/>
-        <line x1="6" y1="7"  x2="12" y2="7"/>
-        <!-- Slot 3 -->
-        <line x1="0" y1="22" x2="6" y2="22"/>
-        <!-- Slot 4 -->
-        <line x1="0" y1="28" x2="6" y2="28"/>
-        <!-- Bracket 3-4 -->
-        <line x1="6" y1="22" x2="6" y2="28"/>
-        <line x1="6" y1="25" x2="12" y2="25"/>
-        <!-- Round 2 left -->
-        <line x1="12" y1="7"  x2="12" y2="25"/>
-        <line x1="12" y1="16" x2="18" y2="16"/>
-        <!-- RIGHT SIDE: mirror -->
-        <!-- Slot 5 -->
-        <line x1="44" y1="4"  x2="38" y2="4"/>
-        <!-- Slot 6 -->
-        <line x1="44" y1="10" x2="38" y2="10"/>
-        <!-- Bracket 5-6 -->
-        <line x1="38" y1="4"  x2="38" y2="10"/>
-        <line x1="38" y1="7"  x2="32" y2="7"/>
-        <!-- Slot 7 -->
-        <line x1="44" y1="22" x2="38" y2="22"/>
-        <!-- Slot 8 -->
-        <line x1="44" y1="28" x2="38" y2="28"/>
-        <!-- Bracket 7-8 -->
-        <line x1="38" y1="22" x2="38" y2="28"/>
-        <line x1="38" y1="25" x2="32" y2="25"/>
-        <!-- Round 2 right -->
-        <line x1="32" y1="7"  x2="32" y2="25"/>
-        <line x1="32" y1="16" x2="26" y2="16"/>
-        <!-- Center gap (championship) -->
+      <button class="nb bkt" onclick="showPage('bracket')"><svg width="18" height="14" viewBox="0 0 36 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px">
+        <line x1="0" y1="3"  x2="7" y2="3"/>
+        <line x1="0" y1="9"  x2="7" y2="9"/>
+        <line x1="7" y1="3"  x2="7" y2="9"/>
+        <line x1="7" y1="6"  x2="14" y2="6"/>
+        <line x1="0" y1="19" x2="7" y2="19"/>
+        <line x1="0" y1="25" x2="7" y2="25"/>
+        <line x1="7" y1="19" x2="7" y2="25"/>
+        <line x1="7" y1="22" x2="14" y2="22"/>
+        <line x1="14" y1="6"  x2="14" y2="22"/>
+        <line x1="14" y1="14" x2="22" y2="14"/>
+        <line x1="22" y1="11" x2="22" y2="17"/>
+        <line x1="22" y1="14" x2="30" y2="14"/>
+        <polyline points="27,11 30,14 27,17"/>
       </svg>Bracket</button>
       <button class="nb"         onclick="showPage('history')">History</button>
       <button class="nb"         onclick="showPage('admin')" style="color:var(--muted)">⚙ Admin</button>
@@ -908,7 +883,7 @@ function slotCls(won, name) {
 // Returns ESPN CDN logo URL for a team name
 const TEAM_LOGOS = {
   'Duke':         'https://a.espncdn.com/i/teamlogos/ncaa/500/150.png',
-  'Siena':        'https://a.espncdn.com/i/teamlogos/ncaa/500/73.png',
+  'Siena':        'https://a.espncdn.com/i/teamlogos/ncaa/500/2561.png',
   'Ohio State':   'https://a.espncdn.com/i/teamlogos/ncaa/500/194.png',
   'TCU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2628.png',
   "St. John's":   'https://a.espncdn.com/i/teamlogos/ncaa/500/2569.png',
@@ -937,7 +912,7 @@ const TEAM_LOGOS = {
   'Miami FL':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2390.png',
   'Missouri':     'https://a.espncdn.com/i/teamlogos/ncaa/500/142.png',
   'Purdue':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2509.png',
-  'Queens':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2955.png',
+  'Queens':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2954.png',
   'Florida':      'https://a.espncdn.com/i/teamlogos/ncaa/500/57.png',
   'Prairie View': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2504.png',
   'Lehigh':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2348.png',
@@ -970,7 +945,7 @@ const TEAM_LOGOS = {
   'Virginia':     'https://a.espncdn.com/i/teamlogos/ncaa/500/258.png',
   'Wright State': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2750.png',
   'Kentucky':     'https://a.espncdn.com/i/teamlogos/ncaa/500/96.png',
-  'Santa Clara':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2608.png',
+  'Santa Clara':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2607.png',
   'Iowa State':   'https://a.espncdn.com/i/teamlogos/ncaa/500/66.png',
   'Tennessee St': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2634.png',
   'Texas':        'https://a.espncdn.com/i/teamlogos/ncaa/500/251.png',
@@ -1098,12 +1073,14 @@ function renderFirstFour() {
           <div class="cbody" style="padding:12px 16px">
             <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);opacity:${g.t2.won?0.45:1}">
               <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
+              ${teamLogo(g.t1.name) ? `<img src="${TEAM_LOGOS[g.t1.name]||''}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'" alt="">` : ''}
               <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t1won?'color:var(--orange)':''}">${g.t1.name}</span>
               ${g.t1.score!==null&&g.t1.score!==undefined ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t1won?'var(--orange)':'var(--muted)'}">${g.t1.score}</span>` : ''}
               ${t1won ? '<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>' : ''}
             </div>
             <div style="display:flex;align-items:center;gap:8px;padding:7px 0;opacity:${g.t1.won?0.45:1}">
               <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t2.seed}</span>
+              ${teamLogo(g.t2.name) ? `<img src="${TEAM_LOGOS[g.t2.name]||''}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'" alt="">` : ''}
               <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t2won?'color:var(--orange)':''}">${g.t2.name}</span>
               ${g.t2.score!==null&&g.t2.score!==undefined ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t2won?'var(--orange)':'var(--muted)'}">${g.t2.score}</span>` : ''}
               ${t2won ? '<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>' : ''}
@@ -1122,25 +1099,38 @@ function renderFinal4() {
   const sf2 = f4.sf?.[1];
   const fin = f4.final?.[0];
 
-  return `<div class="f4-wrap">
-    <div class="f4-side">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Semifinal — East vs West</div>
-      ${sf1 ? renderMatchup(sf1) : '<div class="mu" style="padding:16px;text-align:center;color:var(--muted)">Awaiting Regional Winners</div>'}
-    </div>
-    <div class="f4-center">
-      <div class="champ-box">
-        <div class="champ-trophy">🏆</div>
-        <div class="champ-lbl">2026 Champion</div>
-        <div class="champ-name">${f4.champion||'TBD'}</div>
+  const muCard = (m, label) => `
+    <div style="margin-bottom:6px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;text-align:center">${label}</div>
+      ${m ? renderMatchup(m) : '<div class="mu" style="padding:14px;text-align:center;color:var(--muted);font-size:12px">Awaiting Regional Winners</div>'}
+    </div>`;
+
+  return `
+    <div style="max-width:900px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center">
+
+        <div>
+          ${muCard(sf1,'🟠 East vs 🔵 West')}
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;min-width:180px">
+          <div class="champ-box" style="width:100%">
+            <div class="champ-trophy">🏆</div>
+            <div class="champ-lbl">2026 Champion</div>
+            <div class="champ-name">${f4.champion||'TBD'}</div>
+          </div>
+          ${muCard(fin,'Championship Game — Apr 6')}
+        </div>
+
+        <div>
+          ${muCard(sf2,'🟢 South vs 🔴 Midwest')}
+        </div>
+
       </div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:8px">Championship Game</div>
-      ${fin ? renderMatchup(fin) : '<div class="mu" style="padding:16px;text-align:center;color:var(--muted)">TBD</div>'}
-    </div>
-    <div class="f4-side">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Semifinal — South vs Midwest</div>
-      ${sf2 ? renderMatchup(sf2) : '<div class="mu" style="padding:16px;text-align:center;color:var(--muted)">Awaiting Regional Winners</div>'}
-    </div>
-  </div>`;
+      <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--muted);letter-spacing:1px">
+        Final Four · Lucas Oil Stadium · Indianapolis · April 4 &amp; 6
+      </div>
+    </div>`;
 }
 
 function renderDraftStrip() {
@@ -1414,3 +1404,4 @@ startPolling();
 </script>
 </body>
 </html>
+
