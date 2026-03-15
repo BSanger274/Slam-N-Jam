@@ -347,14 +347,14 @@ function buildBlankBracket() {
     },
     west: {
       r64: [
-        { id:'w1', t1: team(1,'Arizona'),    t2: team(11,'TX/NCS (TBD)')  },
-        { id:'w2', t1: team(8,'Arkansas'),   t2: team(9,'TBD')            },
-        { id:'w3', t1: team(5,'TBD'),        t2: team(12,'TBD')           },
-        { id:'w4', t1: team(4,'TBD'),        t2: team(13,'TBD')           },
-        { id:'w5', t1: team(6,'TBD'),        t2: team(11,'TBD')           },
-        { id:'w6', t1: team(3,'Gonzaga'),    t2: team(14,'TBD')           },
-        { id:'w7', t1: team(7,'Miami FL'),   t2: team(10,'Missouri')      },
-        { id:'w8', t1: team(2,'Purdue'),     t2: team(15,'TBD')           }
+        { id:'w1', t1: team(1,'Arizona'),    t2: team(16,'LIU')              },
+        { id:'w2', t1: team(8,'Villanova'),  t2: team(9,'Utah State')        },
+        { id:'w3', t1: team(5,'Wisconsin'),  t2: team(12,'High Point')       },
+        { id:'w4', t1: team(4,'Arkansas'),   t2: team(13,"Hawai'i")          },
+        { id:'w5', t1: team(6,'BYU'),        t2: team(11,'TX/NCS (TBD)')     },
+        { id:'w6', t1: team(3,'Gonzaga'),    t2: team(14,'Kennesaw State')   },
+        { id:'w7', t1: team(7,'Miami FL'),   t2: team(10,'Missouri')         },
+        { id:'w8', t1: team(2,'Purdue'),     t2: team(15,'Queens')           }
       ],
       r32:  [{ id:'w9',  t1:tbd(),t2:tbd() },{ id:'w10', t1:tbd(),t2:tbd() },{ id:'w11', t1:tbd(),t2:tbd() },{ id:'w12', t1:tbd(),t2:tbd() }],
       r16:  [{ id:'w13', t1:tbd(),t2:tbd() },{ id:'w14', t1:tbd(),t2:tbd() }],
