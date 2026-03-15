@@ -123,6 +123,61 @@ async function getLiveScores() {
 }
 
 // ════════════════════════════════════════════════════════
+//  ESPN SEASON AVERAGES CACHE
+//  Fetches each player's regular-season PPG for hot/cold calc
+//  Refreshes every 6 hours (averages don't change mid-tourney)
+// ════════════════════════════════════════════════════════
+let avgCache     = {};
+let avgCacheTime = 0;
+const AVG_TTL    = 6 * 60 * 60 * 1000; // 6 hours
+
+async function fetchSeasonAverages() {
+  const avgs = {};
+  try {
+    const data = await fetchURL(
+      'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=100&limit=50'
+    );
+    for (const event of (data.events || [])) {
+      for (const comp of (event.competitions || [])) {
+        for (const team of (comp.competitors || [])) {
+          const teamId = team.team?.id;
+          if (!teamId) continue;
+          try {
+            const rData = await fetchURL(
+              `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/${teamId}/roster`
+            );
+            for (const athlete of (rData.athletes || [])) {
+              const name = athlete.displayName || athlete.fullName;
+              if (!name) continue;
+              for (const stat of (athlete.statistics || [])) {
+                if (stat.name === 'ppg' || stat.abbreviation === 'PPG') {
+                  avgs[name] = parseFloat(stat.value) || 0;
+                }
+              }
+            }
+          } catch { /* skip if roster unavailable */ }
+        }
+      }
+    }
+  } catch (e) {
+    console.error('[Averages] fetch failed:', e.message);
+  }
+  return avgs;
+}
+
+async function getSeasonAverages() {
+  if (Date.now() - avgCacheTime > AVG_TTL || Object.keys(avgCache).length === 0) {
+    const fresh = await fetchSeasonAverages();
+    if (Object.keys(fresh).length > 0) {
+      avgCache     = fresh;
+      avgCacheTime = Date.now();
+      console.log(`[${new Date().toISOString()}] Season averages refreshed — ${Object.keys(avgCache).length} players`);
+    }
+  }
+  return avgCache;
+}
+
+// ════════════════════════════════════════════════════════
 //  ESPN BRACKET CACHE
 //  Fetches bracket structure: matchups, seeds, winners
 // ════════════════════════════════════════════════════════
@@ -228,8 +283,16 @@ async function getLiveBracket() {
       writeJSON(BRACKET_F, { ...fresh, _cachedAt: new Date().toISOString() });
       console.log(`[${new Date().toISOString()}] Bracket refreshed from ESPN`);
     } else if (!bracketCache) {
-      // First run and ESPN failed — use saved file or seed blank
-      bracketCache = readJSON(BRACKET_F, buildBlankBracket());
+      // ESPN returned empty or failed — use hardcoded 2026 bracket
+      bracketCache = buildBlankBracket();
+      bracketCacheTime = Date.now();
+      console.log('[Bracket] Using hardcoded 2026 seed bracket');
+    }
+    // If ESPN returned an empty bracket (all regions {}), fall back to seed
+    if (bracketCache && bracketCache.east && Object.keys(bracketCache.east).length === 0) {
+      console.log('[Bracket] ESPN returned empty bracket — using hardcoded seed');
+      bracketCache = buildBlankBracket();
+      bracketCacheTime = Date.now();
     }
   }
   return bracketCache;
@@ -255,12 +318,87 @@ function applyBracketOverrides(bracket, overrides) {
 }
 
 function buildBlankBracket() {
-  // Returns a seeded 2026 bracket with demo data for off-season display
-  return readJSON(path.join(DATA, 'bracket_seed.json'), {
-    east: {}, west: {}, south: {}, midwest: {},
-    final4: { sf: [], final: [], champion: 'TBD' },
-    _source: 'blank'
-  });
+  // Full 2026 bracket hardcoded — never depends on disk file
+  // ESPN API will override this automatically once tournament games begin
+  const tbd = () => ({ seed: null, name: 'TBD', score: null, won: null });
+  const team = (seed, name) => ({ seed, name, score: null, won: null });
+  return {
+    _source: '2026-selection-sunday',
+    _firstFour: [
+      { id:'ff1', region:'west',    date:'Mar 17', t1: team(11,'Texas'),       t2: team(11,'NC State')    },
+      { id:'ff2', region:'midwest', date:'Mar 18', t1: team(11,'Miami OH'),    t2: team(11,'SMU')         },
+      { id:'ff3', region:'midwest', date:'Mar 17', t1: team(16,'UMBC'),        t2: team(16,'Howard')      },
+      { id:'ff4', region:'south',   date:'Mar 18', t1: team(16,'Prairie View'),t2: team(16,'Lehigh')      }
+    ],
+    east: {
+      r64: [
+        { id:'e1', t1: team(1,'Duke'),        t2: team(16,'Siena')         },
+        { id:'e2', t1: team(8,'Ohio State'),  t2: team(9,'TCU')            },
+        { id:'e3', t1: team(5,"St. John's"),  t2: team(12,'Northern Iowa') },
+        { id:'e4', t1: team(4,'Kansas'),      t2: team(13,'CA Baptist')    },
+        { id:'e5', t1: team(6,'Louisville'),  t2: team(11,'South Florida') },
+        { id:'e6', t1: team(3,'Michigan St'), t2: team(14,'N. Dakota St')  },
+        { id:'e7', t1: team(7,'UCLA'),        t2: team(10,'UCF')           },
+        { id:'e8', t1: team(2,'UConn'),       t2: team(15,'Furman')        }
+      ],
+      r32:  [{ id:'e9',  t1:tbd(),t2:tbd() },{ id:'e10', t1:tbd(),t2:tbd() },{ id:'e11', t1:tbd(),t2:tbd() },{ id:'e12', t1:tbd(),t2:tbd() }],
+      r16:  [{ id:'e13', t1:tbd(),t2:tbd() },{ id:'e14', t1:tbd(),t2:tbd() }],
+      r8:   [{ id:'e15', t1:tbd(),t2:tbd() }]
+    },
+    west: {
+      r64: [
+        { id:'w1', t1: team(1,'Arizona'),    t2: team(11,'TX/NCS (TBD)')  },
+        { id:'w2', t1: team(8,'Arkansas'),   t2: team(9,'TBD')            },
+        { id:'w3', t1: team(5,'TBD'),        t2: team(12,'TBD')           },
+        { id:'w4', t1: team(4,'TBD'),        t2: team(13,'TBD')           },
+        { id:'w5', t1: team(6,'TBD'),        t2: team(11,'TBD')           },
+        { id:'w6', t1: team(3,'Gonzaga'),    t2: team(14,'TBD')           },
+        { id:'w7', t1: team(7,'Miami FL'),   t2: team(10,'Missouri')      },
+        { id:'w8', t1: team(2,'Purdue'),     t2: team(15,'TBD')           }
+      ],
+      r32:  [{ id:'w9',  t1:tbd(),t2:tbd() },{ id:'w10', t1:tbd(),t2:tbd() },{ id:'w11', t1:tbd(),t2:tbd() },{ id:'w12', t1:tbd(),t2:tbd() }],
+      r16:  [{ id:'w13', t1:tbd(),t2:tbd() },{ id:'w14', t1:tbd(),t2:tbd() }],
+      r8:   [{ id:'w15', t1:tbd(),t2:tbd() }]
+    },
+    south: {
+      r64: [
+        { id:'s1', t1: team(1,'Florida'),      t2: team(16,'PV/LEH (TBD)')  },
+        { id:'s2', t1: team(8,'Clemson'),      t2: team(9,'Iowa')            },
+        { id:'s3', t1: team(5,'Vanderbilt'),   t2: team(12,'McNeese')        },
+        { id:'s4', t1: team(4,'Nebraska'),     t2: team(13,'Troy')           },
+        { id:'s5', t1: team(6,'N. Carolina'),  t2: team(11,'VCU')            },
+        { id:'s6', t1: team(3,'Illinois'),     t2: team(14,'Penn')           },
+        { id:'s7', t1: team(7,"Saint Mary's"), t2: team(10,'Texas A&M')      },
+        { id:'s8', t1: team(2,'Houston'),      t2: team(15,'Idaho')          }
+      ],
+      r32:  [{ id:'s9',  t1:tbd(),t2:tbd() },{ id:'s10', t1:tbd(),t2:tbd() },{ id:'s11', t1:tbd(),t2:tbd() },{ id:'s12', t1:tbd(),t2:tbd() }],
+      r16:  [{ id:'s13', t1:tbd(),t2:tbd() },{ id:'s14', t1:tbd(),t2:tbd() }],
+      r8:   [{ id:'s15', t1:tbd(),t2:tbd() }]
+    },
+    midwest: {
+      r64: [
+        { id:'m1', t1: team(1,'Michigan'),    t2: team(16,'UMBC/HOW (TBD)') },
+        { id:'m2', t1: team(8,'Georgia'),     t2: team(9,'Saint Louis')      },
+        { id:'m3', t1: team(5,'Texas Tech'),  t2: team(12,'Akron')           },
+        { id:'m4', t1: team(4,'Alabama'),     t2: team(13,'Hofstra')         },
+        { id:'m5', t1: team(6,'Tennessee'),   t2: team(11,'MIA/SMU (TBD)')   },
+        { id:'m6', t1: team(3,'Virginia'),    t2: team(14,'Wright State')    },
+        { id:'m7', t1: team(7,'Kentucky'),    t2: team(10,'Santa Clara')     },
+        { id:'m8', t1: team(2,'Iowa State'),  t2: team(15,'Tennessee St')    }
+      ],
+      r32:  [{ id:'m9',  t1:tbd(),t2:tbd() },{ id:'m10', t1:tbd(),t2:tbd() },{ id:'m11', t1:tbd(),t2:tbd() },{ id:'m12', t1:tbd(),t2:tbd() }],
+      r16:  [{ id:'m13', t1:tbd(),t2:tbd() },{ id:'m14', t1:tbd(),t2:tbd() }],
+      r8:   [{ id:'m15', t1:tbd(),t2:tbd() }]
+    },
+    final4: {
+      sf: [
+        { id:'f1', t1: team(null,'East Winner'),  t2: team(null,'West Winner')    },
+        { id:'f2', t1: team(null,'South Winner'), t2: team(null,'Midwest Winner') }
+      ],
+      final:    [{ id:'f3', t1:tbd(), t2:tbd() }],
+      champion: 'TBD'
+    }
+  };
 }
 
 // ════════════════════════════════════════════════════════
@@ -286,24 +424,103 @@ app.get('/api/status', async (req, res) => {
   });
 });
 
-// Teams + real-time point totals
+// Teams + real-time point totals + hot/cold trend
 app.get('/api/teams', async (req, res) => {
   const rosters = readJSON(ROSTER_F, { teams: [] });
-  const scores  = await getMergedScores();
+  const [scores, avgs] = await Promise.all([getMergedScores(), getSeasonAverages()]);
 
   const teams = (rosters.teams || []).map(team => {
     let total = 0;
     const players = (team.players || []).map(p => {
       const pts = scores[p.name] ?? p.pts ?? 0;
+      const avg = avgs[p.name] ?? null;
+      // Tiered hot/cold based on % vs season average
+      // Hot:  1 flame = 20-29%, 2 flames = 30-49%, 3 flames = 50%+
+      // Cold: 1 flake = 20-29% below, 2 flakes = 30-49% below, 3 flakes = 50%+ below
+      let trend = null;
+      if (avg && avg > 0 && pts > 0) {
+        const ratio = pts / avg;
+        if      (ratio >= 1.5)  trend = 'hot3';
+        else if (ratio >= 1.3)  trend = 'hot2';
+        else if (ratio >= 1.2)  trend = 'hot1';
+        else if (ratio <= 0.5)  trend = 'cold3';
+        else if (ratio <= 0.7)  trend = 'cold2';
+        else if (ratio <= 0.8)  trend = 'cold1';
+      }
       total += pts;
-      // Mark as eliminated if their school is out of the bracket
-      return { ...p, pts };
+      return { ...p, pts, seasonAvg: avg, trend };
     });
     return { ...team, players, totalPts: total };
   });
 
   teams.sort((a, b) => b.totalPts - a.totalPts);
   res.json({ teams, lastFetch: new Date(scoreCacheTime).toISOString(), livePlayerCount: Object.keys(scores).length });
+});
+
+// Season averages endpoint
+app.get('/api/averages', async (req, res) => {
+  const avgs = await getSeasonAverages();
+  res.json({ averages: avgs, count: Object.keys(avgs).length, cachedAt: new Date(avgCacheTime).toISOString() });
+});
+
+// Box score for a specific game (used by bracket pop-up)
+app.get('/api/boxscore/:gameId', async (req, res) => {
+  try {
+    const data = await fetchURL(
+      `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=${req.params.gameId}`
+    );
+    const comp = data.boxscore?.players || [];
+    const teams = [];
+    for (const teamData of comp) {
+      const teamName = teamData.team?.displayName || 'Unknown';
+      const players = [];
+      for (const statGroup of (teamData.statistics || [])) {
+        for (const athlete of (statGroup.athletes || [])) {
+          const stats = athlete.stats || [];
+          // ESPN box score stat order: min, fg, 3pt, ft, oreb, dreb, reb, ast, stl, blk, to, pf, +/-, pts
+          players.push({
+            name:    athlete.athlete?.displayName || '—',
+            starter: athlete.starter || false,
+            dnp:     athlete.didNotPlay || false,
+            min:  stats[0]  || '0',
+            fg:   stats[1]  || '0-0',
+            threeP: stats[2]|| '0-0',
+            ft:   stats[3]  || '0-0',
+            reb:  stats[6]  || '0',
+            ast:  stats[7]  || '0',
+            stl:  stats[8]  || '0',
+            blk:  stats[9]  || '0',
+            to:   stats[10] || '0',
+            pts:  stats[13] || '0',
+          });
+        }
+      }
+      // Team totals
+      const totals = [];
+      for (const statGroup of (teamData.statistics || [])) {
+        if (statGroup.totals) totals.push(...statGroup.totals);
+      }
+      teams.push({ teamName, players, totals });
+    }
+
+    // Game header info
+    const header = data.header || {};
+    const competition = (header.competitions || [])[0] || {};
+    const gameStatus = competition.status?.type?.description || 'Unknown';
+    const gameTime   = competition.date || null;
+    const competitors = (competition.competitors || []).map(c => ({
+      name:  c.team?.displayName || '—',
+      score: c.score || '0',
+      winner: c.winner || false,
+      logo:  c.team?.logo || null,
+      record: c.record?.[0]?.summary || ''
+    }));
+
+    res.json({ ok: true, gameStatus, gameTime, competitors, teams });
+  } catch (e) {
+    console.error('[BoxScore] fetch failed:', e.message);
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // Live bracket
@@ -319,9 +536,36 @@ app.get('/api/scores', async (req, res) => {
   res.json({ live, overrides, merged: { ...live, ...overrides }, liveCount: Object.keys(live).length });
 });
 
-// History
+// History — inline fallback guarantees data is always returned
+const HISTORY_DATA = { winners: [
+  {year:2025,winner:"Nutty Professor"},{year:2024,winner:"Studio K"},
+  {year:2023,winner:"Shy Ballers"},    {year:2022,winner:"Team McCarty"},
+  {year:2021,winner:"Shy Ballers"},    {year:2020,winner:"*Vacant*"},
+  {year:2019,winner:"One Putt Jackson"},{year:2018,winner:"Team McCarty"},
+  {year:2017,winner:"Team McCarty"},   {year:2016,winner:"All World"},
+  {year:2015,winner:"Itchy Ron"},      {year:2014,winner:"Itchy Ron"},
+  {year:2013,winner:"One Legler Up"},  {year:2012,winner:"Money Bross"},
+  {year:2011,winner:"Old School"},     {year:2010,winner:"Morley Brothers"},
+  {year:2009,winner:"Juice / Steve Dyer"},{year:2008,winner:"One Legler Up"},
+  {year:2007,winner:"Dream Team"},     {year:2006,winner:"Old School"},
+  {year:2005,winner:"Dream Team"},     {year:2004,winner:"Jim & Frank"},
+  {year:2003,winner:"Committee"},      {year:2002,winner:"Reese"},
+  {year:2001,winner:"Committee"},      {year:2000,winner:"Morley Brothers"},
+  {year:1999,winner:"Slam Dunks"},     {year:1998,winner:"Juice / Steve Dyer"},
+  {year:1997,winner:"Team McCarty"},   {year:1996,winner:"Montreal Jacques"},
+  {year:1995,winner:"Frank & Bill"},   {year:1994,winner:"Special K McNutt"},
+  {year:1993,winner:"Charles Snowden"},{year:1992,winner:"Juice / Steve Dyer"},
+  {year:1991,winner:"Rick Clark"},     {year:1990,winner:"John Snipes"},
+  {year:1989,winner:"Juice / Steve Dyer"},{year:1988,winner:"Committee"},
+  {year:1987,winner:"Bill Mac Attack McCarty"},{year:1986,winner:"Scott Marsden"},
+  {year:1985,winner:"Jack Baltimore Thorpe"},{year:1984,winner:"Jack Baltimore Thorpe"},
+  {year:1983,winner:"Special K McNutt"}
+]};
+
 app.get('/api/history', (req, res) => {
-  res.json(readJSON(HISTORY_F, { winners: [] }));
+  // Try disk first (allows future edits), fall back to inline data
+  const saved = readJSON(HISTORY_F, null);
+  res.json(saved && saved.winners && saved.winners.length ? saved : HISTORY_DATA);
 });
 
 // ── Admin: Login ──────────────────────────────────────
@@ -447,10 +691,11 @@ if (!fs.existsSync(HISTORY_F)) {
 app.listen(PORT, async () => {
   console.log(`\n🏀 SLAM-N-JAM server running → http://localhost:${PORT}`);
   console.log('📡 Warming ESPN cache...');
-  await Promise.all([getLiveScores(), getLiveBracket()]);
+  await Promise.all([getLiveScores(), getLiveBracket(), getSeasonAverages()]);
   console.log('✅ Ready.\n');
 
   // Keep refreshing in background
-  setInterval(getLiveScores,  SCORE_TTL);
-  setInterval(getLiveBracket, BRACKET_TTL);
+  setInterval(getLiveScores,    SCORE_TTL);
+  setInterval(getLiveBracket,   BRACKET_TTL);
+  setInterval(getSeasonAverages, AVG_TTL);
 });
