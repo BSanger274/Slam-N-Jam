@@ -168,15 +168,16 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 /* Matchup card */
 .mu{background:var(--dark3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:3px 5px;transition:border-color .25s;position:absolute;left:0;right:0}
 .mu:hover{border-color:rgba(255,107,0,.35)}
-.slot{display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid var(--border);min-height:32px;position:relative}
+.slot{display:flex;align-items:center;gap:5px;padding:3px 7px;border-bottom:1px solid var(--border);min-height:26px;position:relative}
 .slot:last-child{border-bottom:none}
 .slot.win{background:rgba(255,107,0,.07)}
 .slot.win .sname{color:var(--orange)}
 .slot.lose{opacity:.45}
 .slot.lose .sname{text-decoration:line-through;text-decoration-color:var(--red)}
 .slot.tbd .sname{color:var(--muted);font-style:italic}
-.sseed{font-family:'Bebas Neue',sans-serif;font-size:12px;color:var(--muted);width:14px;flex-shrink:0;text-align:center}
-.sname{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
+.sseed{font-family:'Bebas Neue',sans-serif;font-size:11px;color:var(--muted);width:13px;flex-shrink:0;text-align:center}
+.sname{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
+.slogo{width:14px;height:14px;object-fit:contain;flex-shrink:0;border-radius:2px}
 .sscore{font-family:'Bebas Neue',sans-serif;font-size:13px;flex-shrink:0;min-width:18px;text-align:right;color:var(--muted)}
 .sscore.hi{color:var(--orange)}
 .draft-pip{font-size:9px;background:rgba(255,184,0,.18);color:var(--gold);padding:1px 4px;border-radius:3px;font-weight:700;flex-shrink:0;white-space:nowrap}
@@ -323,7 +324,46 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
       <button class="nb active"  onclick="showPage('dashboard')">Dashboard</button>
       <button class="nb"         onclick="showPage('teams')">Teams</button>
       <button class="nb"         onclick="showPage('players')">Players</button>
-      <button class="nb bkt"     onclick="showPage('bracket')">🗂 Bracket</button>
+      <button class="nb bkt" onclick="showPage('bracket')">
+      <svg width="22" height="16" viewBox="0 0 44 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:5px">
+        <!-- LEFT SIDE: 4 slots → 2 → 1 -->
+        <!-- Slot 1 -->
+        <line x1="0" y1="4"  x2="6" y2="4"/>
+        <!-- Slot 2 -->
+        <line x1="0" y1="10" x2="6" y2="10"/>
+        <!-- Bracket 1-2 -->
+        <line x1="6" y1="4"  x2="6" y2="10"/>
+        <line x1="6" y1="7"  x2="12" y2="7"/>
+        <!-- Slot 3 -->
+        <line x1="0" y1="22" x2="6" y2="22"/>
+        <!-- Slot 4 -->
+        <line x1="0" y1="28" x2="6" y2="28"/>
+        <!-- Bracket 3-4 -->
+        <line x1="6" y1="22" x2="6" y2="28"/>
+        <line x1="6" y1="25" x2="12" y2="25"/>
+        <!-- Round 2 left -->
+        <line x1="12" y1="7"  x2="12" y2="25"/>
+        <line x1="12" y1="16" x2="18" y2="16"/>
+        <!-- RIGHT SIDE: mirror -->
+        <!-- Slot 5 -->
+        <line x1="44" y1="4"  x2="38" y2="4"/>
+        <!-- Slot 6 -->
+        <line x1="44" y1="10" x2="38" y2="10"/>
+        <!-- Bracket 5-6 -->
+        <line x1="38" y1="4"  x2="38" y2="10"/>
+        <line x1="38" y1="7"  x2="32" y2="7"/>
+        <!-- Slot 7 -->
+        <line x1="44" y1="22" x2="38" y2="22"/>
+        <!-- Slot 8 -->
+        <line x1="44" y1="28" x2="38" y2="28"/>
+        <!-- Bracket 7-8 -->
+        <line x1="38" y1="22" x2="38" y2="28"/>
+        <line x1="38" y1="25" x2="32" y2="25"/>
+        <!-- Round 2 right -->
+        <line x1="32" y1="7"  x2="32" y2="25"/>
+        <line x1="32" y1="16" x2="26" y2="16"/>
+        <!-- Center gap (championship) -->
+      </svg>Bracket</button>
       <button class="nb"         onclick="showPage('history')">History</button>
       <button class="nb"         onclick="showPage('admin')" style="color:var(--muted)">⚙ Admin</button>
     </nav>
@@ -749,7 +789,7 @@ function trendIcon(trend) {
 function renderTopScorers(allP) {
   const top = allP.filter(p=>p.pts>0).sort((a,b)=>b.pts-a.pts).slice(0,8);
   document.getElementById('top-scorers').innerHTML = top.length
-    ? top.map((p,i)=>`<div class="pr"><div class="pnum">${i+1}</div><div class="pi"><div class="pi-n" style="display:flex;align-items:center;gap:2px">${p.name}${trendIcon(p.trend)}</div><div class="pi-m">${p.school} · <em style="color:var(--orange);font-style:normal">${p.teamName||''}</em>${p.seasonAvg?` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>`:''}</div></div><div class="p-pts">${p.pts}</div></div>`).join('')
+    ? top.map((p,i)=>`<div class="pr"><div class="pnum">${i+1}</div>${teamLogo(p.school)?`<img src="${TEAM_LOGOS[p.school]||''}" style="width:22px;height:22px;object-fit:contain;flex-shrink:0;border-radius:3px" onerror="this.style.display='none'" alt="">`:''}<div class="pi"><div class="pi-n" style="display:flex;align-items:center;gap:2px">${p.name}${trendIcon(p.trend)}</div><div class="pi-m">${p.school} · <em style="color:var(--orange);font-style:normal">${p.teamName||''}</em>${p.seasonAvg?` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>`:''}</div></div><div class="p-pts">${p.pts}</div></div>`).join('')
     : '<p style="color:var(--muted);font-size:13px">No scoring data yet. Upload rosters to get started.</p>';
 }
 
@@ -863,14 +903,96 @@ function slotCls(won, name) {
   return '';
 }
 
+
+// ── TEAM LOGO HELPER ──
+// Returns ESPN CDN logo URL for a team name
+const TEAM_LOGOS = {
+  'Duke':         'https://a.espncdn.com/i/teamlogos/ncaa/500/150.png',
+  'Siena':        'https://a.espncdn.com/i/teamlogos/ncaa/500/73.png',
+  'Ohio State':   'https://a.espncdn.com/i/teamlogos/ncaa/500/194.png',
+  'TCU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2628.png',
+  "St. John's":   'https://a.espncdn.com/i/teamlogos/ncaa/500/2569.png',
+  'Northern Iowa':'https://a.espncdn.com/i/teamlogos/ncaa/500/2254.png',
+  'Kansas':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2305.png',
+  'CA Baptist':   'https://a.espncdn.com/i/teamlogos/ncaa/500/2856.png',
+  'Louisville':   'https://a.espncdn.com/i/teamlogos/ncaa/500/97.png',
+  'South Florida':'https://a.espncdn.com/i/teamlogos/ncaa/500/58.png',
+  'Michigan St':  'https://a.espncdn.com/i/teamlogos/ncaa/500/127.png',
+  'N. Dakota St': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2449.png',
+  'UCLA':         'https://a.espncdn.com/i/teamlogos/ncaa/500/26.png',
+  'UCF':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2116.png',
+  'UConn':        'https://a.espncdn.com/i/teamlogos/ncaa/500/41.png',
+  'Furman':       'https://a.espncdn.com/i/teamlogos/ncaa/500/231.png',
+  'Arizona':      'https://a.espncdn.com/i/teamlogos/ncaa/500/12.png',
+  'LIU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png',
+  'Villanova':    'https://a.espncdn.com/i/teamlogos/ncaa/500/222.png',
+  'Utah State':   'https://a.espncdn.com/i/teamlogos/ncaa/500/328.png',
+  'Wisconsin':    'https://a.espncdn.com/i/teamlogos/ncaa/500/275.png',
+  'High Point':   'https://a.espncdn.com/i/teamlogos/ncaa/500/2729.png',
+  'Arkansas':     'https://a.espncdn.com/i/teamlogos/ncaa/500/8.png',
+  "Hawai'i":      'https://a.espncdn.com/i/teamlogos/ncaa/500/62.png',
+  'BYU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/252.png',
+  'Gonzaga':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2250.png',
+  'Kennesaw State':'https://a.espncdn.com/i/teamlogos/ncaa/500/2908.png',
+  'Miami FL':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2390.png',
+  'Missouri':     'https://a.espncdn.com/i/teamlogos/ncaa/500/142.png',
+  'Purdue':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2509.png',
+  'Queens':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2955.png',
+  'Florida':      'https://a.espncdn.com/i/teamlogos/ncaa/500/57.png',
+  'Prairie View': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2504.png',
+  'Lehigh':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2348.png',
+  'Clemson':      'https://a.espncdn.com/i/teamlogos/ncaa/500/228.png',
+  'Iowa':         'https://a.espncdn.com/i/teamlogos/ncaa/500/2294.png',
+  'Vanderbilt':   'https://a.espncdn.com/i/teamlogos/ncaa/500/238.png',
+  'McNeese':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png',
+  'Nebraska':     'https://a.espncdn.com/i/teamlogos/ncaa/500/158.png',
+  'Troy':         'https://a.espncdn.com/i/teamlogos/ncaa/500/2653.png',
+  'N. Carolina':  'https://a.espncdn.com/i/teamlogos/ncaa/500/153.png',
+  'VCU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2670.png',
+  'Illinois':     'https://a.espncdn.com/i/teamlogos/ncaa/500/356.png',
+  'Penn':         'https://a.espncdn.com/i/teamlogos/ncaa/500/219.png',
+  "Saint Mary's": 'https://a.espncdn.com/i/teamlogos/ncaa/500/2608.png',
+  'Texas A&M':    'https://a.espncdn.com/i/teamlogos/ncaa/500/245.png',
+  'Houston':      'https://a.espncdn.com/i/teamlogos/ncaa/500/248.png',
+  'Idaho':        'https://a.espncdn.com/i/teamlogos/ncaa/500/70.png',
+  'Michigan':     'https://a.espncdn.com/i/teamlogos/ncaa/500/130.png',
+  'UMBC':         'https://a.espncdn.com/i/teamlogos/ncaa/500/2321.png',
+  'Howard':       'https://a.espncdn.com/i/teamlogos/ncaa/500/47.png',
+  'Georgia':      'https://a.espncdn.com/i/teamlogos/ncaa/500/61.png',
+  'Saint Louis':  'https://a.espncdn.com/i/teamlogos/ncaa/500/139.png',
+  'Texas Tech':   'https://a.espncdn.com/i/teamlogos/ncaa/500/2641.png',
+  'Akron':        'https://a.espncdn.com/i/teamlogos/ncaa/500/2006.png',
+  'Alabama':      'https://a.espncdn.com/i/teamlogos/ncaa/500/333.png',
+  'Hofstra':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2206.png',
+  'Tennessee':    'https://a.espncdn.com/i/teamlogos/ncaa/500/2633.png',
+  'Miami OH':     'https://a.espncdn.com/i/teamlogos/ncaa/500/193.png',
+  'SMU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2567.png',
+  'Virginia':     'https://a.espncdn.com/i/teamlogos/ncaa/500/258.png',
+  'Wright State': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2750.png',
+  'Kentucky':     'https://a.espncdn.com/i/teamlogos/ncaa/500/96.png',
+  'Santa Clara':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2608.png',
+  'Iowa State':   'https://a.espncdn.com/i/teamlogos/ncaa/500/66.png',
+  'Tennessee St': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2634.png',
+  'Texas':        'https://a.espncdn.com/i/teamlogos/ncaa/500/251.png',
+  'NC State':     'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png',
+};
+
+function teamLogo(name) {
+  const url = TEAM_LOGOS[name];
+  if (!url) return '';
+  return `<img class="slogo" src="${url}" alt="${name}" onerror="this.style.display='none'">`;
+}
+
 function renderMatchup(m) {
   const mk = (t) => {
     const di = draftInfo(t.name);
     const sc = t.score!==null ? `<span class="sscore ${t.won?'hi':''}">${t.score}</span>` : '';
     const dp = di ? `<span class="draft-pip">${di.pts}p</span>` : '';
     const ti = di ? trendIcon(getTrend(t.name)) : '';
+    const lg = teamLogo(t.name);
     return `<div class="slot ${slotCls(t.won,t.name)}">
       <span class="sseed">${t.seed||''}</span>
+      ${lg}
       <span class="sname">${t.name||'TBD'}${ti}</span>
       ${dp}${sc}
     </div>`;
@@ -885,7 +1007,7 @@ function renderMatchup(m) {
 }
 
 // Heights per round for positioning matchups
-const MU_H = 72; // px per matchup card
+const MU_H = 58; // px per matchup card — condensed
 const ROUND_CONFIGS = [
   { key:'r64',  label:'Round of 64',  count:8 },
   { key:'r32',  label:'Round of 32',  count:4 },
