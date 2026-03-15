@@ -278,6 +278,14 @@ async function getLiveBracket() {
         fresh._manualOverrides = saved._manualOverrides;
         applyBracketOverrides(fresh, saved._manualOverrides);
       }
+      // If ESPN returned empty Final Four sf, use our hardcoded placeholder names
+      const seed = buildBlankBracket();
+      if (!fresh.final4.sf || fresh.final4.sf.length === 0) {
+        fresh.final4.sf    = seed.final4.sf;
+        fresh.final4.final = seed.final4.final;
+      }
+      // Preserve First Four data from seed
+      if (!fresh._firstFour) fresh._firstFour = seed._firstFour;
       bracketCache     = fresh;
       bracketCacheTime = Date.now();
       writeJSON(BRACKET_F, { ...fresh, _cachedAt: new Date().toISOString() });
@@ -392,8 +400,8 @@ function buildBlankBracket() {
     },
     final4: {
       sf: [
-        { id:'f1', t1: team(null,'East Winner'),  t2: team(null,'West Winner')    },
-        { id:'f2', t1: team(null,'South Winner'), t2: team(null,'Midwest Winner') }
+        { id:'f1', t1: team(null,'East Winner'),  t2: team(null,'South Winner')   },
+        { id:'f2', t1: team(null,'West Winner'),  t2: team(null,'Midwest Winner') }
       ],
       final:    [{ id:'f3', t1:tbd(), t2:tbd() }],
       champion: 'TBD'
