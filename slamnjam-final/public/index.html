@@ -909,7 +909,7 @@ const TEAM_LOGOS = {
   'Miami FL':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2390.png',
   'Missouri':     'https://a.espncdn.com/i/teamlogos/ncaa/500/142.png',
   'Purdue':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2509.png',
-  'Queens':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2877.png',
+  'Queens':       '/logo-queens.png',
   'Florida':      'https://a.espncdn.com/i/teamlogos/ncaa/500/57.png',
   'Prairie View': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2504.png',
   'Lehigh':       'https://a.espncdn.com/i/teamlogos/ncaa/500/2348.png',
@@ -928,7 +928,7 @@ const TEAM_LOGOS = {
   'Houston':      'https://a.espncdn.com/i/teamlogos/ncaa/500/248.png',
   'Idaho':        'https://a.espncdn.com/i/teamlogos/ncaa/500/70.png',
   'Michigan':     'https://a.espncdn.com/i/teamlogos/ncaa/500/130.png',
-  'UMBC':         'https://a.espncdn.com/i/teamlogos/ncaa/500/2320.png',
+  'UMBC':         '/logo-umbc.png',
   'Howard':       'https://a.espncdn.com/i/teamlogos/ncaa/500/47.png',
   'Georgia':      'https://a.espncdn.com/i/teamlogos/ncaa/500/61.png',
   'Saint Louis':  'https://a.espncdn.com/i/teamlogos/ncaa/500/139.png',
@@ -1161,11 +1161,11 @@ function renderFinal4() {
       Lucas Oil Stadium · Indianapolis · April 4 &amp; 6
     </div>
     <div style="display:flex;align-items:center;gap:0;max-width:860px;margin:0 auto">
-      ${sfCard(sf1, '🟠 East &nbsp;vs&nbsp; 🔵 West', 'var(--orange)')}
+      ${sfCard(sf1, '🟠 East &nbsp;vs&nbsp; 🟢 South', 'var(--orange)')}
       <div style="width:24px;height:2px;background:var(--border);flex-shrink:0"></div>
       ${champCard()}
       <div style="width:24px;height:2px;background:var(--border);flex-shrink:0"></div>
-      ${sfCard(sf2, '🟢 South &nbsp;vs&nbsp; 🔴 Midwest', 'var(--green)')}
+      ${sfCard(sf2, '🔵 West &nbsp;vs&nbsp; 🔴 Midwest', 'var(--blue)')}
     </div>`;
 }
 
@@ -1440,4 +1440,3 @@ startPolling();
 </script>
 </body>
 </html>
-
