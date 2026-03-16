@@ -537,7 +537,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
       <!-- Best Score by Draft Round -->
       <div style="margin-top:32px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer" onclick="toggleHistSection('draft-best')">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px">🎯 Best Score by Draft Round</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px">🎯 Top Score by Draft Round</div>
           <div style="flex:1;height:1px;background:var(--border)"></div>
           <div id="draft-best-toggle" style="color:var(--muted);font-size:14px">▼</div>
         </div>
@@ -1482,22 +1482,25 @@ async function renderAllTimeTopPlayers() {
     return;
   }
 
-  el.innerHTML = `<table style="width:100%;border-collapse:collapse">
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;table-layout:fixed">
     <thead>
-      <tr style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">
+      <tr style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border);vertical-align:bottom">
         <th style="width:32px;text-align:center;padding:0 0 8px 0">Rank</th>
         <th style="text-align:left;padding:0 0 8px 8px">Player</th>
-        <th style="width:100px;text-align:center;padding:0 0 8px 0">School</th>
-        <th style="width:50px;text-align:center;padding:0 0 8px 0">Year</th>
-        <th style="width:60px;text-align:center;padding:0 0 8px 0;color:var(--orange)">PTS</th>
+        <th style="width:110px;text-align:center;padding:0 0 8px 0">Team Drafted</th>
+        <th style="width:48px;text-align:center;padding:0 0 8px 0">Year</th>
+        <th style="width:52px;text-align:center;padding:0 0 8px 0;color:var(--orange)">PTS</th>
       </tr>
     </thead>
     <tbody>
       ${all.slice(0,20).map((p,i) => `
         <tr style="border-bottom:1px solid var(--border)">
           <td style="text-align:center;padding:7px 0;font-family:'Bebas Neue',sans-serif;font-size:14px;color:${i<3?'var(--gold)':'var(--muted)'}">${i+1}</td>
-          <td style="padding:7px 8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700">${p.name}</td>
-          <td style="text-align:center;padding:7px 0;font-size:11px;color:var(--muted)">${p.school}</td>
+          <td style="padding:7px 8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            ${p.name}
+            <span style="font-size:11px;color:var(--muted);font-weight:400;margin-left:4px">${p.school}</span>
+          </td>
+          <td style="text-align:center;padding:7px 4px;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.team}</td>
           <td style="text-align:center;padding:7px 0;font-size:11px;color:var(--muted)">${p.year}</td>
           <td style="text-align:center;padding:7px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange)">${p.pts}</td>
         </tr>`).join('')}
