@@ -2069,7 +2069,7 @@ async function openRosterModal(year, teamName) {
           <th style="width:30px;text-align:center;padding:0 0 10px 0">#</th>
           <th style="width:185px;text-align:left;padding:0 0 10px 8px">Player</th>
           <th style="width:115px;text-align:center;padding:0 0 10px 0">School</th>
-          <th style="text-align:center;padding:0 0 10px 0;color:var(--orange);line-height:1.4">Total<br>Tournament<br>Points</th>
+          <th style="padding:0 0 10px 0;line-height:1.4"><div style="text-align:center;color:var(--orange);width:100%">Total<br>Tournament<br>Points</div></th>
         </tr>
       </thead>
       <tbody>
@@ -2078,13 +2078,13 @@ async function openRosterModal(year, teamName) {
             <td style="text-align:center;padding:9px 0;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);vertical-align:middle">${p.round}</td>
             <td style="padding:9px 8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--text);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</td>
             <td style="text-align:center;padding:9px 0;font-size:12px;color:var(--muted);vertical-align:middle">${p.school}</td>
-            <td style="text-align:center;padding:9px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:${p.pts!=null?'var(--orange)':'var(--muted)'};vertical-align:middle">${p.pts ?? '—'}</td>
+            <td style="text-align:center;padding:9px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:${p.pts!=null?'var(--orange)':'var(--muted)'};vertical-align:middle;text-align:center">${p.pts ?? '—'}</td>
           </tr>`).join('')}
       </tbody>
       <tfoot>
         <tr style="border-top:2px solid var(--border)">
           <td colspan="3" style="padding:10px 0 10px 8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Total Points</td>
-          <td style="padding:10px 0;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);text-align:center">${total > 0 ? total : '—'}</td>
+          <td style="padding:10px 0"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);text-align:center;width:100%">${total > 0 ? total : '—'}</div></td>
         </tr>
       </tfoot>
     </table>`;
