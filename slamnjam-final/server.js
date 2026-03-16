@@ -333,10 +333,10 @@ function buildBlankBracket() {
   return {
     _source: '2026-selection-sunday',
     _firstFour: [
-      { id:'ff1', region:'west',    date:'Mar 17', t1: team(11,'Texas'),       t2: team(11,'NC State')    },
-      { id:'ff2', region:'midwest', date:'Mar 18', t1: team(11,'Miami OH'),    t2: team(11,'SMU')         },
-      { id:'ff3', region:'midwest', date:'Mar 17', t1: team(16,'UMBC'),        t2: team(16,'Howard')      },
-      { id:'ff4', region:'south',   date:'Mar 18', t1: team(16,'Prairie View'),t2: team(16,'Lehigh')      }
+      { id:'ff3', region:'midwest', date:'Tue Mar 17', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1: team(16,'UMBC'),         t2: team(16,'Howard')      },
+      { id:'ff1', region:'west',    date:'Tue Mar 17', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1: team(11,'Texas'),         t2: team(11,'NC State')    },
+      { id:'ff4', region:'south',   date:'Wed Mar 18', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1: team(16,'Prairie View'),  t2: team(16,'Lehigh')      },
+      { id:'ff2', region:'midwest', date:'Wed Mar 18', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1: team(11,'Miami OH'),      t2: team(11,'SMU')         }
     ],
     east: {
       r64: [
