@@ -1152,19 +1152,40 @@ function renderFinal4() {
     </div>`;
   };
 
-  const sfSlot = (label) => `
-    <div style="display:flex;align-items:center;justify-content:center;padding:8px 20px;
-      background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:20px;min-width:130px">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);font-style:italic;letter-spacing:1px">${label}</span>
-    </div>`;
+  // Clickable matchup card for semifinals and final — same behavior as bracket
+  const f4MatchupCard = (m) => {
+    if (!m) return '<div class="mu" style="min-width:150px"><div style="padding:10px;color:var(--muted);font-style:italic;text-align:center;font-size:13px">TBD</div></div>';
+    const t1n = (m.t1?.name||'').replace(/'/g,'');
+    const t2n = (m.t2?.name||'').replace(/'/g,'');
+    const isTbd = !t1n||t1n==='TBD'||!t2n||t2n==='TBD';
+    const hasScore = m.t1?.score!=null || m.t2?.score!=null;
+    const clickable = !isTbd;
+    const onclick = clickable ? (hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`) : '';
+    const tapLabel = hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS';
 
-  const champSlot = () => `
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 24px;
-      background:var(--surface);border:2px solid var(--gold);border-radius:24px;min-width:150px">
-      <div style="font-size:20px;margin-bottom:2px">🏆</div>
-      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">2026 Champion</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:2px">${f4.champion||'TBD'}</div>
+    const row = (t) => {
+      const name = t?.name||'TBD';
+      const won = t?.won===true, lost = t?.won===false;
+      const isTbd2 = !name||name==='TBD';
+      return `<div style="display:flex;align-items:center;gap:6px;padding:7px 10px;
+        background:${won?'rgba(255,107,0,.08)':'transparent'};
+        opacity:${lost?0.4:1};border-bottom:1px solid var(--border)">
+        ${!isTbd2&&TEAM_LOGOS[name]?`<img src="${TEAM_LOGOS[name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:' <div style="width:18px;flex-shrink:0"></div>'}
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;flex:1;
+          color:${won?'var(--orange)':isTbd2?'var(--muted)':'var(--text)'};
+          font-style:${isTbd2?'italic':'normal'}">${name}</span>
+        ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>`:''}
+      </div>`;
+    };
+
+    return `<div class="mu" style="min-width:160px;cursor:${clickable?'pointer':'default'}"
+      ${onclick?`onclick="${onclick}"`:''}
+      title="${clickable?tapLabel:''}">
+      ${row(m.t1||{name:'TBD'})}
+      ${row(m.t2||{name:'TBD'})}
+      ${clickable?`<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${tapLabel}</div>`:''}
     </div>`;
+  };
 
   const draftedFromTeam = (teamName) => {
     const players = TEAMS.flatMap(t=>t.players.map(p=>({...p,mgr:t.name}))).filter(p=>p.school===teamName);
@@ -1183,8 +1204,6 @@ function renderFinal4() {
 
   const f4Teams = [sf1?.t1,sf1?.t2,sf2?.t1,sf2?.t2].filter(t=>t&&t.name&&t.name!=='TBD');
 
-  // Layout: 5 columns
-  // [Left teams] [Left lines SVG] [Center: SF1 + Winner + SF2] [Right lines SVG] [Right teams]
   return `<div style="max-width:960px;margin:0 auto">
 
     <!-- Logo -->
@@ -1197,10 +1216,10 @@ function renderFinal4() {
       </div>
     </div>
 
-    <!-- Main bracket row — inline-block to prevent wrapping -->
+    <!-- Bracket row -->
     <div style="white-space:nowrap;text-align:center;overflow-x:auto">
 
-      <!-- LEFT TEAMS column -->
+      <!-- LEFT TEAMS -->
       <div style="display:inline-block;vertical-align:middle;white-space:normal">
         <div style="display:flex;flex-direction:column;gap:40px;align-items:flex-end">
           <div>
@@ -1214,45 +1233,42 @@ function renderFinal4() {
         </div>
       </div>
 
-      <!-- LEFT SVG CONNECTORS -->
+      <!-- LEFT CONNECTORS -->
       <svg style="display:inline-block;vertical-align:middle" width="70" height="160" viewBox="0 0 70 160">
-        <!-- Top team line -->
         <line x1="0"  y1="38"  x2="35" y2="38"  stroke="var(--border)" stroke-width="1.5"/>
         <line x1="35" y1="38"  x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
-        <!-- Bottom team line -->
         <line x1="0"  y1="122" x2="35" y2="122" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="35" y1="122" x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
-        <!-- To center -->
         <line x1="35" y1="80"  x2="70" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
       </svg>
 
-      <!-- CENTER column -->
+      <!-- CENTER -->
       <div style="display:inline-block;vertical-align:middle;white-space:normal">
         <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
-          ${sfSlot('SEMI FINAL')}
-          <div style="display:flex;align-items:center;gap:10px">
-            ${champSlot()}
+          ${f4MatchupCard(sf1)}
+          <div style="width:1.5px;height:10px;background:var(--border)"></div>
+          <div class="champ-box" style="min-width:160px;text-align:center">
+            <div class="champ-trophy">🏆</div>
+            <div class="champ-lbl">2026 Champion</div>
+            <div class="champ-name">${f4.champion||'TBD'}</div>
           </div>
-          ${sfSlot('SEMI FINAL')}
-        </div>
-        <div style="font-size:10px;color:var(--muted);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-top:8px">
-          Championship · Apr 6
+          <div style="width:1.5px;height:10px;background:var(--border)"></div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">Championship · Apr 6</div>
+          ${f4MatchupCard(fin)}
+          ${f4MatchupCard(sf2)}
         </div>
       </div>
 
-      <!-- RIGHT SVG CONNECTORS -->
+      <!-- RIGHT CONNECTORS -->
       <svg style="display:inline-block;vertical-align:middle" width="70" height="160" viewBox="0 0 70 160">
-        <!-- Top team line -->
         <line x1="70" y1="38"  x2="35" y2="38"  stroke="var(--border)" stroke-width="1.5"/>
         <line x1="35" y1="38"  x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
-        <!-- Bottom team line -->
         <line x1="70" y1="122" x2="35" y2="122" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="35" y1="122" x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
-        <!-- To center -->
         <line x1="35" y1="80"  x2="0"  y2="80"  stroke="var(--border)" stroke-width="1.5"/>
       </svg>
 
-      <!-- RIGHT TEAMS column -->
+      <!-- RIGHT TEAMS -->
       <div style="display:inline-block;vertical-align:middle;white-space:normal">
         <div style="display:flex;flex-direction:column;gap:40px;align-items:flex-start">
           <div>
