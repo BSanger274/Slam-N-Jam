@@ -155,10 +155,11 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
 /* Bracket scroll container */
 /* History logo active/hover */
-#hist-logo, #teams-logo, #players-logo { transition: filter .2s; }
+#hist-logo, #teams-logo, #players-logo, #dashboard-logo { transition: filter .2s; }
 button.nb:hover #hist-logo, button.nb.active #hist-logo,
 button.nb:hover #teams-logo, button.nb.active #teams-logo,
-button.nb:hover #players-logo, button.nb.active #players-logo { filter: invert(38%) sepia(98%) saturate(1000%) hue-rotate(358deg) brightness(1.05) !important; }
+button.nb:hover #players-logo, button.nb.active #players-logo,
+button.nb:hover #dashboard-logo, button.nb.active #dashboard-logo { filter: invert(38%) sepia(98%) saturate(1000%) hue-rotate(358deg) brightness(1.05) !important; }
 
 /* Champion roster modal */
 .hc { cursor:pointer; transition:background .15s; }
@@ -183,10 +184,11 @@ button.nb:hover #players-logo, button.nb.active #players-logo { filter: invert(3
 .bkt-scroll{overflow-x:auto;padding-bottom:20px;-webkit-overflow-scrolling:touch}
 .bkt-wrap{display:inline-flex;gap:0;align-items:flex-start;padding:4px 4px 4px 0;min-height:600px}
 /* History logo active/hover */
-#hist-logo, #teams-logo, #players-logo { transition: filter .2s; }
+#hist-logo, #teams-logo, #players-logo, #dashboard-logo { transition: filter .2s; }
 button.nb:hover #hist-logo, button.nb.active #hist-logo,
 button.nb:hover #teams-logo, button.nb.active #teams-logo,
-button.nb:hover #players-logo, button.nb.active #players-logo { filter: invert(38%) sepia(98%) saturate(1000%) hue-rotate(358deg) brightness(1.05) !important; }
+button.nb:hover #players-logo, button.nb.active #players-logo,
+button.nb:hover #dashboard-logo, button.nb.active #dashboard-logo { filter: invert(38%) sepia(98%) saturate(1000%) hue-rotate(358deg) brightness(1.05) !important; }
 
 /* Champion roster modal */
 .hc { cursor:pointer; transition:background .15s; }
@@ -390,7 +392,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
       <span class="logo-text">SLAM<em>-N-</em>JAM</span>
     </div>
     <nav>
-      <button class="nb active"  onclick="showPage('dashboard')">Dashboard</button>
+      <button class="nb active"  onclick="showPage('dashboard')"><img id="dashboard-logo" src="/logo-dashboard.png" style="width:18px;height:18px;object-fit:contain;vertical-align:-3px;margin-right:4px;filter:invert(1) brightness(.5)" onerror="this.style.display='none'">Dashboard</button>
       <button class="nb"         onclick="showPage('teams')"><img id="teams-logo" src="/logo-teams.png" style="width:18px;height:18px;object-fit:contain;vertical-align:-3px;margin-right:4px;filter:invert(1) brightness(.5)" onerror="this.style.display='none'">Teams</button>
       <button class="nb"         onclick="showPage('players')"><img id="players-logo" src="/logo-players.png" style="width:14px;height:18px;object-fit:contain;vertical-align:-3px;margin-right:4px;filter:invert(1) brightness(.5)" onerror="this.style.display='none'">Players</button>
       <button class="nb bkt" onclick="showPage('bracket')"><svg width="26" height="14" viewBox="0 0 48 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:2px">
@@ -1854,7 +1856,7 @@ function showPage(id) {
   if (id==='bracket')  { renderBracket(currentRegion); renderDraftStrip(); }
   if (id==='history')  renderHistory();
   // Sync nav icon colors with active state
-  const LOGO_MAP = { history:'hist-logo', teams:'teams-logo', players:'players-logo' };
+  const LOGO_MAP = { dashboard:'dashboard-logo', history:'hist-logo', teams:'teams-logo', players:'players-logo' };
   Object.entries(LOGO_MAP).forEach(([page, logoId]) => {
     const el = document.getElementById(logoId);
     if (el) el.style.filter = id===page
