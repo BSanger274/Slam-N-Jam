@@ -319,6 +319,22 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
 /* ── RESPONSIVE ── */
 @media(max-width:900px){.g2{grid-template-columns:1fr}.sbs{grid-template-columns:1fr 1fr}.banner{flex-direction:column}}
 @media(max-width:600px){.sbs{grid-template-columns:1fr}.bstats{justify-content:center}.hinner{flex-wrap:wrap;height:auto;padding:10px}}
+
+  /* ── LIVE TICKER ── */
+  .ticker-bar{position:fixed;bottom:0;left:0;right:0;z-index:998;height:34px;background:#0a0c12;border-top:1px solid rgba(255,184,0,.25);display:flex;align-items:stretch;overflow:hidden}
+  .ticker-label{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:0 14px;background:#111520;border-right:1px solid rgba(255,184,0,.25);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#ffb800;white-space:nowrap}
+  .ticker-track-wrap{flex:1;overflow:hidden;position:relative}
+  .ticker-track{display:flex;align-items:center;height:34px;white-space:nowrap;animation:ticker-scroll linear infinite}
+  @keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .tick-item{display:inline-flex;align-items:center;padding:0 6px;height:34px;flex-shrink:0}
+  .tick-sep{display:inline-flex;align-items:center;color:rgba(255,255,255,.15);font-size:18px;padding:0 4px;flex-shrink:0}
+  .tick-live{display:inline-flex;align-items:center;gap:6px;background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.2);border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700}
+  .tick-live .live-badge{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;color:#00e676;background:rgba(0,230,118,.15);border-radius:3px;padding:1px 5px;flex-shrink:0}
+  .tick-final{display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,0,.06);border:1px solid rgba(255,107,0,.2);border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700}
+  .tick-final .final-badge{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;color:#ff6b00;background:rgba(255,107,0,.15);border-radius:3px;padding:1px 5px;flex-shrink:0}
+  .tick-upcoming{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700}
+  .tick-time{font-family:'Bebas Neue',sans-serif;font-size:11px;color:#ffb800;letter-spacing:.5px}
+  body{padding-bottom:34px}
 </style>
 </head>
 <body>
@@ -1718,6 +1734,93 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeBoxScore(
 // BOOT
 // ═══════════════════════════════════════════════
 startPolling();
+
+// ── LIVE TICKER ──
+function buildTickerItem(m, type) {
+  if (type === 'live') {
+    const t1w = m.t1?.score > m.t2?.score;
+    const t2w = m.t2?.score > m.t1?.score;
+    return `<div class="tick-item"><div class="tick-live">
+      <span class="live-badge">● LIVE</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--orange)':'#fff'}">${m.t1?.name||'TBD'}</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:rgba(255,255,255,.9)">${m.t1?.score??''}</span>
+      <span style="color:rgba(255,255,255,.25);font-size:11px">–</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:rgba(255,255,255,.9)">${m.t2?.score??''}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--orange)':'#fff'}">${m.t2?.name||'TBD'}</span>
+    </div></div><span class="tick-sep">|</span>`;
+  }
+  if (type === 'final') {
+    const t1w = m.t1?.won; const t2w = m.t2?.won;
+    return `<div class="tick-item"><div class="tick-final">
+      <span class="final-badge">FINAL</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--orange)':'#fff'}">${m.t1?.name||'TBD'}</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:15px">${m.t1?.score??''}</span>
+      <span style="color:rgba(255,255,255,.25);font-size:11px">–</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:15px">${m.t2?.score??''}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--orange)':'#fff'}">${m.t2?.name||'TBD'}</span>
+    </div></div><span class="tick-sep">|</span>`;
+  }
+  if (type === 'upcoming') {
+    return `<div class="tick-item"><div class="tick-upcoming">
+      <span class="tick-time">${m.date||''} ${m.time?'· '+m.time:''}</span>
+      <span style="color:rgba(255,255,255,.7);font-size:12px">${m.t1?.name||''} vs ${m.t2?.name||''}</span>
+      ${m.tv?`<span style="font-size:10px;color:rgba(255,255,255,.3)">${m.tv}</span>`:''}
+    </div></div><span class="tick-sep">|</span>`;
+  }
+  return '';
+}
+
+function refreshTicker() {
+  if (!BRACKET) return;
+  const liveItems=[], finalItems=[], upcomingItems=[];
+  const allMatchups = [...(BRACKET._firstFour||[])];
+  ['east','west','south','midwest'].forEach(r => {
+    if (BRACKET[r]?.r64) allMatchups.push(...BRACKET[r].r64);
+  });
+
+  allMatchups.forEach(m => {
+    if (!m?.t1||!m?.t2) return;
+    const hasScore = m.t1.score!=null||m.t2.score!=null;
+    const hasFinal = m.t1.won!=null;
+    if (hasScore && hasFinal)  finalItems.push(buildTickerItem(m,'final'));
+    else if (hasScore)         liveItems.push(buildTickerItem(m,'live'));
+    else if (m.date||m.time)   upcomingItems.push(buildTickerItem(m,'upcoming'));
+  });
+
+  const track = document.getElementById('ticker-track');
+  const dot   = document.getElementById('ticker-dot');
+  if (!track) return;
+
+  const hasLive = liveItems.length > 0;
+  if (dot) { dot.style.background = hasLive?'#00e676':'#555'; dot.style.animation = hasLive?'pulse-dot 1.2s ease infinite':'none'; }
+
+  const allItems = [...liveItems,...finalItems,...upcomingItems];
+  if (!allItems.length) {
+    track.innerHTML = `<span style="color:rgba(255,255,255,.3);font-size:12px;padding:0 20px">Tournament begins Mar 17 · First Four in Dayton, OH · UMBC vs Howard 6:40 PM · Texas vs NC State 9:15 PM</span>`;
+    track.style.animationDuration = '25s';
+    return;
+  }
+  const combined = allItems.join('');
+  track.innerHTML = combined + combined;
+  track.style.animationDuration = Math.max(15, allItems.length * 1.8) + 's';
+}
+
+setTimeout(refreshTicker, 1500);
+setInterval(refreshTicker, 60000);
+
 </script>
+  <!-- LIVE TICKER -->
+  <div class="ticker-bar" id="ticker-bar">
+    <div class="ticker-label">
+      <div class="live-dot" id="ticker-dot" style="width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0"></div>
+      SCORES
+    </div>
+    <div class="ticker-track-wrap">
+      <div class="ticker-track" id="ticker-track">
+        <span style="color:rgba(255,255,255,.3);font-size:12px;padding:0 20px">Loading scores…</span>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
