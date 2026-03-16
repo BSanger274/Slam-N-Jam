@@ -1003,50 +1003,68 @@ function renderBracket(region) {
     { key:'r8',  label:'Elite Eight' },
   ];
 
-  // CSS flex approach — each pair of games shares equal flex space
-  // connector lines use CSS border-right to auto-align with card centers
-  let html = `<div class="bkt-scroll">
-    <div style="display:inline-flex;align-items:stretch;min-width:800px;gap:0">`;
+  // Card dimensions
+  const CARD_H   = 80;  // rendered height of one matchup card
+  const CARD_GAP = 8;   // gap between cards
+  const UNIT     = CARD_H + CARD_GAP; // space per card slot
+  const COL_W    = 185;
+  const CONN_W   = 22;
+  const LABEL_H  = 32;
+
+  // Total height based on R64 (8 cards)
+  const totalH = 8 * UNIT + LABEL_H + 20;
+
+  let html = `<div class="bkt-scroll"><div style="display:inline-flex;gap:0;align-items:flex-start;min-height:${totalH}px">`;
 
   rounds.forEach((rc, ri) => {
     const matchups = reg[rc.key] || [];
     if (!matchups.length) return;
 
-    html += `<div style="display:flex;flex-direction:column;width:185px;flex-shrink:0">
-      <div class="rcol-label">${rc.label}</div>
-      <div style="display:flex;flex-direction:column;flex:1">`;
+    const count    = matchups.length;         // 8,4,2,1
+    const slots    = 8 / count;               // slots each card occupies: 1,2,4,8
+    const slotH    = slots * UNIT;            // height of each slot
+    const cardTop  = (slotH - CARD_H) / 2;   // center card within slot
+
+    html += `<div style="width:${COL_W}px;flex-shrink:0;position:relative;height:${totalH}px">`;
+    html += `<div class="rcol-label">${rc.label}</div>`;
 
     matchups.forEach((m, mi) => {
-      html += `<div style="flex:1;display:flex;align-items:center;padding:4px 0">
-        ${renderMatchup(m)}
-      </div>`;
+      const top = LABEL_H + mi * slotH + cardTop;
+      html += `<div style="position:absolute;left:0;right:0;top:${top}px">${renderMatchup(m)}</div>`;
     });
 
-    html += `</div></div>`;
+    html += `</div>`;
 
-    // Connector between rounds using flex — pairs of cards feed into one next card
+    // Connector column
     if (ri < rounds.length - 1) {
       const nextMatchups = reg[rounds[ri+1].key] || [];
-      const nextCount = nextMatchups.length;
-      const curCount  = matchups.length;
-      const ratio     = curCount / nextCount; // should be 2
+      if (!nextMatchups.length) return;
 
-      html += `<div style="display:flex;flex-direction:column;width:22px;flex-shrink:0">
-        <div class="rcol-label" style="visibility:hidden">x</div>
-        <div style="display:flex;flex-direction:column;flex:1">`;
+      html += `<div style="width:${CONN_W}px;flex-shrink:0;position:relative;height:${totalH}px">`;
+      html += `<div class="rcol-label" style="visibility:hidden">x</div>`;
 
-      for (let i = 0; i < nextCount; i++) {
-        // This connector block covers 'ratio' current matchups
-        html += `<div style="flex:${ratio};display:flex;flex-direction:column;justify-content:space-between">
-          <div style="flex:1;border-right:1.5px solid var(--border);border-bottom:1.5px solid var(--border);min-height:0"></div>
-          <div style="flex:1;border-right:1.5px solid var(--border);border-top:1.5px solid var(--border);min-height:0"></div>
-        </div>
-        <div style="flex:0;height:1px;position:relative">
-          <div style="position:absolute;top:0;left:0;width:22px;height:1.5px;background:var(--border)"></div>
-        </div>`;
+      // Draw connector for each pair of current matchups → one next matchup
+      for (let i = 0; i < nextMatchups.length; i++) {
+        const topMi   = i * 2;
+        const botMi   = i * 2 + 1;
+        if (botMi >= matchups.length) break;
+
+        // Center of top card
+        const topCenter = LABEL_H + topMi * slotH + cardTop + CARD_H / 2;
+        // Center of bottom card
+        const botCenter = LABEL_H + botMi * slotH + cardTop + CARD_H / 2;
+        const midY      = (topCenter + botCenter) / 2;
+        const lineH     = botCenter - topCenter;
+
+        html += `<svg style="position:absolute;top:${topCenter}px;left:0;overflow:visible;pointer-events:none" width="${CONN_W}" height="${lineH}" viewBox="0 0 ${CONN_W} ${lineH}">
+          <line x1="0" y1="0"           x2="12" y2="0"           stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="12" y1="0"          x2="12" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="0" y1="${lineH}"     x2="12" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="12" y1="${lineH/2}"  x2="${CONN_W}" y2="${lineH/2}" stroke="var(--border)" stroke-width="1.5"/>
+        </svg>`;
       }
 
-      html += `</div></div>`;
+      html += `</div>`;
     }
   });
 
