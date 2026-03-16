@@ -1098,14 +1098,6 @@ function renderFirstFour() {
   const regionColor = { east:'var(--orange)', west:'var(--blue)', south:'var(--green)', midwest:'var(--red)' };
   const regionDot   = { east:'🟠', west:'🔵', south:'🟢', midwest:'🔴' };
 
-  // Group by date for section headers
-  const byDate = {};
-  ff.forEach(g => {
-    const d = g.date || 'TBD';
-    if (!byDate[d]) byDate[d] = [];
-    byDate[d].push(g);
-  });
-
   const gameCard = (g) => {
     const t1won = g.t1.won===true, t2won = g.t2.won===true;
     const hasScore = g.t1.score!=null || g.t2.score!=null;
@@ -1118,17 +1110,15 @@ function renderFirstFour() {
     const onclick = canClick ? (hasScore ? `openBoxScore('${g.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${g.id}')`) : '';
     const tapLabel = hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS';
 
-    return `<div class="card${canClick?' mu':''}" style="cursor:${canClick?'pointer':'default'}"
-      ${onclick?`onclick="${onclick}"`:''}>
-      <!-- Header -->
-      <div class="chd" style="display:flex;justify-content:space-between;align-items:center">
+    return `<div class="card" style="cursor:${canClick?'pointer':'default'};transition:border-color .2s,box-shadow .2s"
+      ${canClick?`onclick="${onclick}" onmouseenter="this.style.borderColor='rgba(255,107,0,.85)';this.style.boxShadow='0 0 12px rgba(255,107,0,.3)'" onmouseleave="this.style.borderColor='';this.style.boxShadow=''"`:''}>
+      <div class="chd">
         <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px">${rDot} ${rLabel} Region</span>
-        <div style="text-align:right">
-          <span style="font-size:10px;color:var(--gold);font-weight:700">${g.time||''}</span>
+        <div>
+          <span style="font-size:10px;color:var(--gold);font-weight:700">${g.time||g.date||''}</span>
           ${g.tv?`<span style="font-size:10px;color:var(--muted);margin-left:5px">· ${g.tv}</span>`:''}
         </div>
       </div>
-      <!-- Team rows -->
       <div class="cbody" style="padding:10px 14px">
         <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);opacity:${t2won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
@@ -1149,20 +1139,14 @@ function renderFirstFour() {
     </div>`;
   };
 
-  let html = `<div style="margin-bottom:16px">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px">
+  return `<div style="margin-bottom:16px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">
       Play-in games · UD Arena, Dayton OH · Mar 17–18 · Winners advance to Round of 64
-    </div>`;
-
-  Object.entries(byDate).forEach(([date, games]) => {
-    html += `<div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--text);margin-bottom:10px;padding-bottom:4px;border-bottom:1px solid var(--border)">${date}</div>`;
-    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px">`;
-    games.forEach(g => { html += gameCard(g); });
-    html += `</div>`;
-  });
-
-  html += `</div>`;
-  return html;
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
+      ${ff.map(g => gameCard(g)).join('')}
+    </div>
+  </div>`;
 }
 
 
