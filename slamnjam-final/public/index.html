@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -979,7 +980,7 @@ function renderMatchup(m) {
 }
 
 // Heights per round for positioning matchups
-const MU_H = 68; // px per matchup card — matches actual rendered height
+const MU_H = 95; // px per matchup card — spacing between card tops
 const ROUND_CONFIGS = [
   { key:'r64',  label:'Round of 64',  count:8 },
   { key:'r32',  label:'Round of 32',  count:4 },
@@ -1022,7 +1023,7 @@ function renderBracket(region) {
         if (mi % 2 === 0) {
           // Line exits from RIGHT EDGE of top card center, and right edge of bottom card center
           // CARD_H = actual rendered height of a matchup card
-          const CARD_H = 64;
+          const CARD_H = 82; // actual rendered height: 2 slots × 32px + borders
           // topCard top = firstTop + mi * spacing * 2
           // bottomCard top = firstTop + (mi+1) * spacing * 2
           // Connect from vertical center of each card
