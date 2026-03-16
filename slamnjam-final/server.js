@@ -547,6 +547,27 @@ app.get('/api/scores', async (req, res) => {
 // History — inline fallback guarantees data is always returned
 // Champion roster data — add more years as you collect them
 const CHAMPION_ROSTERS = {
+  2023: {
+    team: 'Shy Ballers',
+    draftPosition: 14,
+    players: [
+      { round: 1,  name: 'Mark Sears',          school: 'Alabama',     pts: null },
+      { round: 2,  name: 'Keyontae Johnson',     school: 'Kansas St',   pts: null },
+      { round: 3,  name: 'Colby Jones',          school: 'Xavier',      pts: null },
+      { round: 4,  name: 'Blake Hinson',         school: 'Pitt',        pts: null },
+      { round: 5,  name: 'Boogie Ellis',         school: 'USC',         pts: null },
+      { round: 6,  name: 'Matt Bradley',         school: 'San D St',    pts: null },
+      { round: 7,  name: 'Kobe Brown',           school: 'Missouri',    pts: null },
+      { round: 8,  name: 'Damion Baugh',         school: 'TCU',         pts: null },
+      { round: 9,  name: 'Nelly Cummings',       school: 'Pitt',        pts: null },
+      { round: 10, name: 'Darrion Trammell',     school: 'San D St',    pts: null },
+      { round: 11, name: 'Jaylin Williams',      school: 'Auburn',      pts: null },
+      { round: 12, name: 'Wooga Poplar',         school: 'Miami',       pts: null },
+      { round: 13, name: 'De Andre Gholston',    school: 'Missouri',    pts: null },
+      { round: 14, name: 'Marques Warrick',      school: 'N Kentucky',  pts: null },
+      { round: 15, name: 'John Walker',          school: 'Tx Southern', pts: null },
+    ]
+  },
   2024: {
     team: 'Studio K',
     draftPosition: 8,
@@ -623,7 +644,76 @@ app.get('/api/champion-roster/:year', (req, res) => {
 });
 
 app.get('/api/champion-rosters', (req, res) => {
-  res.json({ rosters: CHAMPION_ROSTERS });
+  // Merge hardcoded + disk-saved rosters (disk takes priority)
+  const saved = readJSON(path.join(DATA, 'champion_rosters.json'), {});
+  res.json({ rosters: { ...CHAMPION_ROSTERS, ...saved } });
+});
+
+app.post('/api/admin/archive-season', requireAuth, (req, res) => {
+  try {
+    const bracket   = bracketCache;
+    const scores    = scoresCache;
+    const year      = new Date().getFullYear();
+
+    if (!bracket) return res.json({ ok:false, error:'No bracket data' });
+
+    // Find the champion team name
+    const champion = bracket.final4?.champion;
+    if (!champion || champion === 'TBD') return res.json({ ok:false, error:'Champion not yet determined' });
+
+    // Find which draft team won
+    const rosters  = readJSON(ROSTER_F, []);
+    const winner   = rosters.find(t => t.players?.some(p => p.school === champion || t.name === champion));
+
+    // Build player list with accumulated points from scores cache
+    const merged   = scores?.merged || {};
+    const allPlayers = rosters.flatMap(t =>
+      t.players.map(p => ({ ...p, teamName: t.name, teamIdx: rosters.indexOf(t) }))
+    );
+
+    // Find the winning team
+    const winningTeam = rosters.find(t =>
+      t.players?.some(p => Object.keys(merged).some(name =>
+        name.toLowerCase().includes(p.name?.toLowerCase()?.split(' ')[0])
+      ))
+    );
+
+    // Get winning team from HISTORY (most recent year = current winner)
+    const history   = readJSON(HISTORY_F, HISTORY_DATA);
+    const thisYear  = history.winners?.find(w => w.year === year);
+    const teamName  = thisYear?.winner || champion;
+
+    // Find manager's players and their scores
+    const teamRoster = rosters.find(t => t.name === teamName);
+    if (!teamRoster) return res.json({ ok:false, error: `Team "${teamName}" not found in rosters` });
+
+    const players = teamRoster.players.map((p, i) => ({
+      round:  i + 1,
+      name:   p.name,
+      school: p.school,
+      pts:    merged[p.name] ?? null,
+    }));
+
+    // Find draft position (1-indexed position in rosters array)
+    const draftPosition = rosters.indexOf(teamRoster) + 1;
+
+    const entry = {
+      team: teamName,
+      draftPosition,
+      players,
+    };
+
+    // Save to disk
+    const saved = readJSON(path.join(DATA, 'champion_rosters.json'), {});
+    saved[year] = entry;
+    writeJSON(path.join(DATA, 'champion_rosters.json'), saved);
+
+    console.log(`[Archive] Saved ${year} champion: ${teamName}`);
+    res.json({ ok:true, year, team: teamName, players: players.length, draftPosition });
+  } catch(e) {
+    console.error('[Archive]', e);
+    res.json({ ok:false, error: e.message });
+  }
 });
 
 app.get('/api/history', (req, res) => {
