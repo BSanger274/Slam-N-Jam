@@ -978,8 +978,15 @@ function renderMatchup(m) {
   // Clickable: show box score if game played, show pre-game stats if not TBD
   const clickable = !isTbd && m.id;
   const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
-  const indicator = clickable ? `<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
-  return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${indicator}</div>`;
+  // Schedule info bar
+  const hasInfo = m.date || m.time || m.location;
+  const schedBar = hasInfo && !hasScore ? `
+    <div style="padding:3px 7px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:wrap">
+      <span style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.5px;white-space:nowrap">${m.date||''} ${m.time ? '· '+m.time : ''}</span>
+      <span style="font-size:9px;color:var(--muted);text-align:right;white-space:nowrap">${m.tv ? m.tv+' · ' : ''}${m.location ? m.location.split(',')[0] : ''}</span>
+    </div>` : '';
+  const tapBar = clickable ? `<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
+  return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${schedBar}${tapBar}</div>`;
 }
 
 // Heights per round for positioning matchups
@@ -1467,6 +1474,20 @@ async function openPreGameStats(team1, team2, gameId) {
   document.body.style.overflow = 'hidden';
   body.innerHTML = '<div class="modal-loading">Loading stats…</div>';
 
+  // Find matchup schedule info from bracket data
+  let gameInfo = null;
+  if (BRACKET) {
+    for (const reg of Object.values(BRACKET)) {
+      if (typeof reg !== 'object') continue;
+      for (const matchups of Object.values(reg)) {
+        if (!Array.isArray(matchups)) continue;
+        const found = matchups.find(m => m.t1?.name===team1 || m.t2?.name===team1 || m.t1?.name===team2 || m.t2?.name===team2);
+        if (found && (found.date || found.location)) { gameInfo = found; break; }
+      }
+      if (gameInfo) break;
+    }
+  }
+
   // Header with both team logos
   scoreRow.innerHTML = `
     <div class="modal-team">
@@ -1475,6 +1496,11 @@ async function openPreGameStats(team1, team2, gameId) {
     </div>
     <div style="text-align:center">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);letter-spacing:3px">VS</div>
+      ${gameInfo ? `
+        <div style="margin-top:8px;font-size:11px;color:var(--gold);font-weight:700">${gameInfo.date||''} · ${gameInfo.time||''}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">${gameInfo.location||''}</div>
+        <div style="font-size:10px;color:var(--blue);margin-top:2px;font-weight:700">${gameInfo.tv||''}</div>
+      ` : ''}
       <div id="game-status-badge" style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-top:6px;text-transform:uppercase">Loading…</div>
     </div>
     <div class="modal-team">
