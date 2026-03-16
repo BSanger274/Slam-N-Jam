@@ -1049,10 +1049,10 @@ function renderBracket(region) {
         const botMi   = i * 2 + 1;
         if (botMi >= matchups.length) break;
 
-        // Center of top card
-        const topCenter = LABEL_H + topMi * slotH + cardTop + CARD_H / 2;
-        // Center of bottom card
-        const botCenter = LABEL_H + botMi * slotH + cardTop + CARD_H / 2;
+        // Center of top card = middle of its slot
+        const topCenter = LABEL_H + topMi * slotH + slotH / 2;
+        // Center of bottom card = middle of its slot
+        const botCenter = LABEL_H + botMi * slotH + slotH / 2;
         const midY      = (topCenter + botCenter) / 2;
         const lineH     = botCenter - topCenter;
 
