@@ -547,25 +547,46 @@ app.get('/api/scores', async (req, res) => {
 // History — inline fallback guarantees data is always returned
 // Champion roster data — add more years as you collect them
 const CHAMPION_ROSTERS = {
+  2024: {
+    team: 'Studio K',
+    draftPosition: 8,
+    players: [
+      { round: 1,  name: 'Terrance Shannon', school: 'Illinois',  pts: null },
+      { round: 2,  name: 'Marcus Domask',    school: 'Illinois',  pts: null },
+      { round: 3,  name: 'AJ Storr',         school: 'Wisconsin', pts: null },
+      { round: 4,  name: 'DJ Horne',         school: 'NC State',  pts: null },
+      { round: 5,  name: 'DJ Burns',         school: 'NC State',  pts: null },
+      { round: 6,  name: 'Quincy Guerrier',  school: 'Illinois',  pts: null },
+      { round: 7,  name: 'Keisei Tominaga',  school: 'Nebraska',  pts: null },
+      { round: 8,  name: 'Jayden Taylor',    school: 'NC State',  pts: null },
+      { round: 9,  name: 'Chucky Hepburn',   school: 'Wisconsin', pts: null },
+      { round: 10, name: 'Brice Williams',   school: 'Nebraska',  pts: null },
+      { round: 11, name: 'Casey Morsell',    school: 'NC State',  pts: null },
+      { round: 12, name: 'Rienk Mast',       school: 'Nebraska',  pts: null },
+      { round: 13, name: 'Michael Oconell',  school: 'NC State',  pts: null },
+      { round: 14, name: 'Juwan Gary',       school: 'Nebraska',  pts: null },
+      { round: 15, name: 'MO DIARRA',        school: 'NC State',  pts: null },
+    ]
+  },
   2025: {
     team: 'Nutty Professor',
     draftPosition: 1,
     players: [
-      { round: 1,  name: 'Walter Clayton Jr',  pos: 'Guard',   school: 'Florida',   pts: null },
-      { round: 2,  name: 'John Blackwell',      pos: 'Guard',   school: 'Wisconsin', pts: null },
-      { round: 3,  name: 'Richie Sanders',      pos: 'Forward', school: 'BYU',       pts: null },
-      { round: 4,  name: 'Tre Holloman',        pos: 'Guard',   school: 'Mich St',   pts: null },
-      { round: 5,  name: 'Khalif Battle',       pos: 'Guard',   school: 'Gonzaga',   pts: null },
-      { round: 6,  name: 'Dain Dainja',         pos: 'Forward', school: 'Memphis',   pts: null },
-      { round: 7,  name: 'Simeon Wilcher',      pos: 'Guard',   school: 'St Johns',  pts: null },
-      { round: 8,  name: 'Jeremiah Fears',      pos: 'Guard',   school: 'Oklahoma',  pts: null },
-      { round: 9,  name: 'Ven Allen Lubin',     pos: 'Guard',   school: 'UNC',       pts: null },
-      { round: 10, name: 'Coen Carr',           pos: 'Forward', school: 'Mich St',   pts: null },
-      { round: 11, name: 'Ben Mbang',           pos: 'Guard',   school: 'Yale',      pts: null },
-      { round: 12, name: 'Robert Wright',       pos: 'Guard',   school: 'Baylor',    pts: null },
-      { round: 13, name: 'JaeLyn Withers',      pos: 'Forward', school: 'UNC',       pts: null },
-      { round: 14, name: 'Kaden Metheny',       pos: 'Guard',   school: 'Liberty',   pts: null },
-      { round: 15, name: 'Johnell Davis',       pos: 'Guard',   school: 'Arkansas',  pts: null },
+      { round: 1,  name: 'Walter Clayton Jr', school: 'Florida',   pts: 134 },
+      { round: 2,  name: 'John Blackwell',     school: 'Wisconsin', pts: null },
+      { round: 3,  name: 'Richie Sanders',     school: 'BYU',       pts: null },
+      { round: 4,  name: 'Tre Holloman',       school: 'Mich St',   pts: null },
+      { round: 5,  name: 'Khalif Battle',      school: 'Gonzaga',   pts: null },
+      { round: 6,  name: 'Dain Dainja',        school: 'Memphis',   pts: null },
+      { round: 7,  name: 'Simeon Wilcher',     school: 'St Johns',  pts: null },
+      { round: 8,  name: 'Jeremiah Fears',     school: 'Oklahoma',  pts: null },
+      { round: 9,  name: 'Ven Allen Lubin',    school: 'UNC',       pts: null },
+      { round: 10, name: 'Coen Carr',          school: 'Mich St',   pts: null },
+      { round: 11, name: 'Ben Mbang',          school: 'Yale',      pts: null },
+      { round: 12, name: 'Robert Wright',      school: 'Baylor',    pts: null },
+      { round: 13, name: 'JaeLyn Withers',     school: 'UNC',       pts: null },
+      { round: 14, name: 'Kaden Metheny',      school: 'Liberty',   pts: null },
+      { round: 15, name: 'Johnell Davis',      school: 'Arkansas',  pts: null },
     ]
   }
 };
