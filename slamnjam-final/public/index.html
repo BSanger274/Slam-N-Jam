@@ -1224,11 +1224,12 @@ function renderFinal4() {
 
   const ROW_H  = 64;
   const GAP    = 40;
-  const TOTAL  = 180;
-  const TOP_Y  = 55;   // pill center - tuned from screenshot
-  const BOT_Y  = 125;  // pill center bottom
-  const MID    = (TOP_Y + BOT_Y) / 2;  // 90
-  const LINE_L = 112;  // 75% of 150 - shortened per red drawing
+  const TOTAL  = 168;  // exact column height
+  const TOP_Y  = 53;   // 16(pad) + 18(label) + 19(half pill)
+  const BOT_Y  = 149;  // 16+18+38+40+18+19
+  const MID    = (TOP_Y + BOT_Y) / 2;  // 101
+  const LINE_L = 112;  // outer horizontal lines
+  const TBD_L  = 145;  // TBD center line — longer
 
   return `<div style="max-width:960px;margin:0 auto">
 
@@ -1260,17 +1261,12 @@ function renderFinal4() {
       <!-- LEFT SVG CONNECTOR
            Two horizontal lines from pills → vertical bar → one horizontal to center
            Mirrors the left half of the bracket image -->
-      <svg width="${LINE_L*2}" height="${TOTAL}" viewBox="0 0 ${LINE_L*2} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
-        <!-- top horizontal: pill → vertical bar, length = LINE_L -->
+      <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
         <line x1="0"        y1="${TOP_Y}" x2="${LINE_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- bottom horizontal: pill → vertical bar, same length -->
         <line x1="0"        y1="${BOT_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- vertical bar at right end of both lines -->
         <line x1="${LINE_L}" y1="${TOP_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- center line from vertical bar midpoint → champion box, same length = LINE_L -->
-        <line x1="${LINE_L}" y1="${MID}"   x2="${LINE_L*2}" y2="${MID}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- TBD centered on center line -->
-        <text x="${LINE_L + LINE_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">TBD</text>
+        <line x1="${LINE_L}" y1="${MID}"   x2="${LINE_L+TBD_L}" y2="${MID}" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="${LINE_L + TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">TBD</text>
       </svg>
 
       <!-- CENTER: champion box only -->
@@ -1288,17 +1284,12 @@ function renderFinal4() {
       </div>
 
       <!-- RIGHT SVG CONNECTOR: mirror of left -->
-      <svg width="${LINE_L*2}" height="${TOTAL}" viewBox="0 0 ${LINE_L*2} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
-        <!-- top horizontal: champion box → vertical bar, length = LINE_L -->
-        <line x1="${LINE_L*2}" y1="${TOP_Y}" x2="${LINE_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- bottom horizontal: same -->
-        <line x1="${LINE_L*2}" y1="${BOT_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- vertical bar at left end of both lines -->
-        <line x1="${LINE_L}"   y1="${TOP_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- center line from vertical bar → champion box, same length = LINE_L -->
-        <line x1="${LINE_L}"   y1="${MID}"   x2="0"        y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
-        <!-- TBD centered on center line -->
-        <text x="${LINE_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">TBD</text>
+      <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
+        <line x1="${LINE_L+TBD_L}" y1="${TOP_Y}" x2="${TBD_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="${LINE_L+TBD_L}" y1="${BOT_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="${TBD_L}"        y1="${TOP_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="${TBD_L}"        y1="${MID}"   x2="0"        y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
+        <text x="${TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">TBD</text>
       </svg>
 
       <!-- RIGHT COLUMN: two pills stacked -->
