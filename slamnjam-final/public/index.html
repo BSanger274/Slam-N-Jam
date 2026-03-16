@@ -156,6 +156,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 /* Bracket scroll container */
 .bkt-scroll{overflow-x:auto;padding-bottom:20px;-webkit-overflow-scrolling:touch}
 .bkt-wrap{display:inline-flex;gap:0;align-items:flex-start;padding:4px 4px 4px 0;min-height:600px}
+.bkt-scroll{overflow-x:auto;padding-bottom:20px;min-height:700px}
 
 /* Round column */
 .rcol{display:flex;flex-direction:column;width:162px;flex-shrink:0}
@@ -995,55 +996,58 @@ function renderBracket(region) {
   const reg = BRACKET[region];
   if (!reg) { document.getElementById('bracket-view').innerHTML = '<p style="color:var(--muted);padding:20px">No bracket data for this region yet.</p>'; return; }
 
-  const totalHeight = 8 * MU_H + 7 * 4 + 32; // R64 height reference
+  const rounds = [
+    { key:'r64', label:'Round of 64' },
+    { key:'r32', label:'Round of 32' },
+    { key:'r16', label:'Sweet 16'    },
+    { key:'r8',  label:'Elite Eight' },
+  ];
 
-  let html = '<div class="bkt-scroll"><div class="bkt-wrap">';
-  ROUND_CONFIGS.forEach((rc, ri) => {
+  // CSS flex approach — each pair of games shares equal flex space
+  // connector lines use CSS border-right to auto-align with card centers
+  let html = `<div class="bkt-scroll">
+    <div style="display:inline-flex;align-items:stretch;min-width:800px;gap:0">`;
+
+  rounds.forEach((rc, ri) => {
     const matchups = reg[rc.key] || [];
     if (!matchups.length) return;
-    const spacing = Math.pow(2, ri + 1) * MU_H / 2;
-    const firstTop = Math.pow(2, ri) * MU_H / 2 - MU_H / 2;
 
-    html += `<div class="rcol" style="height:${totalHeight}px">`;
-    html += `<div class="rcol-label">${rc.label}</div>`;
-    html += `<div class="rcol-games" style="position:relative;flex:1">`;
+    html += `<div style="display:flex;flex-direction:column;width:185px;flex-shrink:0">
+      <div class="rcol-label">${rc.label}</div>
+      <div style="display:flex;flex-direction:column;flex:1">`;
 
+    // Wrap matchups in equal-flex containers so spacing is automatic
     matchups.forEach((m, mi) => {
-      const top = firstTop + mi * spacing * 2;
-      html += `<div style="position:absolute;left:0;right:0;top:${top}px">${renderMatchup(m)}</div>`;
+      html += `<div style="flex:1;display:flex;align-items:center;padding:4px 0">
+        ${renderMatchup(m)}
+      </div>`;
     });
 
-    html += '</div></div>';
+    html += `</div></div>`;
 
-    // Connector column
-    if (ri < ROUND_CONFIGS.length - 1) {
-      html += `<div style="width:18px;height:${totalHeight}px;position:relative;flex-shrink:0">`;
-      // Draw vertical lines connecting pairs to the next round
-      matchups.forEach((m, mi) => {
-        if (mi % 2 === 0) {
-          // Line exits from RIGHT EDGE of top card center, and right edge of bottom card center
-          // CARD_H = actual rendered height of a matchup card
-          const CARD_H = 82; // actual rendered height: 2 slots × 32px + borders
-          // topCard top = firstTop + mi * spacing * 2
-          // bottomCard top = firstTop + (mi+1) * spacing * 2
-          // Connect from vertical center of each card
-          const topCardCenter    = firstTop + mi * spacing * 2 + CARD_H / 2;
-          const bottomCardCenter = firstTop + (mi+1) * spacing * 2 + CARD_H / 2;
-          const lineH = bottomCardCenter - topCardCenter;
-          // SVG positioned at top card center, height = distance between centers
-          html += `<svg style="position:absolute;top:${topCardCenter}px;left:0;overflow:visible;pointer-events:none" width="18" height="${Math.max(lineH,1)}" viewBox="0 0 18 ${Math.max(lineH,1)}">
-            <line x1="0" y1="0"            x2="10" y2="0"            stroke="var(--border)" stroke-width="1.5"/>
-            <line x1="10" y1="0"           x2="10" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
-            <line x1="0" y1="${lineH}"      x2="10" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
-            <line x1="10" y1="${lineH/2}"   x2="18" y2="${lineH/2}"   stroke="var(--border)" stroke-width="1.5"/>
-          </svg>`;
-        }
-      });
-      html += '</div>';
+    // Connector between rounds
+    if (ri < rounds.length - 1) {
+      const nextCount = (reg[rounds[ri+1].key] || []).length;
+      html += `<div style="display:flex;flex-direction:column;width:20px;flex-shrink:0">
+        <div class="rcol-label" style="visibility:hidden">x</div>
+        <div style="display:flex;flex-direction:column;flex:1">`;
+
+      // Each connector serves 2 current matchups → 1 next matchup
+      for (let i = 0; i < nextCount; i++) {
+        html += `<div style="flex:2;display:flex;flex-direction:column">
+          <div style="flex:1;border-right:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+          <div style="flex:1;border-right:1px solid var(--border);border-top:1px solid var(--border)"></div>
+        </div>
+        <div style="flex:0;height:0;display:flex;align-items:center">
+          <div style="width:20px;height:1px;background:var(--border)"></div>
+        </div>`;
+      }
+
+      html += `</div></div>`;
     }
   });
 
-  html += '</div></div>';
+  html += `</div></div>`;
   document.getElementById('bracket-view').innerHTML = html;
 }
 
