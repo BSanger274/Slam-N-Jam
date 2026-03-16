@@ -1173,58 +1173,73 @@ function renderFinal4() {
   const sf2 = f4.sf?.[1];
   const fin = f4.final?.[0];
 
-  // Clickable pill-style team slot
-  const teamSlot = (t, matchup) => {
+  // Pill that sits ON a horizontal line
+  const teamPill = (t, matchup) => {
     const name = t?.name||'TBD';
     const isTbd = !name||name==='TBD';
     const won = t?.won===true, lost = t?.won===false;
     const t1n = (matchup?.t1?.name||'').replace(/'/g,'');
     const t2n = (matchup?.t2?.name||'').replace(/'/g,'');
-    const canClick = !isTbd && matchup && t1n && t2n && t1n!=='TBD' && t2n!=='TBD';
+    const canClick = !isTbd && t1n && t2n && t1n!=='TBD' && t2n!=='TBD';
     const hasScore = matchup?.t1?.score!=null||matchup?.t2?.score!=null;
     const onclick = canClick?(hasScore?`openBoxScore('${matchup.id}','${t1n}','${t2n}')`:`openPreGameStats('${t1n}','${t2n}','${matchup.id}')`):'';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;
-      background:${won?'rgba(255,107,0,.1)':'var(--surface)'};
-      border:1px solid ${won?'var(--orange)':'var(--border)'};
-      border-radius:20px;opacity:${lost?0.4:1};width:190px;box-sizing:border-box;
-      cursor:${canClick?'pointer':'default'};transition:border-color .2s,box-shadow .2s"
+    return `<div style="display:inline-flex;align-items:center;gap:7px;padding:7px 16px;
+      background:${won?'rgba(255,107,0,.12)':'var(--surface)'};
+      border:1.5px solid ${won?'var(--orange)':'var(--border)'};
+      border-radius:24px;opacity:${lost?0.4:1};
+      cursor:${canClick?'pointer':'default'};
+      transition:border-color .2s,box-shadow .2s;white-space:nowrap"
       ${onclick?`onclick="${onclick}"`:''} 
       ${canClick?`onmouseenter="this.style.borderColor='rgba(255,107,0,.85)';this.style.boxShadow='0 0 12px rgba(255,107,0,.3)'" onmouseleave="this.style.borderColor='';this.style.boxShadow=''"`:''}>
-      ${!isTbd&&TEAM_LOGOS[name]?`<img src="${TEAM_LOGOS[name]}" style="width:22px;height:22px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:' '}
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;flex:1;
+      ${!isTbd&&TEAM_LOGOS[name]?`<img src="${TEAM_LOGOS[name]}" style="width:20px;height:20px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:' '}
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;
         color:${won?'var(--orange)':isTbd?'var(--muted)':'var(--text)'};
-        font-style:${isTbd?'italic':'normal'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</span>
-      ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>`:''}
-      ${canClick?`<span style="font-size:9px;color:var(--muted);flex-shrink:0">▶</span>`:''}
+        font-style:${isTbd?'italic':'normal'}">${name}</span>
+      ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${won?'var(--orange)':'var(--muted)'};margin-left:2px">${t.score}</span>`:''}
     </div>`;
   };
 
+  // Row with a pill sitting on a horizontal line
+  // line-left → [pill] → line-right
+  const pillOnLine = (t, matchup, regionLabel, regionColor, lineToCenter) => `
+    <div style="display:flex;align-items:center;position:relative;height:52px">
+      <!-- Label above -->
+      <div style="position:absolute;top:2px;left:0;right:0;text-align:${lineToCenter==='right'?'left':'right'}">
+        <span style="font-size:9px;color:${regionColor};font-weight:700;letter-spacing:1px;text-transform:uppercase">${regionLabel}</span>
+      </div>
+      <!-- Line + pill row -->
+      <div style="display:flex;align-items:center;width:100%;margin-top:14px">
+        ${lineToCenter==='left' ? `<div style="flex:1;height:1.5px;background:var(--border)"></div>` : ''}
+        ${teamPill(t, matchup)}
+        ${lineToCenter==='right' ? `<div style="flex:1;height:1.5px;background:var(--border)"></div>` : ''}
+      </div>
+    </div>`;
+
   // Championship center card
   const champCard = (m) => {
-    if (!m) return `<div style="width:180px;padding:10px;border:1px solid var(--border);border-radius:8px;text-align:center;color:var(--muted);font-style:italic;font-size:12px">TBD</div>`;
-    const t1n = (m.t1?.name||'').replace(/'/g,'');
-    const t2n = (m.t2?.name||'').replace(/'/g,'');
-    const isTbd = !t1n||t1n==='TBD'||!t2n||t2n==='TBD';
-    const hasScore = m.t1?.score!=null||m.t2?.score!=null;
-    const clickable = !isTbd;
-    const onclick = clickable?(hasScore?`openBoxScore('${m.id}','${t1n}','${t2n}')`:`openPreGameStats('${t1n}','${t2n}','${m.id}')`):'';
-    const row = (t) => {
+    if (!m) return '';
+    const t1n=(m.t1?.name||'').replace(/'/g,''); const t2n=(m.t2?.name||'').replace(/'/g,'');
+    const isTbd=!t1n||t1n==='TBD'||!t2n||t2n==='TBD';
+    const hasScore=m.t1?.score!=null||m.t2?.score!=null;
+    const clickable=!isTbd;
+    const onclick=clickable?(hasScore?`openBoxScore('${m.id}','${t1n}','${t2n}')`:`openPreGameStats('${t1n}','${t2n}','${m.id}')`):'';
+    const row=(t)=>{
       const n=t?.name||'TBD'; const won=t?.won===true; const lost=t?.won===false; const itbd=!n||n==='TBD';
-      return `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border);
+      return `<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-bottom:1px solid var(--border);
         background:${won?'rgba(255,107,0,.08)':'transparent'};opacity:${lost?0.4:1}">
         ${!itbd&&TEAM_LOGOS[n]?`<img src="${TEAM_LOGOS[n]}" style="width:16px;height:16px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:' <div style="width:16px;flex-shrink:0"></div>'}
         <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;
-          color:${won?'var(--orange)':itbd?'var(--muted)':'var(--text)'};font-style:${itbd?'italic':'normal'};white-space:nowrap">${n}</span>
+          color:${won?'var(--orange)':itbd?'var(--muted)':'var(--text)'};font-style:${itbd?'italic':'normal'}">${n}</span>
         ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>`:''}
       </div>`;
     };
-    return `<div style="width:180px;border:1px solid var(--border);border-radius:8px;overflow:hidden;
+    return `<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;min-width:170px;
       cursor:${clickable?'pointer':'default'};transition:border-color .2s,box-shadow .2s"
       ${onclick?`onclick="${onclick}"`:''} 
       ${clickable?`onmouseenter="this.style.borderColor='rgba(255,107,0,.85)';this.style.boxShadow='0 0 12px rgba(255,107,0,.3)'" onmouseleave="this.style.borderColor='';this.style.boxShadow=''"`:''}>
       ${row(m.t1||{name:'TBD'})}
       ${row(m.t2||{name:'TBD'})}
-      ${clickable?`<div style="text-align:center;padding:2px;font-size:9px;color:var(--muted);letter-spacing:1px">${hasScore?'TAP FOR BOX SCORE':'TAP FOR STATS'}</div>`:''}
+      ${clickable?`<div style="text-align:center;padding:2px;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore?'TAP FOR BOX SCORE':'TAP FOR STATS'}</div>`:''}
     </div>`;
   };
 
@@ -1245,6 +1260,8 @@ function renderFinal4() {
   const f4Teams = [sf1?.t1,sf1?.t2,sf2?.t1,sf2?.t2].filter(t=>t&&t.name&&t.name!=='TBD');
 
   return `<div style="max-width:1000px;margin:0 auto">
+
+    <!-- Logo -->
     <div style="text-align:center;margin-bottom:28px">
       <img src="/final-four-logo.jpg" alt="2026 Final Four"
         style="height:90px;width:auto;object-fit:contain;border-radius:6px;background:white"
@@ -1254,71 +1271,41 @@ function renderFinal4() {
       </div>
     </div>
 
-    <div style="white-space:nowrap;text-align:center;overflow-x:auto;padding-bottom:8px">
+    <!-- 3-column: left pills | center champ | right pills -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:0">
 
-      <!-- LEFT TEAMS — clickable -->
-      <div style="display:inline-block;vertical-align:middle;white-space:normal">
-        <div style="display:flex;flex-direction:column;gap:44px;align-items:flex-end">
-          <div>
-            <div style="font-size:9px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:right">🟠 East Winner</div>
-            ${teamSlot(sf1?.t1||{name:'East Winner'}, sf1)}
-          </div>
-          <div>
-            <div style="font-size:9px;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:right">🟢 South Winner</div>
-            ${teamSlot(sf1?.t2||{name:'South Winner'}, sf1)}
-          </div>
-        </div>
+      <!-- LEFT: East/South pills, each on their own horizontal line leading right to center -->
+      <div style="display:flex;flex-direction:column;justify-content:center;gap:16px;min-width:280px">
+        ${pillOnLine(sf1?.t1||{name:'East Winner'}, sf1, '🟠 East Winner', 'var(--orange)', 'right')}
+        ${pillOnLine(sf1?.t2||{name:'South Winner'}, sf1, '🟢 South Winner', 'var(--green)', 'right')}
       </div>
 
-      <!-- LEFT CONNECTORS -->
-      <svg style="display:inline-block;vertical-align:middle" width="70" height="170" viewBox="0 0 70 170">
-        <line x1="0"  y1="40"  x2="35" y2="40"  stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="35" y1="40"  x2="35" y2="85"  stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="0"  y1="130" x2="35" y2="130" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="35" y1="130" x2="35" y2="85"  stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="35" y1="85"  x2="70" y2="85"  stroke="var(--border)" stroke-width="1.5"/>
-      </svg>
-
-      <!-- CENTER: trophy + championship only -->
-      <div style="display:inline-block;vertical-align:middle;white-space:normal;text-align:center">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div class="champ-box" style="width:180px;text-align:center">
-            <div class="champ-trophy">🏆</div>
-            <div class="champ-lbl">2026 Champion</div>
-            <div class="champ-name">${f4.champion||'TBD'}</div>
-          </div>
-          <div style="width:1.5px;height:8px;background:var(--border)"></div>
-          <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase">Championship · Apr 6</div>
-          <div style="width:1.5px;height:6px;background:var(--border)"></div>
-          ${champCard(fin)}
+      <!-- CENTER vertical connector: lines from left meet here, then lines go right -->
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+        <!-- top half vertical line coming down from east/south midpoint -->
+        <div style="width:1.5px;height:36px;background:var(--border)"></div>
+        <!-- champion box -->
+        <div class="champ-box" style="min-width:180px;text-align:center;flex-shrink:0">
+          <div class="champ-trophy">🏆</div>
+          <div class="champ-lbl">2026 Champion</div>
+          <div class="champ-name">${f4.champion||'TBD'}</div>
         </div>
+        <div style="width:1.5px;height:10px;background:var(--border)"></div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Championship · Apr 6</div>
+        ${champCard(fin)}
+        <!-- bottom half vertical line going down to west/midwest midpoint -->
+        <div style="width:1.5px;height:36px;background:var(--border)"></div>
       </div>
 
-      <!-- RIGHT CONNECTORS -->
-      <svg style="display:inline-block;vertical-align:middle" width="70" height="170" viewBox="0 0 70 170">
-        <line x1="70" y1="40"  x2="35" y2="40"  stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="35" y1="40"  x2="35" y2="85"  stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="70" y1="130" x2="35" y2="130" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="35" y1="130" x2="35" y2="85"  stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="35" y1="85"  x2="0"  y2="85"  stroke="var(--border)" stroke-width="1.5"/>
-      </svg>
-
-      <!-- RIGHT TEAMS — clickable -->
-      <div style="display:inline-block;vertical-align:middle;white-space:normal">
-        <div style="display:flex;flex-direction:column;gap:44px;align-items:flex-start">
-          <div>
-            <div style="font-size:9px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">🔵 West Winner</div>
-            ${teamSlot(sf2?.t1||{name:'West Winner'}, sf2)}
-          </div>
-          <div>
-            <div style="font-size:9px;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">🔴 Midwest Winner</div>
-            ${teamSlot(sf2?.t2||{name:'Midwest Winner'}, sf2)}
-          </div>
-        </div>
+      <!-- RIGHT: West/Midwest pills, each on their own horizontal line leading left to center -->
+      <div style="display:flex;flex-direction:column;justify-content:center;gap:16px;min-width:280px">
+        ${pillOnLine(sf2?.t1||{name:'West Winner'}, sf2, '🔵 West Winner', 'var(--blue)', 'left')}
+        ${pillOnLine(sf2?.t2||{name:'Midwest Winner'}, sf2, '🔴 Midwest Winner', 'var(--red)', 'left')}
       </div>
 
     </div>
 
+    <!-- Draft picks strip -->
     ${f4Teams.length?`
     <div style="margin-top:24px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">
       <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center">Draft Picks In The Final Four</div>
