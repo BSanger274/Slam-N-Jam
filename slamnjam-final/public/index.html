@@ -337,7 +337,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
         <line x1="24" y1="6"  x2="24" y2="22"/>
         <line x1="24" y1="14" x2="37" y2="14"/>
       </svg>Bracket</button>
-      <button class="nb"         onclick="showPage('history')">History</button>
+      <button class="nb"         onclick="showPage('history')"><img src="/logo-history.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;filter:invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(1.2)" onerror="this.style.display='none'">History</button>
       <button class="nb"         onclick="showPage('admin')" style="color:var(--muted)">⚙ Admin</button>
     </nav>
     <div class="hright">
@@ -1137,76 +1137,86 @@ function renderFinal4() {
   const sf2 = f4.sf?.[1];
   const fin = f4.final?.[0];
 
-  // Get team info from each semifinal slot
-  const getSlot = (m, side) => {
-    if (!m) return { name: 'TBD', seed: null, won: null };
-    return side === 1 ? m.t1 : m.t2;
-  };
-
-  const teamRow = (t, highlight) => {
+  const slotRow = (t) => {
     const name = t?.name || 'TBD';
-    const isTbd = !name || name === 'TBD';
-    const lg = !isTbd ? teamLogo(name) : '';
-    const won = t?.won === true;
+    const isTbd = !name || name==='TBD';
+    const won  = t?.won === true;
     const lost = t?.won === false;
-    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;
-      background:${won ? 'rgba(255,107,0,.08)' : 'transparent'};
-      opacity:${lost ? 0.4 : 1};
-      border-bottom:1px solid var(--border)">
-      ${lg ? `<img src="${TEAM_LOGOS[name]||''}" style="width:20px;height:20px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'" alt="">` : '<div style="width:20px"></div>'}
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;flex:1;
-        color:${won ? 'var(--orange)' : isTbd ? 'var(--muted)' : 'var(--text)'};
-        font-style:${isTbd ? 'italic' : 'normal'}">${name}</span>
-      ${t?.score != null ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>` : ''}
+    return `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:${won?'rgba(255,107,0,.08)':'transparent'};opacity:${lost?0.4:1};border-bottom:1px solid var(--border)">
+      ${!isTbd && TEAM_LOGOS[name] ? `<img src="${TEAM_LOGOS[name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:18px"></div>'}
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;color:${won?'var(--orange)':isTbd?'var(--muted)':'var(--text)'};font-style:${isTbd?'italic':'normal'}">${name}</span>
+      ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>`:''}
     </div>`;
   };
 
-  const sfCard = (m, label, color) => `
-    <div class="card" style="flex:1">
-      <div class="chd"><span class="ctitle" style="color:${color}">${label}</span><span style="font-size:10px;color:var(--muted)">Semifinal · Apr 4</span></div>
-      ${teamRow(m?.t1)}
-      ${teamRow(m?.t2)}
-    </div>`;
+  const sfSlot = (m) => `<div class="mu" style="min-width:160px">${slotRow(m?.t1||{name:'TBD'})}${slotRow(m?.t2||{name:'TBD'})}</div>`;
+  const champSlot = () => `<div class="mu" style="min-width:160px">${slotRow(fin?.t1||{name:'TBD'})}${slotRow(fin?.t2||{name:'TBD'})}</div>`;
 
-  const champCard = () => `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:0 8px;flex-shrink:0;min-width:220px">
-      <div style="width:2px;height:20px;background:var(--border)"></div>
-      <img
-        src="/final-four-logo.jpg"
-        onerror="this.src='https://ncaaorg.s3.amazonaws.com/championships/sports/basketball/mbb/2026/2026MBB_FinalFour_LogoColor.jpg'"
-        alt="2026 NCAA Final Four Indianapolis"
-        style="width:180px;height:auto;object-fit:contain;border-radius:8px;display:block;background:white;"
-      />
-      <div style="display:none;text-align:center">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold)">2026 FINAL FOUR</div>
-        <div style="font-size:11px;color:var(--muted);letter-spacing:2px">INDIANAPOLIS</div>
+  const draftedFromTeam = (teamName) => {
+    const players = TEAMS.flatMap(t=>t.players.map(p=>({...p,mgr:t.name}))).filter(p=>p.school===teamName);
+    if (!players.length) return '';
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;min-width:140px">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
+        ${TEAM_LOGOS[teamName]?`<img src="${TEAM_LOGOS[teamName]}" style="width:14px;height:14px;object-fit:contain" onerror="this.style.display='none'">`:''}
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px">${teamName}</span>
       </div>
-      <div style="width:2px;height:12px;background:var(--border)"></div>
-      <div class="champ-box" style="width:100%;text-align:center">
-        <div class="champ-trophy">🏆</div>
-        <div class="champ-lbl">2026 Champion</div>
-        <div class="champ-name">${f4.champion || 'TBD'}</div>
-      </div>
-      <div style="width:100%">
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:8px">Championship · Apr 6</div>
-        <div class="card">
-          ${teamRow(fin?.t1)}
-          ${teamRow(fin?.t2)}
-        </div>
-      </div>
-      <div style="width:2px;height:20px;background:var(--border)"></div>
+      ${players.map(p=>`<div style="display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px"><span>${p.name}</span><span style="color:var(--orange)">${p.mgr}</span></div>`).join('')}
     </div>`;
+  };
+
+  const f4Teams = [sf1?.t1,sf1?.t2,sf2?.t1,sf2?.t2].filter(t=>t&&t.name&&t.name!=='TBD');
+  const draftStrip = f4Teams.length ? `
+    <div style="margin-top:20px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center">Draft Picks In The Final Four</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px">${f4Teams.map(t=>draftedFromTeam(t.name)).join('')}</div>
+    </div>` : '';
 
   return `
-    <div style="margin-bottom:8px;text-align:center;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">
-      Lucas Oil Stadium · Indianapolis · April 4 &amp; 6
-    </div>
-    <div style="display:flex;align-items:center;gap:0;max-width:860px;margin:0 auto">
-      ${sfCard(sf1, '🟠 East &nbsp;vs&nbsp; 🟢 South', 'var(--orange)')}
-      <div style="width:24px;height:2px;background:var(--border);flex-shrink:0"></div>
-      ${champCard()}
-      <div style="width:24px;height:2px;background:var(--border);flex-shrink:0"></div>
-      ${sfCard(sf2, '🔵 West &nbsp;vs&nbsp; 🔴 Midwest', 'var(--blue)')}
+    <div style="max-width:860px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:20px">
+        <img src="/final-four-logo.jpg" alt="2026 Final Four" style="height:90px;width:auto;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:8px">Lucas Oil Stadium · Indianapolis · April 4 &amp; 6</div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap">
+
+        <div style="display:flex;flex-direction:column;align-items:flex-end">
+          <div style="font-size:10px;color:var(--orange);font-weight:700;letter-spacing:1px;margin-bottom:4px">🟠 EAST vs 🟢 SOUTH</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Semifinal · Apr 4</div>
+          ${sfSlot(sf1)}
+        </div>
+
+        <svg width="56" height="90" viewBox="0 0 56 90" style="flex-shrink:0;overflow:visible">
+          <line x1="0" y1="36" x2="20" y2="36" stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="20" y1="36" x2="20" y2="72" stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="20" y1="72" x2="56" y2="72" stroke="var(--border)" stroke-width="1.5"/>
+        </svg>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0">
+          <div class="champ-box" style="min-width:170px;text-align:center">
+            <div class="champ-trophy">🏆</div>
+            <div class="champ-lbl">2026 Champion</div>
+            <div class="champ-name">${f4.champion||'TBD'}</div>
+          </div>
+          <div style="width:1.5px;height:14px;background:var(--border)"></div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Championship · Apr 6</div>
+          ${champSlot()}
+        </div>
+
+        <svg width="56" height="90" viewBox="0 0 56 90" style="flex-shrink:0;overflow:visible">
+          <line x1="56" y1="36" x2="36" y2="36" stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="36" y1="36" x2="36" y2="72" stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="36" y1="72" x2="0" y2="72" stroke="var(--border)" stroke-width="1.5"/>
+        </svg>
+
+        <div style="display:flex;flex-direction:column;align-items:flex-start">
+          <div style="font-size:10px;color:var(--blue);font-weight:700;letter-spacing:1px;margin-bottom:4px">🔵 WEST vs 🔴 MIDWEST</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Semifinal · Apr 4</div>
+          ${sfSlot(sf2)}
+        </div>
+
+      </div>
+      ${draftStrip}
     </div>`;
 }
 
