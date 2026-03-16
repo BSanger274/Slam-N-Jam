@@ -520,10 +520,6 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
     <div class="sb gr"><div class="sb-l">Defending Champ</div><div class="sb-v">Nutty Prof.</div><div class="sb-s">2025 Winner</div></div>
     <div class="sb"><div class="sb-l">Tournaments</div><div class="sb-v">41</div><div class="sb-s">Completed</div></div>
   </div>
-  <div class="card" style="margin-bottom:16px">
-    <div class="chd"><span class="ctitle">🥇 Championship Count</span></div>
-    <div class="cbody" id="champ-counts"></div>
-  </div>
   <div class="card">
     <div class="chd"><span class="ctitle">📅 Year-by-Year</span></div>
     <div class="cbody"><div class="hgrid" id="hist-grid"></div>
@@ -1404,14 +1400,7 @@ function renderHistory() {
   const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
   const max = sorted[0]?.[1]||1;
   set('h-mt', sorted[0]?.[0]||'—'); set('h-mt-s', `${sorted[0]?.[1]||0} championships`);
-  document.getElementById('champ-counts').innerHTML = sorted.map(([n,c])=>`
-    <div style="margin-bottom:9px">
-      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:2px">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center">${n}${HOF.has(n)?hofBadge:''}</span>
-        <span style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:16px">${c} title${c!==1?'s':''}</span>
-      </div>
-      <div class="pw"><div class="pf" style="width:${(c/max)*100}%;background:linear-gradient(90deg,var(--gold),var(--orange))"></div></div>
-    </div>`).join('');
+  // Championship count section removed — replaced by Dynasty Tracker
   document.getElementById('hist-grid').innerHTML = HISTORY.map((h,i)=>`
     <div class="hc" onclick="openRosterModal(${h.year},'${h.winner.replace(/'/g,"\\'")}')">
       <div class="hc-yr">${h.year}</div>
