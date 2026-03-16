@@ -154,8 +154,16 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .rtab.active,.rtab:hover{background:rgba(255,184,0,.1);border-color:var(--gold);color:var(--gold)}
 
 /* Bracket scroll container */
+/* HOF badge */
+@keyframes hof-pulse{0%,100%{box-shadow:0 0 4px 1px rgba(255,184,0,.5)}50%{box-shadow:0 0 10px 3px rgba(255,184,0,.95)}}
+.hof-badge{display:inline-flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:1.5px;color:#111;background:linear-gradient(135deg,#ffd700,#ffaa00,#ffd700);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;animation:hof-pulse 2s ease-in-out infinite;flex-shrink:0}
+
 .bkt-scroll{overflow-x:auto;padding-bottom:20px;-webkit-overflow-scrolling:touch}
 .bkt-wrap{display:inline-flex;gap:0;align-items:flex-start;padding:4px 4px 4px 0;min-height:600px}
+/* HOF badge */
+@keyframes hof-pulse{0%,100%{box-shadow:0 0 4px 1px rgba(255,184,0,.5)}50%{box-shadow:0 0 10px 3px rgba(255,184,0,.95)}}
+.hof-badge{display:inline-flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:1.5px;color:#111;background:linear-gradient(135deg,#ffd700,#ffaa00,#ffd700);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;animation:hof-pulse 2s ease-in-out infinite;flex-shrink:0}
+
 .bkt-scroll{overflow-x:auto;padding-bottom:20px;min-height:700px}
 
 /* Round column */
@@ -1318,6 +1326,8 @@ function showRegion(r) {
 // ═══════════════════════════════════════════════
 function renderHistory() {
   if (!HISTORY.length) return;
+  const HOF = new Set(['Juice / Steve Dyer','Committee','Jim & Frank','Montreal Jacques','Reese']);
+  const hofBadge = '<span class="hof-badge">HOF</span>';
   const counts = {};
   HISTORY.filter(h=>h.winner!=='*Vacant*').forEach(h=>{counts[h.winner]=(counts[h.winner]||0)+1});
   const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
@@ -1325,8 +1335,8 @@ function renderHistory() {
   set('h-mt', sorted[0]?.[0]||'—'); set('h-mt-s', `${sorted[0]?.[1]||0} championships`);
   document.getElementById('champ-counts').innerHTML = sorted.map(([n,c])=>`
     <div style="margin-bottom:9px">
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px">${n}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:2px">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center">${n}${HOF.has(n)?hofBadge:''}</span>
         <span style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:16px">${c} title${c!==1?'s':''}</span>
       </div>
       <div class="pw"><div class="pf" style="width:${(c/max)*100}%;background:linear-gradient(90deg,var(--gold),var(--orange))"></div></div>
@@ -1334,7 +1344,7 @@ function renderHistory() {
   document.getElementById('hist-grid').innerHTML = HISTORY.map((h,i)=>`
     <div class="hc">
       <div class="hc-yr">${h.year}</div>
-      <div class="hc-w">${h.winner}</div>
+      <div class="hc-w" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${h.winner}${HOF.has(h.winner)?hofBadge:''}</div>
       <div class="hc-t">${h.year===2020?'⚠ COVID-19':i===0?'🏆 Defending':'🏀 Champion'}</div>
     </div>`).join('');
 }
