@@ -549,6 +549,7 @@ app.get('/api/scores', async (req, res) => {
 const CHAMPION_ROSTERS = {
   2025: {
     team: 'Nutty Professor',
+    draftPosition: 1,
     players: [
       { round: 1,  name: 'Walter Clayton Jr',  pos: 'Guard',   school: 'Florida',   pts: null },
       { round: 2,  name: 'John Blackwell',      pos: 'Guard',   school: 'Wisconsin', pts: null },
