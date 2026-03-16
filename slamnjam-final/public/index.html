@@ -168,7 +168,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
 /* Matchup card */
 .mu{background:var(--dark3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:3px 5px;transition:border-color .25s;position:absolute;left:0;right:0}
-.mu:hover{border-color:rgba(255,107,0,.35)}
+.mu:hover{border-color:rgba(255,107,0,.85);box-shadow:0 0 12px rgba(255,107,0,.3);cursor:pointer}
 .slot{display:flex;align-items:center;gap:5px;padding:3px 7px;border-bottom:1px solid var(--border);min-height:26px;position:relative}
 .slot:last-child{border-bottom:none}
 .slot.win{background:rgba(255,107,0,.07)}
@@ -972,11 +972,13 @@ function renderMatchup(m) {
     </div>`;
   };
   const hasScore = m.t1.score !== null || m.t2.score !== null;
-  const clickable = hasScore && m.id;
   const t1n = (m.t1.name||'').replace(/'/g,'');
   const t2n = (m.t2.name||'').replace(/'/g,'');
-  const clickAttr = clickable ? `onclick="openBoxScore('${m.id}','${t1n}','${t2n}')" style="cursor:pointer"` : '';
-  const indicator = clickable ? `<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">TAP FOR BOX SCORE</div>` : '';
+  const isTbd = !t1n || t1n==='TBD' || !t2n || t2n==='TBD';
+  // Clickable: show box score if game played, show pre-game stats if not TBD
+  const clickable = !isTbd && m.id;
+  const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}')`}"` : '';
+  const indicator = clickable ? `<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
   return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${indicator}</div>`;
 }
 
@@ -1452,6 +1454,88 @@ async function openBoxScore(gameId, team1, team2) {
       <div style="font-size:24px;margin-bottom:10px">📋</div>
       <div>Box score not available</div>
       <div style="font-size:11px;margin-top:6px;color:var(--muted)">ESPN may not have data for this game yet</div>
+    </div>`;
+  }
+}
+
+async function openPreGameStats(team1, team2) {
+  const modal    = document.getElementById('boxscore-modal');
+  const body     = document.getElementById('modal-body');
+  const scoreRow = document.getElementById('modal-score-row');
+  set('modal-game-title', `${team1} vs ${team2}`);
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  // Score row shows upcoming game info
+  scoreRow.innerHTML = `
+    <div class="modal-team">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Team</div>
+      ${teamLogo(team1) ? `<img src="${TEAM_LOGOS[team1]}" style="width:40px;height:40px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px">${team1}</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);letter-spacing:3px">VS</div>
+      <div style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-top:6px;text-transform:uppercase">Upcoming</div>
+    </div>
+    <div class="modal-team">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Team</div>
+      ${teamLogo(team2) ? `<img src="${TEAM_LOGOS[team2]}" style="width:40px;height:40px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px">${team2}</div>
+    </div>`;
+
+  body.innerHTML = '<div class="modal-loading">Loading season stats…</div>';
+
+  try {
+    // Fetch season averages from our server
+    const r = await fetch(`${API}/api/averages`);
+    const d = await r.json();
+    const avgs = d.averages || {};
+
+    // Also try to get roster info from ESPN
+    const statsHtml = (teamName) => {
+      // Filter players from our TEAMS data that match this school
+      const teamPlayers = TEAMS.flatMap(t => t.players)
+        .filter(p => p.school === teamName)
+        .sort((a,b) => b.pts - a.pts);
+
+      // Build stats rows — use season avgs if available, otherwise show pts
+      const rows = teamPlayers.length > 0
+        ? teamPlayers.map(p => {
+            const avg = avgs[p.name];
+            return `<tr>
+              <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">${p.name}${trendIcon(p.trend)}</td>
+              <td style="text-align:right;color:var(--orange);font-family:'Bebas Neue',sans-serif;font-size:16px">${avg ? avg.toFixed(1) : p.pts || '—'}</td>
+            </tr>`;
+          }).join('')
+        : `<tr><td colspan="2" style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No drafted players from this team</td></tr>`;
+
+      return `<div class="modal-team-section">
+        <div class="modal-team-label" style="display:flex;align-items:center;gap:8px">
+          ${teamLogo(teamName) ? `<img src="${TEAM_LOGOS[teamName]}" style="width:18px;height:18px;object-fit:contain" onerror="this.style.display='none'">` : ''}
+          ${teamName} — Drafted Players
+        </div>
+        <table class="bs-tbl">
+          <thead><tr>
+            <th style="text-align:left">Player</th>
+            <th style="text-align:right">Avg PPG</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    };
+
+    body.innerHTML = `
+      <div style="background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--gold)">
+        📋 Showing your drafted players from each team and their season scoring averages
+      </div>
+      ${statsHtml(team1)}
+      ${statsHtml(team2)}`;
+
+  } catch(e) {
+    body.innerHTML = `<div class="modal-error">
+      <div style="font-size:24px;margin-bottom:10px">📋</div>
+      <div>Stats unavailable</div>
+      <div style="font-size:11px;margin-top:6px;color:var(--muted)">Season averages not loaded yet</div>
     </div>`;
   }
 }
