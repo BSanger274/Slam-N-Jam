@@ -545,6 +545,30 @@ app.get('/api/scores', async (req, res) => {
 });
 
 // History — inline fallback guarantees data is always returned
+// Champion roster data — add more years as you collect them
+const CHAMPION_ROSTERS = {
+  2025: {
+    team: 'Nutty Professor',
+    players: [
+      { round: 1,  name: 'Walter Clayton Jr',  pos: 'Guard',   school: 'Florida',   pts: null },
+      { round: 2,  name: 'John Blackwell',      pos: 'Guard',   school: 'Wisconsin', pts: null },
+      { round: 3,  name: 'Richie Sanders',      pos: 'Forward', school: 'BYU',       pts: null },
+      { round: 4,  name: 'Tre Holloman',        pos: 'Guard',   school: 'Mich St',   pts: null },
+      { round: 5,  name: 'Khalif Battle',       pos: 'Guard',   school: 'Gonzaga',   pts: null },
+      { round: 6,  name: 'Dain Dainja',         pos: 'Forward', school: 'Memphis',   pts: null },
+      { round: 7,  name: 'Simeon Wilcher',      pos: 'Guard',   school: 'St Johns',  pts: null },
+      { round: 8,  name: 'Jeremiah Fears',      pos: 'Guard',   school: 'Oklahoma',  pts: null },
+      { round: 9,  name: 'Ven Allen Lubin',     pos: 'Guard',   school: 'UNC',       pts: null },
+      { round: 10, name: 'Coen Carr',           pos: 'Forward', school: 'Mich St',   pts: null },
+      { round: 11, name: 'Ben Mbang',           pos: 'Guard',   school: 'Yale',      pts: null },
+      { round: 12, name: 'Robert Wright',       pos: 'Guard',   school: 'Baylor',    pts: null },
+      { round: 13, name: 'JaeLyn Withers',      pos: 'Forward', school: 'UNC',       pts: null },
+      { round: 14, name: 'Kaden Metheny',       pos: 'Guard',   school: 'Liberty',   pts: null },
+      { round: 15, name: 'Johnell Davis',       pos: 'Guard',   school: 'Arkansas',  pts: null },
+    ]
+  }
+};
+
 const HISTORY_DATA = { winners: [
   {year:2025,winner:"Nutty Professor"},{year:2024,winner:"Studio K"},
   {year:2023,winner:"Shy Ballers"},    {year:2022,winner:"Team McCarty"},
@@ -569,6 +593,16 @@ const HISTORY_DATA = { winners: [
   {year:1985,winner:"Jack Baltimore Thorpe"},{year:1984,winner:"Jack Baltimore Thorpe"},
   {year:1983,winner:"Special K McNutt"}
 ]};
+
+app.get('/api/champion-roster/:year', (req, res) => {
+  const year = parseInt(req.params.year);
+  const roster = CHAMPION_ROSTERS[year] || null;
+  res.json({ year, roster });
+});
+
+app.get('/api/champion-rosters', (req, res) => {
+  res.json({ rosters: CHAMPION_ROSTERS });
+});
 
 app.get('/api/history', (req, res) => {
   // Try disk first (allows future edits), fall back to inline data
