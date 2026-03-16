@@ -977,7 +977,7 @@ function renderMatchup(m) {
   const isTbd = !t1n || t1n==='TBD' || !t2n || t2n==='TBD';
   // Clickable: show box score if game played, show pre-game stats if not TBD
   const clickable = !isTbd && m.id;
-  const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}')`}"` : '';
+  const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
   const indicator = clickable ? `<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
   return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${indicator}</div>`;
 }
@@ -1458,84 +1458,120 @@ async function openBoxScore(gameId, team1, team2) {
   }
 }
 
-async function openPreGameStats(team1, team2) {
+async function openPreGameStats(team1, team2, gameId) {
   const modal    = document.getElementById('boxscore-modal');
   const body     = document.getElementById('modal-body');
   const scoreRow = document.getElementById('modal-score-row');
   set('modal-game-title', `${team1} vs ${team2}`);
   modal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  body.innerHTML = '<div class="modal-loading">Loading stats…</div>';
 
-  // Score row shows upcoming game info
+  // Header with both team logos
   scoreRow.innerHTML = `
     <div class="modal-team">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Team</div>
-      ${teamLogo(team1) ? `<img src="${TEAM_LOGOS[team1]}" style="width:40px;height:40px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px">${team1}</div>
+      ${TEAM_LOGOS[team1] ? `<img src="${TEAM_LOGOS[team1]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px">${team1}</div>
     </div>
     <div style="text-align:center">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);letter-spacing:3px">VS</div>
-      <div style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-top:6px;text-transform:uppercase">Upcoming</div>
+      <div id="game-status-badge" style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-top:6px;text-transform:uppercase">Loading…</div>
     </div>
     <div class="modal-team">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Team</div>
-      ${teamLogo(team2) ? `<img src="${TEAM_LOGOS[team2]}" style="width:40px;height:40px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px">${team2}</div>
+      ${TEAM_LOGOS[team2] ? `<img src="${TEAM_LOGOS[team2]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px">${team2}</div>
     </div>`;
 
-  body.innerHTML = '<div class="modal-loading">Loading season stats…</div>';
-
   try {
-    // Fetch season averages from our server
-    const r = await fetch(`${API}/api/averages`);
-    const d = await r.json();
-    const avgs = d.averages || {};
+    // Fetch both season averages and live scores in parallel
+    const [avgsRes, scoresRes] = await Promise.all([
+      fetch(`${API}/api/averages`).then(r=>r.json()).catch(()=>({averages:{}})),
+      fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{}}))
+    ]);
 
-    // Also try to get roster info from ESPN
-    const statsHtml = (teamName) => {
-      // Filter players from our TEAMS data that match this school
-      const teamPlayers = TEAMS.flatMap(t => t.players)
-        .filter(p => p.school === teamName)
-        .sort((a,b) => b.pts - a.pts);
+    const avgs       = avgsRes.averages  || {};
+    const liveScores = scoresRes.merged  || {};
+    const liveCount  = scoresRes.liveCount || 0;
+    const isLive     = liveCount > 0;
 
-      // Build stats rows — use season avgs if available, otherwise show pts
-      const rows = teamPlayers.length > 0
-        ? teamPlayers.map(p => {
-            const avg = avgs[p.name];
+    // Update status badge
+    const badge = document.getElementById('game-status-badge');
+    if (badge) badge.innerHTML = isLive
+      ? '<span style="color:var(--green)">● LIVE</span>'
+      : '<span style="color:var(--gold)">Upcoming Game</span>';
+
+    // Build drafted players table for one team
+    const teamSection = (schoolName) => {
+      // Find ALL drafted players from this school across all managers
+      const draftedPlayers = [];
+      TEAMS.forEach(t => {
+        t.players.forEach(p => {
+          if (p.school === schoolName) {
+            draftedPlayers.push({ ...p, managerName: t.name });
+          }
+        });
+      });
+      draftedPlayers.sort((a,b) => {
+        const aVal = isLive ? (liveScores[a.name]||0) : (avgs[a.name]||0);
+        const bVal = isLive ? (liveScores[b.name]||0) : (avgs[b.name]||0);
+        return bVal - aVal;
+      });
+
+      const colLabel  = isLive ? 'Live PTS' : 'Season Avg';
+      const colColor  = isLive ? 'var(--green)' : 'var(--gold)';
+
+      const rows = draftedPlayers.length > 0
+        ? draftedPlayers.map(p => {
+            const val     = isLive ? (liveScores[p.name] ?? p.pts ?? 0) : (avgs[p.name] ? avgs[p.name].toFixed(1) : '—');
+            const valColor = isLive ? 'var(--green)' : 'var(--orange)';
             return `<tr>
-              <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">${p.name}${trendIcon(p.trend)}</td>
-              <td style="text-align:right;color:var(--orange);font-family:'Bebas Neue',sans-serif;font-size:16px">${avg ? avg.toFixed(1) : p.pts || '—'}</td>
+              <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">
+                ${p.name}${trendIcon(p.trend)}
+              </td>
+              <td style="text-align:left;font-size:12px;color:var(--muted)">${p.managerName}</td>
+              <td style="text-align:right;color:${valColor};font-family:'Bebas Neue',sans-serif;font-size:18px">${val}</td>
             </tr>`;
           }).join('')
-        : `<tr><td colspan="2" style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No drafted players from this team</td></tr>`;
+        : `<tr><td colspan="3" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">No players drafted from this team</td></tr>`;
 
       return `<div class="modal-team-section">
-        <div class="modal-team-label" style="display:flex;align-items:center;gap:8px">
-          ${teamLogo(teamName) ? `<img src="${TEAM_LOGOS[teamName]}" style="width:18px;height:18px;object-fit:contain" onerror="this.style.display='none'">` : ''}
-          ${teamName} — Drafted Players
+        <div class="modal-team-label" style="display:flex;align-items:center;justify-content:space-between">
+          <span style="display:flex;align-items:center;gap:6px">
+            ${TEAM_LOGOS[schoolName] ? `<img src="${TEAM_LOGOS[schoolName]}" style="width:16px;height:16px;object-fit:contain" onerror="this.style.display='none'">` : ''}
+            ${schoolName}
+          </span>
+          <span style="font-size:10px;color:${colColor};letter-spacing:1px">${draftedPlayers.length} DRAFTED</span>
         </div>
         <table class="bs-tbl">
           <thead><tr>
             <th style="text-align:left">Player</th>
-            <th style="text-align:right">Avg PPG</th>
+            <th style="text-align:left">Manager</th>
+            <th style="text-align:right;color:${colColor}">${colLabel}</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>`;
     };
 
+    const infoBg    = isLive ? 'rgba(0,230,118,.06)' : 'rgba(255,184,0,.06)';
+    const infoBdr   = isLive ? 'rgba(0,230,118,.25)' : 'rgba(255,184,0,.2)';
+    const infoColor = isLive ? 'var(--green)' : 'var(--gold)';
+    const infoText  = isLive
+      ? '🏀 Game is LIVE — showing real-time points scored in this game'
+      : '📋 Showing all drafted players from each team and their season scoring average';
+
     body.innerHTML = `
-      <div style="background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--gold)">
-        📋 Showing your drafted players from each team and their season scoring averages
+      <div style="background:${infoBg};border:1px solid ${infoBdr};border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:${infoColor}">
+        ${infoText}
       </div>
-      ${statsHtml(team1)}
-      ${statsHtml(team2)}`;
+      ${teamSection(team1)}
+      ${teamSection(team2)}`;
 
   } catch(e) {
     body.innerHTML = `<div class="modal-error">
       <div style="font-size:24px;margin-bottom:10px">📋</div>
-      <div>Stats unavailable</div>
-      <div style="font-size:11px;margin-top:6px;color:var(--muted)">Season averages not loaded yet</div>
+      <div>Could not load stats</div>
+      <div style="font-size:11px;margin-top:6px;color:var(--muted)">Upload your roster to see drafted players here</div>
     </div>`;
   }
 }
