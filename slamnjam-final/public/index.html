@@ -1791,21 +1791,21 @@ async function openRosterModal(year, teamName) {
   const draftStr = data.draftPosition ? `CHAMPIONSHIP ROSTER · Drafted ${ordinal(data.draftPosition)} Overall` : 'CHAMPIONSHIP ROSTER';
   document.getElementById('roster-subtitle').textContent = draftStr;
 
-  const total = data.players.reduce((s,p) => s + (p.pts||0), 0);
+  const total = data.players.reduce((s,p) => s + (p.pts != null ? p.pts : 0), 0);
   const hasPoints = data.players.some(p => p.pts != null && p.pts > 0);
 
   body.innerHTML = `
     <table style="width:100%;border-collapse:collapse;table-layout:fixed">
       <colgroup>
-        <col style="width:40px">
-        <col>
-        <col style="width:100px">
-        <col style="width:90px">
+        <col style="width:32px">
+        <col style="width:45%">
+        <col style="width:25%">
+        <col style="width:20%">
       </colgroup>
       <thead>
         <tr style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border);vertical-align:bottom">
           <th style="text-align:center;padding:0 0 10px 0">#</th>
-          <th style="text-align:left;padding:0 0 10px 8px">Player</th>
+          <th style="text-align:left;padding:0 0 10px 0">Player</th>
           <th style="text-align:center;padding:0 0 10px 0">School</th>
           <th style="text-align:center;padding:0 0 10px 0;color:var(--orange);line-height:1.4">Total<br>Tournament<br>Points</th>
         </tr>
@@ -1813,15 +1813,15 @@ async function openRosterModal(year, teamName) {
       <tbody>
         ${data.players.map(p => `
           <tr class="roster-row">
-            <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);vertical-align:middle">${p.round}</td>
-            <td style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;padding-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:middle">${p.name}</td>
-            <td style="text-align:center;font-size:12px;color:var(--muted);vertical-align:middle;white-space:nowrap">${p.school}</td>
-            <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange);vertical-align:middle">${p.pts ?? '—'}</td>
+            <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted)">${p.round}</td>
+            <td style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700">${p.name}</td>
+            <td style="text-align:center;font-size:12px;color:var(--muted)">${p.school}</td>
+            <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:${p.pts!=null?'var(--orange)':'var(--muted)'}">${p.pts ?? '—'}</td>
           </tr>`).join('')}
       </tbody>
       <tfoot>
         <tr style="border-top:2px solid var(--border)">
-          <td colspan="3" style="padding:10px 0 10px 8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Total Points</td>
+          <td colspan="3" style="padding:10px 0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Total Points</td>
           <td style="padding:10px 0;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);text-align:center">${total > 0 ? total : '—'}</td>
         </tr>
       </tfoot>
