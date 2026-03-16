@@ -340,14 +340,14 @@ function buildBlankBracket() {
     ],
     east: {
       r64: [
-        { id:'e1', t1: team(1,'Duke'),        t2: team(16,'Siena')         },
-        { id:'e2', t1: team(8,'Ohio State'),  t2: team(9,'TCU')            },
-        { id:'e3', t1: team(5,"St. John's"),  t2: team(12,'Northern Iowa') },
-        { id:'e4', t1: team(4,'Kansas'),      t2: team(13,'CA Baptist')    },
-        { id:'e5', t1: team(6,'Louisville'),  t2: team(11,'South Florida') },
-        { id:'e6', t1: team(3,'Michigan St'), t2: team(14,'N. Dakota St')  },
-        { id:'e7', t1: team(7,'UCLA'),        t2: team(10,'UCF')           },
-        { id:'e8', t1: team(2,'UConn'),       t2: team(15,'Furman')        }
+        { id:'e1', date:'Thu Mar 19', time:'2:50 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', t1: team(1,'Duke'),        t2: team(16,'Siena')         },
+        { id:'e2', date:'Thu Mar 19', time:'12:15 PM ET',location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', t1: team(8,'Ohio State'),  t2: team(9,'TCU')            },
+        { id:'e3', date:'Fri Mar 20', time:'7:10 PM ET', location:'Viejas Arena, San Diego, CA',                tv:'CBS', t1: team(5,"St. John's"),  t2: team(12,'Northern Iowa') },
+        { id:'e4', date:'Fri Mar 20', time:'9:45 PM ET', location:'Viejas Arena, San Diego, CA',                tv:'CBS', t1: team(4,'Kansas'),      t2: team(13,'CA Baptist')    },
+        { id:'e5', date:'Thu Mar 19', time:'1:30 PM ET', location:'KeyBank Center, Buffalo, NY',                tv:'TNT', t1: team(6,'Louisville'),  t2: team(11,'South Florida') },
+        { id:'e6', date:'Thu Mar 19', time:'4:05 PM ET', location:'KeyBank Center, Buffalo, NY',                tv:'TNT', t1: team(3,'Michigan St'), t2: team(14,'N. Dakota St')  },
+        { id:'e7', date:'Fri Mar 20', time:'7:25 PM ET', location:'Wells Fargo Center, Philadelphia, PA',       tv:'TBS', t1: team(7,'UCLA'),        t2: team(10,'UCF')           },
+        { id:'e8', date:'Fri Mar 20', time:'10:00 PM ET',location:'Wells Fargo Center, Philadelphia, PA',       tv:'TBS', t1: team(2,'UConn'),       t2: team(15,'Furman')        }
       ],
       r32:  [{ id:'e9',  t1:tbd(),t2:tbd() },{ id:'e10', t1:tbd(),t2:tbd() },{ id:'e11', t1:tbd(),t2:tbd() },{ id:'e12', t1:tbd(),t2:tbd() }],
       r16:  [{ id:'e13', t1:tbd(),t2:tbd() },{ id:'e14', t1:tbd(),t2:tbd() }],
@@ -355,14 +355,14 @@ function buildBlankBracket() {
     },
     west: {
       r64: [
-        { id:'w1', t1: team(1,'Arizona'),    t2: team(16,'LIU')              },
-        { id:'w2', t1: team(8,'Villanova'),  t2: team(9,'Utah State')        },
-        { id:'w3', t1: team(5,'Wisconsin'),  t2: team(12,'High Point')       },
-        { id:'w4', t1: team(4,'Arkansas'),   t2: team(13,"Hawai'i")          },
-        { id:'w5', t1: team(6,'BYU'),        t2: team(11,'TX/NCS (TBD)')     },
-        { id:'w6', t1: team(3,'Gonzaga'),    t2: team(14,'Kennesaw State')   },
-        { id:'w7', t1: team(7,'Miami FL'),   t2: team(10,'Missouri')         },
-        { id:'w8', t1: team(2,'Purdue'),     t2: team(15,'Queens')           }
+        { id:'w1', date:'Fri Mar 20', time:'1:35 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1: team(1,'Arizona'),    t2: team(16,'LIU')              },
+        { id:'w2', date:'Fri Mar 20', time:'4:10 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1: team(8,'Villanova'),  t2: team(9,'Utah State')        },
+        { id:'w3', date:'Thu Mar 19', time:'1:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1: team(5,'Wisconsin'),  t2: team(12,'High Point')       },
+        { id:'w4', date:'Thu Mar 19', time:'4:25 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1: team(4,'Arkansas'),   t2: team(13,"Hawai'i")          },
+        { id:'w5', date:'Thu Mar 19', time:'9:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1: team(6,'BYU'),        t2: team(11,'TX/NCS (TBD)')     },
+        { id:'w6', date:'Thu Mar 19', time:'7:15 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1: team(3,'Gonzaga'),    t2: team(14,'Kennesaw State')   },
+        { id:'w7', date:'Fri Mar 20', time:'6:50 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1: team(7,'Miami FL'),   t2: team(10,'Missouri')         },
+        { id:'w8', date:'Fri Mar 20', time:'9:25 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1: team(2,'Purdue'),     t2: team(15,'Queens')           }
       ],
       r32:  [{ id:'w9',  t1:tbd(),t2:tbd() },{ id:'w10', t1:tbd(),t2:tbd() },{ id:'w11', t1:tbd(),t2:tbd() },{ id:'w12', t1:tbd(),t2:tbd() }],
       r16:  [{ id:'w13', t1:tbd(),t2:tbd() },{ id:'w14', t1:tbd(),t2:tbd() }],
@@ -370,14 +370,14 @@ function buildBlankBracket() {
     },
     south: {
       r64: [
-        { id:'s1', t1: team(1,'Florida'),      t2: team(16,'PV/LEH (TBD)')  },
-        { id:'s2', t1: team(8,'Clemson'),      t2: team(9,'Iowa')            },
-        { id:'s3', t1: team(5,'Vanderbilt'),   t2: team(12,'McNeese')        },
-        { id:'s4', t1: team(4,'Nebraska'),     t2: team(13,'Troy')           },
-        { id:'s5', t1: team(6,'N. Carolina'),  t2: team(11,'VCU')            },
-        { id:'s6', t1: team(3,'Illinois'),     t2: team(14,'Penn')           },
-        { id:'s7', t1: team(7,"Saint Mary's"), t2: team(10,'Texas A&M')      },
-        { id:'s8', t1: team(2,'Houston'),      t2: team(15,'Idaho')          }
+        { id:'s1', date:'Fri Mar 20', time:'9:25 PM ET', location:'Amalie Arena, Tampa, FL',                    tv:'TNT',   t1: team(1,'Florida'),      t2: team(16,'PV/LEH (TBD)')  },
+        { id:'s2', date:'Fri Mar 20', time:'6:50 PM ET', location:'Amalie Arena, Tampa, FL',                    tv:'TNT',   t1: team(8,'Clemson'),      t2: team(9,'Iowa')            },
+        { id:'s3', date:'Thu Mar 19', time:'9:20 PM ET', location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1: team(5,'Vanderbilt'),   t2: team(12,'McNeese')        },
+        { id:'s4', date:'Thu Mar 19', time:'6:45 PM ET', location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1: team(4,'Nebraska'),     t2: team(13,'Troy')           },
+        { id:'s5', date:'Thu Mar 19', time:'12:10 PM ET',location:'Bon Secours Wellness Arena, Greenville, SC', tv:'TNT',   t1: team(6,'N. Carolina'),  t2: team(11,'VCU')            },
+        { id:'s6', date:'Thu Mar 19', time:'2:45 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'TNT',   t1: team(3,'Illinois'),     t2: team(14,'Penn')           },
+        { id:'s7', date:'Thu Mar 19', time:'7:35 PM ET', location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1: team(7,"Saint Mary's"), t2: team(10,'Texas A&M')      },
+        { id:'s8', date:'Thu Mar 19', time:'10:10 PM ET',location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1: team(2,'Houston'),      t2: team(15,'Idaho')          }
       ],
       r32:  [{ id:'s9',  t1:tbd(),t2:tbd() },{ id:'s10', t1:tbd(),t2:tbd() },{ id:'s11', t1:tbd(),t2:tbd() },{ id:'s12', t1:tbd(),t2:tbd() }],
       r16:  [{ id:'s13', t1:tbd(),t2:tbd() },{ id:'s14', t1:tbd(),t2:tbd() }],
@@ -385,14 +385,14 @@ function buildBlankBracket() {
     },
     midwest: {
       r64: [
-        { id:'m1', t1: team(1,'Michigan'),    t2: team(16,'UMBC/HOW (TBD)') },
-        { id:'m2', t1: team(8,'Georgia'),     t2: team(9,'Saint Louis')      },
-        { id:'m3', t1: team(5,'Texas Tech'),  t2: team(12,'Akron')           },
-        { id:'m4', t1: team(4,'Alabama'),     t2: team(13,'Hofstra')         },
-        { id:'m5', t1: team(6,'Tennessee'),   t2: team(11,'MIA/SMU (TBD)')   },
-        { id:'m6', t1: team(3,'Virginia'),    t2: team(14,'Wright State')    },
-        { id:'m7', t1: team(7,'Kentucky'),    t2: team(10,'Santa Clara')     },
-        { id:'m8', t1: team(2,'Iowa State'),  t2: team(15,'Tennessee St')    }
+        { id:'m1', date:'Thu Mar 19', time:'7:10 PM ET', location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1: team(1,'Michigan'),    t2: team(16,'UMBC/HOW (TBD)') },
+        { id:'m2', date:'Thu Mar 19', time:'9:45 PM ET', location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1: team(8,'Georgia'),     t2: team(9,'Saint Louis')      },
+        { id:'m3', date:'Fri Mar 20', time:'12:40 PM ET',location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1: team(5,'Texas Tech'),  t2: team(12,'Akron')           },
+        { id:'m4', date:'Fri Mar 20', time:'3:15 PM ET', location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1: team(4,'Alabama'),     t2: team(13,'Hofstra')         },
+        { id:'m5', date:'Fri Mar 20', time:'4:25 PM ET', location:'Wells Fargo Center, Philadelphia, PA', tv:'TBS',   t1: team(6,'Tennessee'),   t2: team(11,'MIA/SMU (TBD)')   },
+        { id:'m6', date:'Fri Mar 20', time:'1:50 PM ET', location:'Wells Fargo Center, Philadelphia, PA', tv:'TBS',   t1: team(3,'Virginia'),    t2: team(14,'Wright State')    },
+        { id:'m7', date:'Fri Mar 20', time:'12:15 PM ET',location:'Enterprise Center, St. Louis, MO',    tv:'CBS',   t1: team(7,'Kentucky'),    t2: team(10,'Santa Clara')     },
+        { id:'m8', date:'Fri Mar 20', time:'2:50 PM ET', location:'Enterprise Center, St. Louis, MO',    tv:'CBS',   t1: team(2,'Iowa State'),  t2: team(15,'Tennessee St')    }
       ],
       r32:  [{ id:'m9',  t1:tbd(),t2:tbd() },{ id:'m10', t1:tbd(),t2:tbd() },{ id:'m11', t1:tbd(),t2:tbd() },{ id:'m12', t1:tbd(),t2:tbd() }],
       r16:  [{ id:'m13', t1:tbd(),t2:tbd() },{ id:'m14', t1:tbd(),t2:tbd() }],
