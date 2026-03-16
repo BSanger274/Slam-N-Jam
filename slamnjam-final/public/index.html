@@ -526,7 +526,39 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
   </div>
   <div class="card">
     <div class="chd"><span class="ctitle">📅 Year-by-Year</span></div>
-    <div class="cbody"><div class="hgrid" id="hist-grid"></div></div>
+    <div class="cbody"><div class="hgrid" id="hist-grid"></div>
+
+      <!-- Dynasty Tracker -->
+      <div style="margin-top:32px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer" onclick="toggleHistSection('dynasty')">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px">🏅 Dynasty Tracker</div>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <div id="dynasty-toggle" style="color:var(--muted);font-size:14px">▼</div>
+        </div>
+        <div id="hist-dynasty"></div>
+      </div>
+
+      <!-- Best Score by Draft Round -->
+      <div style="margin-top:32px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer" onclick="toggleHistSection('draft-best')">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px">🎯 Best Score by Draft Round</div>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <div id="draft-best-toggle" style="color:var(--muted);font-size:14px">▼</div>
+        </div>
+        <div id="hist-draft-best"></div>
+      </div>
+
+      <!-- All-Time Top Players -->
+      <div style="margin-top:32px;margin-bottom:40px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer" onclick="toggleHistSection('top-players')">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px">⭐ All-Time Top Tournament Players</div>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <div id="top-players-toggle" style="color:var(--muted);font-size:14px">▼</div>
+        </div>
+        <div id="hist-top-players"></div>
+      </div>
+
+    </div></div>
   </div>
 </div>
 
@@ -545,9 +577,11 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px">ADMIN PANEL</h2>
       <div style="display:flex;gap:8px">
         <button class="btn btn-s" onclick="forceRefresh()" title="Force ESPN refresh">⚡ Force Refresh</button>
+        <button class="btn btn-s" onclick="archiveSeason()" style="background:rgba(255,184,0,.15);border-color:rgba(255,184,0,.4);color:var(--gold)">🏆 Archive Season</button>
         <button class="btn btn-s" onclick="doLogout()">Logout</button>
       </div>
     </div>
+    <div id="archive-status" style="font-size:12px;color:var(--muted);padding:6px 0;min-height:20px"></div>
     <div class="tabs">
       <div class="tab active" onclick="admTab('roster')">📋 Roster Upload</div>
       <div class="tab" onclick="admTab('overrides')">✏️ Score Overrides</div>
@@ -1384,6 +1418,204 @@ function renderHistory() {
       <div class="hc-w" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${h.winner}${HOF.has(h.winner)?hofBadge:''}</div>
       <div class="hc-t">${h.year===2020?'⚠ COVID-19':i===0?'🏆 Defending':'🏀 Champion'}</div>
     </div>`).join('');
+
+  // Render the three new sections
+  renderDraftPositionBest();
+  renderAllTimeTopPlayers();
+  renderDynastyTracker();
+}
+
+// ── SECTION 1: Best Score by Draft Position ──
+async function renderDraftPositionBest() {
+  const el = document.getElementById('hist-draft-best');
+  if (!el) return;
+  const rosters = await loadChampionRosters();
+  if (!Object.keys(rosters).length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px 0">No roster data yet — will populate as seasons are archived.</p>';
+    return;
+  }
+
+  // Build: for each draft round (1-15), find the best score across all years
+  const bestByRound = {}; // round -> { pts, name, school, year, team }
+  Object.entries(rosters).forEach(([year, data]) => {
+    data.players.forEach(p => {
+      if (p.pts == null) return;
+      if (!bestByRound[p.round] || p.pts > bestByRound[p.round].pts) {
+        bestByRound[p.round] = { pts: p.pts, name: p.name, school: p.school, year: parseInt(year), team: data.team };
+      }
+    });
+  });
+
+  const rounds = Object.keys(bestByRound).sort((a,b) => a-b);
+  if (!rounds.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px 0">No point data available yet.</p>';
+    return;
+  }
+
+  const maxPts = Math.max(...rounds.map(r => bestByRound[r].pts));
+
+  el.innerHTML = rounds.map(r => {
+    const b = bestByRound[r];
+    const pct = Math.round((b.pts / maxPts) * 100);
+    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--muted);width:60px;flex-shrink:0">Round ${r}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px">${b.name}</span>
+          <span style="font-size:11px;color:var(--muted);white-space:nowrap;margin-left:8px">${b.school} · ${b.year} · ${b.team}</span>
+        </div>
+        <div style="background:var(--dark3);border-radius:4px;height:6px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:4px;transition:width .6s"></div>
+        </div>
+      </div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange);width:36px;text-align:right;flex-shrink:0">${b.pts}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── SECTION 2: All-Time Top Tournament Players ──
+async function renderAllTimeTopPlayers() {
+  const el = document.getElementById('hist-top-players');
+  if (!el) return;
+  const rosters = await loadChampionRosters();
+
+  // Flatten all players across all years, filter out nulls, sort by pts desc
+  const all = [];
+  Object.entries(rosters).forEach(([year, data]) => {
+    data.players.forEach(p => {
+      if (p.pts != null) all.push({ ...p, year: parseInt(year), team: data.team });
+    });
+  });
+  all.sort((a,b) => b.pts - a.pts);
+
+  if (!all.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px 0">No data yet.</p>';
+    return;
+  }
+
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse">
+    <thead>
+      <tr style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">
+        <th style="width:32px;text-align:center;padding:0 0 8px 0">Rank</th>
+        <th style="text-align:left;padding:0 0 8px 8px">Player</th>
+        <th style="width:100px;text-align:center;padding:0 0 8px 0">School</th>
+        <th style="width:50px;text-align:center;padding:0 0 8px 0">Year</th>
+        <th style="width:60px;text-align:center;padding:0 0 8px 0;color:var(--orange)">PTS</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${all.slice(0,20).map((p,i) => `
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="text-align:center;padding:7px 0;font-family:'Bebas Neue',sans-serif;font-size:14px;color:${i<3?'var(--gold)':'var(--muted)'}">${i+1}</td>
+          <td style="padding:7px 8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700">${p.name}</td>
+          <td style="text-align:center;padding:7px 0;font-size:11px;color:var(--muted)">${p.school}</td>
+          <td style="text-align:center;padding:7px 0;font-size:11px;color:var(--muted)">${p.year}</td>
+          <td style="text-align:center;padding:7px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange)">${p.pts}</td>
+        </tr>`).join('')}
+    </tbody>
+  </table>
+  ${all.length > 20 ? `<div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted)">Showing top 20 of ${all.length} players</div>` : ''}`;
+}
+
+// ── SECTION 3: Dynasty Tracker ──
+function renderDynastyTracker() {
+  const el = document.getElementById('hist-dynasty');
+  if (!el) return;
+
+  // Count wins and find streaks
+  const counts = {};
+  HISTORY.filter(h=>h.winner!=='*Vacant*').forEach(h => {
+    counts[h.winner] = (counts[h.winner]||0) + 1;
+  });
+
+  // Find best streaks
+  const streaks = {};
+  let cur = null, curLen = 0, bestStreaks = {};
+  [...HISTORY].reverse().forEach(h => {
+    if (h.winner === '*Vacant*') { cur = null; curLen = 0; return; }
+    if (h.winner === cur) {
+      curLen++;
+      if (!bestStreaks[cur] || curLen > bestStreaks[cur]) bestStreaks[cur] = curLen;
+    } else {
+      cur = h.winner; curLen = 1;
+      if (!bestStreaks[cur]) bestStreaks[cur] = 1;
+    }
+  });
+
+  // Multi-title winners sorted by count
+  const multi = Object.entries(counts).filter(([,c])=>c>1).sort((a,b)=>b[1]-a[1]);
+
+  // Build timeline — group consecutive years by same winner
+  const timeline = [];
+  let lastWinner = null;
+  [...HISTORY].reverse().forEach(h => {
+    if (h.winner === lastWinner && timeline.length) {
+      timeline[timeline.length-1].years.push(h.year);
+    } else {
+      timeline.push({ winner: h.winner, years: [h.year] });
+      lastWinner = h.winner;
+    }
+  });
+
+  const HOF = new Set(['Juice / Steve Dyer','Committee','Jim & Frank','Montreal Jacques','Reese']);
+  const colors = ['var(--orange)','var(--blue)','var(--green)','var(--red)','var(--gold)',
+                  '#9c27b0','#00bcd4','#ff5722','#607d8b','#795548'];
+  const winnerColor = {};
+  multi.forEach(([name],i) => { winnerColor[name] = colors[i % colors.length]; });
+
+  el.innerHTML = `
+    <!-- Multi-title champions -->
+    <div style="margin-bottom:20px">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">MULTI-TITLE CHAMPIONS</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        ${multi.map(([name,count]) => `
+          <div style="background:var(--dark3);border:1px solid ${winnerColor[name]||'var(--border)'};border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:10px">
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px">
+                ${name}${HOF.has(name)?'<span class="hof-badge">HOF</span>':''}
+              </div>
+              <div style="font-size:11px;color:var(--muted)">Best streak: ${bestStreaks[name]||1}</div>
+            </div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:${winnerColor[name]||'var(--orange)'};margin-left:auto">${count}×</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Year timeline -->
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">CHAMPIONSHIP TIMELINE</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px">
+        ${[...HISTORY].reverse().map(h => {
+          const color = h.winner==='*Vacant*' ? 'var(--border)' : (winnerColor[h.winner]||'rgba(255,255,255,.15)');
+          const isMulti = counts[h.winner] > 1;
+          return `<div title="${h.year}: ${h.winner}" style="
+            width:32px;height:32px;border-radius:4px;
+            background:${color};opacity:${isMulti?1:0.4};
+            display:flex;align-items:center;justify-content:center;
+            font-family:'Bebas Neue',sans-serif;font-size:9px;color:#fff;
+            cursor:default;position:relative;flex-shrink:0"
+            onmouseenter="this.querySelector('.tip').style.display='block'"
+            onmouseleave="this.querySelector('.tip').style.display='none'">
+            ${h.year.toString().slice(2)}
+            <div class="tip" style="display:none;position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+              background:#1a1f2e;border:1px solid var(--border);border-radius:6px;padding:5px 8px;
+              font-size:11px;color:#fff;white-space:nowrap;z-index:10;pointer-events:none">
+              ${h.year}: ${h.winner}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+        ${multi.map(([name]) => `<div style="display:flex;align-items:center;gap:5px;font-size:11px">
+          <div style="width:10px;height:10px;border-radius:2px;background:${winnerColor[name]};flex-shrink:0"></div>
+          <span style="color:var(--muted)">${name}</span>
+        </div>`).join('')}
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px">
+          <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,255,255,.15);flex-shrink:0"></div>
+          <span style="color:var(--muted)">Single title</span>
+        </div>
+      </div>
+    </div>`;
 }
 
 // ═══════════════════════════════════════════════
@@ -1747,6 +1979,42 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeBoxScore(
 // BOOT
 // ═══════════════════════════════════════════════
 startPolling();
+
+// ── HISTORY SECTION TOGGLES ──
+const histSectionOpen = { dynasty: true, 'draft-best': true, 'top-players': true };
+function toggleHistSection(id) {
+  histSectionOpen[id] = !histSectionOpen[id];
+  const el = document.getElementById('hist-' + id);
+  const tog = document.getElementById(id + '-toggle');
+  if (el) el.style.display = histSectionOpen[id] ? 'block' : 'none';
+  if (tog) tog.textContent = histSectionOpen[id] ? '▼' : '▶';
+}
+
+// ── ARCHIVE SEASON ──
+async function archiveSeason() {
+  const status = document.getElementById('archive-status');
+  if (!confirm('Archive this season\'s champion roster to the History section?\n\nThis will save the winning team\'s players and point totals permanently.')) return;
+  status.textContent = 'Archiving…';
+  status.style.color = 'var(--muted)';
+  try {
+    const r = await fetch(`${API}/api/admin/archive-season`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${adminTok}` }
+    });
+    const d = await r.json();
+    if (d.ok) {
+      status.textContent = `✅ Saved! ${d.year} ${d.team} · ${d.players} players · Draft pick #${d.draftPosition}`;
+      status.style.color = 'var(--green)';
+      CHAMPION_ROSTERS_CACHE = null; // bust cache so modal reloads fresh
+    } else {
+      status.textContent = `❌ ${d.error}`;
+      status.style.color = '#ff4444';
+    }
+  } catch(e) {
+    status.textContent = '❌ Network error';
+    status.style.color = '#ff4444';
+  }
+}
 
 // ── CHAMPION ROSTER MODAL ──
 let CHAMPION_ROSTERS_CACHE = null;
