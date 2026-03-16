@@ -1016,7 +1016,6 @@ function renderBracket(region) {
       <div class="rcol-label">${rc.label}</div>
       <div style="display:flex;flex-direction:column;flex:1">`;
 
-    // Wrap matchups in equal-flex containers so spacing is automatic
     matchups.forEach((m, mi) => {
       html += `<div style="flex:1;display:flex;align-items:center;padding:4px 0">
         ${renderMatchup(m)}
@@ -1025,21 +1024,25 @@ function renderBracket(region) {
 
     html += `</div></div>`;
 
-    // Connector between rounds
+    // Connector between rounds using flex — pairs of cards feed into one next card
     if (ri < rounds.length - 1) {
-      const nextCount = (reg[rounds[ri+1].key] || []).length;
-      html += `<div style="display:flex;flex-direction:column;width:20px;flex-shrink:0">
+      const nextMatchups = reg[rounds[ri+1].key] || [];
+      const nextCount = nextMatchups.length;
+      const curCount  = matchups.length;
+      const ratio     = curCount / nextCount; // should be 2
+
+      html += `<div style="display:flex;flex-direction:column;width:22px;flex-shrink:0">
         <div class="rcol-label" style="visibility:hidden">x</div>
         <div style="display:flex;flex-direction:column;flex:1">`;
 
-      // Each connector serves 2 current matchups → 1 next matchup
       for (let i = 0; i < nextCount; i++) {
-        html += `<div style="flex:2;display:flex;flex-direction:column">
-          <div style="flex:1;border-right:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
-          <div style="flex:1;border-right:1px solid var(--border);border-top:1px solid var(--border)"></div>
+        // This connector block covers 'ratio' current matchups
+        html += `<div style="flex:${ratio};display:flex;flex-direction:column;justify-content:space-between">
+          <div style="flex:1;border-right:1.5px solid var(--border);border-bottom:1.5px solid var(--border);min-height:0"></div>
+          <div style="flex:1;border-right:1.5px solid var(--border);border-top:1.5px solid var(--border);min-height:0"></div>
         </div>
-        <div style="flex:0;height:0;display:flex;align-items:center">
-          <div style="width:20px;height:1px;background:var(--border)"></div>
+        <div style="flex:0;height:1px;position:relative">
+          <div style="position:absolute;top:0;left:0;width:22px;height:1.5px;background:var(--border)"></div>
         </div>`;
       }
 
