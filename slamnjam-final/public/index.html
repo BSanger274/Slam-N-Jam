@@ -361,7 +361,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
         <line x1="24" y1="6"  x2="24" y2="22"/>
         <line x1="24" y1="14" x2="37" y2="14"/>
       </svg>Bracket</button>
-      <button class="nb"         onclick="showPage('history')"><img src="/logo-history.png" style="width:22px;height:16px;object-fit:contain;vertical-align:-3px;margin-right:4px;filter:invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(1.2)" onerror="this.style.display='none'">History</button>
+      <button class="nb"         onclick="showPage('history')"><img id="hist-logo" src="/logo-history.png" style="width:22px;height:16px;object-fit:contain;vertical-align:-3px;margin-right:4px;filter:invert(1) brightness(.5)" onerror="this.style.display='none'">History</button>
       <button class="nb"         onclick="showPage('admin')" style="color:var(--muted)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Admin</button>
     </nav>
     <div class="hright">
@@ -1252,15 +1252,11 @@ function renderFinal4() {
       <!-- LEFT SVG CONNECTOR
            Two horizontal lines from pills → vertical bar → one horizontal to center
            Mirrors the left half of the bracket image -->
-      <svg width="80" height="${TOTAL}" viewBox="0 0 80 ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
-        <!-- horizontal from top pill to vertical -->
-        <line x1="0" y1="${TOP_Y}" x2="50" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- horizontal from bottom pill to vertical -->
-        <line x1="0" y1="${BOT_Y}" x2="50" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- vertical bar connecting both -->
-        <line x1="50" y1="${TOP_Y}" x2="50" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <!-- horizontal from vertical midpoint to center -->
-        <line x1="50" y1="${MID}" x2="80" y2="${MID}" stroke="var(--border)" stroke-width="1.5"/>
+      <svg width="160" height="${TOTAL}" viewBox="0 0 160 ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
+        <line x1="0"  y1="${TOP_Y}" x2="120" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="0"  y1="${BOT_Y}" x2="120" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="120" y1="${TOP_Y}" x2="120" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="120" y1="${MID}"  x2="160" y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
       </svg>
 
       <!-- CENTER: champion box only -->
@@ -1278,11 +1274,11 @@ function renderFinal4() {
       </div>
 
       <!-- RIGHT SVG CONNECTOR: mirror of left -->
-      <svg width="80" height="${TOTAL}" viewBox="0 0 80 ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
-        <line x1="80" y1="${TOP_Y}" x2="30" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="80" y1="${BOT_Y}" x2="30" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="30" y1="${TOP_Y}" x2="30" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="30" y1="${MID}"   x2="0"  y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
+      <svg width="160" height="${TOTAL}" viewBox="0 0 160 ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
+        <line x1="160" y1="${TOP_Y}" x2="40" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="160" y1="${BOT_Y}" x2="40" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="40"  y1="${TOP_Y}" x2="40" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="40"  y1="${MID}"   x2="0"  y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
       </svg>
 
       <!-- RIGHT COLUMN: two pills stacked -->
@@ -1483,6 +1479,11 @@ function showPage(id) {
   if (id==='admin')    initAdmin();
   if (id==='bracket')  { renderBracket(currentRegion); renderDraftStrip(); }
   if (id==='history')  renderHistory();
+  // Sync history logo color with active state
+  const histLogo = document.getElementById('hist-logo');
+  if (histLogo) histLogo.style.filter = id==='history'
+    ? 'invert(60%) sepia(90%) saturate(500%) hue-rotate(5deg) brightness(1.1)'  // orange
+    : 'invert(1) brightness(.5)';  // dim white when inactive
 }
 
 // ═══════════════════════════════════════════════
