@@ -1115,7 +1115,7 @@ function renderFirstFour() {
       <div class="chd">
         <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px">${rDot} ${rLabel} Region</span>
         <div>
-          <span style="font-size:10px;color:var(--gold);font-weight:700">${g.time||g.date||''}</span>
+          <span style="font-size:10px;color:var(--gold);font-weight:700">${g.date||''} ${g.time?'· '+g.time:''}</span>
           ${g.tv?`<span style="font-size:10px;color:var(--muted);margin-left:5px">· ${g.tv}</span>`:''}
         </div>
       </div>
