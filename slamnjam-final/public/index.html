@@ -1095,47 +1095,76 @@ function renderFirstFour() {
     <div>First Four data will appear once the ESPN API updates (Mar 17-18)</div>
   </div>`;
 
-  const byRegion = {};
+  const regionColor = { east:'var(--orange)', west:'var(--blue)', south:'var(--green)', midwest:'var(--red)' };
+  const regionDot   = { east:'🟠', west:'🔵', south:'🟢', midwest:'🔴' };
+
+  // Group by date for section headers
+  const byDate = {};
   ff.forEach(g => {
-    if (!byRegion[g.region]) byRegion[g.region] = [];
-    byRegion[g.region].push(g);
+    const d = g.date || 'TBD';
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(g);
   });
 
-  return `<div style="margin-bottom:16px">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">
-      Play-in games · Dayton, Ohio · Mar 17–18 · Winners advance to Round of 64
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
-      ${ff.map(g => {
-        const regionLabel = g.region.charAt(0).toUpperCase() + g.region.slice(1);
-        const regionColor = {east:'var(--orange)',west:'var(--blue)',south:'var(--green)',midwest:'var(--red)'}[g.region]||'var(--muted)';
-        const t1won = g.t1.won === true, t2won = g.t2.won === true;
-        return `<div class="card">
-          <div class="chd">
-            <span class="ctitle">${g.date||''}</span>
-            <span style="font-size:11px;font-weight:700;color:${regionColor};letter-spacing:1px">${regionLabel} Region</span>
-          </div>
-          <div class="cbody" style="padding:12px 16px">
-            <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);opacity:${g.t2.won?0.45:1}">
-              <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
-              ${teamLogo(g.t1.name) ? `<img src="${TEAM_LOGOS[g.t1.name]||''}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'" alt="">` : ''}
-              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t1won?'color:var(--orange)':''}">${g.t1.name}</span>
-              ${g.t1.score!==null&&g.t1.score!==undefined ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t1won?'var(--orange)':'var(--muted)'}">${g.t1.score}</span>` : ''}
-              ${t1won ? '<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>' : ''}
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;padding:7px 0;opacity:${g.t1.won?0.45:1}">
-              <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t2.seed}</span>
-              ${teamLogo(g.t2.name) ? `<img src="${TEAM_LOGOS[g.t2.name]||''}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'" alt="">` : ''}
-              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t2won?'color:var(--orange)':''}">${g.t2.name}</span>
-              ${g.t2.score!==null&&g.t2.score!==undefined ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t2won?'var(--orange)':'var(--muted)'}">${g.t2.score}</span>` : ''}
-              ${t2won ? '<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>' : ''}
-            </div>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-  </div>`;
+  const gameCard = (g) => {
+    const t1won = g.t1.won===true, t2won = g.t2.won===true;
+    const hasScore = g.t1.score!=null || g.t2.score!=null;
+    const rColor = regionColor[g.region] || 'var(--muted)';
+    const rDot   = regionDot[g.region]   || '⚪';
+    const rLabel = g.region.charAt(0).toUpperCase() + g.region.slice(1);
+    const t1n = (g.t1.name||'').replace(/'/g,'');
+    const t2n = (g.t2.name||'').replace(/'/g,'');
+    const canClick = t1n && t2n && t1n!=='TBD' && t2n!=='TBD';
+    const onclick = canClick ? (hasScore ? `openBoxScore('${g.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${g.id}')`) : '';
+    const tapLabel = hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS';
+
+    return `<div class="card${canClick?' mu':''}" style="cursor:${canClick?'pointer':'default'}"
+      ${onclick?`onclick="${onclick}"`:''}>
+      <!-- Header -->
+      <div class="chd" style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px">${rDot} ${rLabel} Region</span>
+        <div style="text-align:right">
+          <span style="font-size:10px;color:var(--gold);font-weight:700">${g.time||''}</span>
+          ${g.tv?`<span style="font-size:10px;color:var(--muted);margin-left:5px">· ${g.tv}</span>`:''}
+        </div>
+      </div>
+      <!-- Team rows -->
+      <div class="cbody" style="padding:10px 14px">
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);opacity:${t2won?0.45:1}">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
+          ${TEAM_LOGOS[g.t1.name]?`<img src="${TEAM_LOGOS[g.t1.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t1won?'color:var(--orange)':''}">${g.t1.name}</span>
+          ${g.t1.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t1won?'var(--orange)':'var(--muted)'}">${g.t1.score}</span>`:''}
+          ${t1won?'<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>':''}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;opacity:${t1won?0.45:1}">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t2.seed}</span>
+          ${TEAM_LOGOS[g.t2.name]?`<img src="${TEAM_LOGOS[g.t2.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t2won?'color:var(--orange)':''}">${g.t2.name}</span>
+          ${g.t2.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t2won?'var(--orange)':'var(--muted)'}">${g.t2.score}</span>`:''}
+          ${t2won?'<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>':''}
+        </div>
+      </div>
+      ${canClick?`<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${tapLabel}</div>`:''}
+    </div>`;
+  };
+
+  let html = `<div style="margin-bottom:16px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px">
+      Play-in games · UD Arena, Dayton OH · Mar 17–18 · Winners advance to Round of 64
+    </div>`;
+
+  Object.entries(byDate).forEach(([date, games]) => {
+    html += `<div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--text);margin-bottom:10px;padding-bottom:4px;border-bottom:1px solid var(--border)">${date}</div>`;
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px">`;
+    games.forEach(g => { html += gameCard(g); });
+    html += `</div>`;
+  });
+
+  html += `</div>`;
+  return html;
 }
+
 
 function renderFinal4() {
   if (!BRACKET?.final4) return '<p style="color:var(--muted);padding:20px">No Final Four data yet.</p>';
