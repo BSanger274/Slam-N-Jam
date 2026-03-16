@@ -167,10 +167,12 @@ button.nb:hover #hist-logo, button.nb.active #hist-logo { filter: invert(38%) se
 .roster-name { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; flex:1; }
 .roster-school { font-size:11px; color:var(--muted); }
 .roster-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); min-width:36px; text-align:right; flex-shrink:0; }
-/* Force center alignment on roster modal points column for all viewports */
-#roster-body td:last-child { text-align:center !important; }
-#roster-body th:last-child { text-align:center !important; }
-#roster-body tfoot td:last-child { text-align:center !important; }
+/* Force center alignment on roster modal points column */
+#roster-modal #roster-body table td:last-child,
+#roster-modal #roster-body table th:last-child,
+#roster-modal #roster-body table tfoot td:last-child {
+  text-align:center !important;
+}
 
 /* HOF badge */
 @keyframes hof-pulse{0%,100%{box-shadow:0 0 4px 1px rgba(255,184,0,.5)}50%{box-shadow:0 0 10px 3px rgba(255,184,0,.95)}}
@@ -191,10 +193,12 @@ button.nb:hover #hist-logo, button.nb.active #hist-logo { filter: invert(38%) se
 .roster-name { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; flex:1; }
 .roster-school { font-size:11px; color:var(--muted); }
 .roster-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); min-width:36px; text-align:right; flex-shrink:0; }
-/* Force center alignment on roster modal points column for all viewports */
-#roster-body td:last-child { text-align:center !important; }
-#roster-body th:last-child { text-align:center !important; }
-#roster-body tfoot td:last-child { text-align:center !important; }
+/* Force center alignment on roster modal points column */
+#roster-modal #roster-body table td:last-child,
+#roster-modal #roster-body table th:last-child,
+#roster-modal #roster-body table tfoot td:last-child {
+  text-align:center !important;
+}
 
 /* HOF badge */
 @keyframes hof-pulse{0%,100%{box-shadow:0 0 4px 1px rgba(255,184,0,.5)}50%{box-shadow:0 0 10px 3px rgba(255,184,0,.95)}}
@@ -2063,7 +2067,7 @@ async function openRosterModal(year, teamName) {
   const hasPoints = data.players.some(p => p.pts != null && p.pts > 0);
 
   body.innerHTML = `
-    <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+    <table style="width:100%;border-collapse:collapse">
       <thead>
         <tr style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border);vertical-align:bottom">
           <th style="width:30px;text-align:center;padding:0 0 10px 0">#</th>
