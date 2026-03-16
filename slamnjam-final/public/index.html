@@ -337,7 +337,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
         <line x1="24" y1="6"  x2="24" y2="22"/>
         <line x1="24" y1="14" x2="37" y2="14"/>
       </svg>Bracket</button>
-      <button class="nb"         onclick="showPage('history')"><img src="/logo-history.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;filter:invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(1.2)" onerror="this.style.display='none'">History</button>
+      <button class="nb"         onclick="showPage('history')"><img src="/logo-history.png" style="width:22px;height:16px;object-fit:contain;vertical-align:-3px;margin-right:4px;filter:invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(1.2)" onerror="this.style.display='none'">History</button>
       <button class="nb"         onclick="showPage('admin')" style="color:var(--muted)">⚙ Admin</button>
     </nav>
     <div class="hright">
@@ -978,13 +978,8 @@ function renderMatchup(m) {
   // Clickable: show box score if game played, show pre-game stats if not TBD
   const clickable = !isTbd && m.id;
   const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
-  // Schedule info bar
-  const hasInfo = m.date || m.time || m.location;
-  const schedBar = hasInfo && !hasScore ? `
-    <div style="padding:3px 7px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:wrap">
-      <span style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.5px;white-space:nowrap">${m.date||''} ${m.time ? '· '+m.time : ''}</span>
-      <span style="font-size:9px;color:var(--muted);text-align:right;white-space:nowrap">${m.tv ? m.tv+' · ' : ''}${m.location ? m.location.split(',')[0] : ''}</span>
-    </div>` : '';
+  // Schedule info bar removed from card — visible in modal only
+  const schedBar = '';
   const tapBar = clickable ? `<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
   return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${schedBar}${tapBar}</div>`;
 }
@@ -1142,82 +1137,126 @@ function renderFinal4() {
     const isTbd = !name || name==='TBD';
     const won  = t?.won === true;
     const lost = t?.won === false;
-    return `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:${won?'rgba(255,107,0,.08)':'transparent'};opacity:${lost?0.4:1};border-bottom:1px solid var(--border)">
-      ${!isTbd && TEAM_LOGOS[name] ? `<img src="${TEAM_LOGOS[name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:18px"></div>'}
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;color:${won?'var(--orange)':isTbd?'var(--muted)':'var(--text)'};font-style:${isTbd?'italic':'normal'}">${name}</span>
+    return `<div style="display:flex;align-items:center;gap:6px;padding:7px 10px;background:${won?'rgba(255,107,0,.08)':'transparent'};opacity:${lost?0.4:1};border-bottom:1px solid var(--border)">
+      ${!isTbd && TEAM_LOGOS[name] ? `<img src="${TEAM_LOGOS[name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:18px;flex-shrink:0"></div>'}
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;flex:1;color:${won?'var(--orange)':isTbd?'var(--muted)':'var(--text)'};font-style:${isTbd?'italic':'normal'}">${name}</span>
       ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>`:''}
     </div>`;
   };
 
-  const sfSlot = (m) => `<div class="mu" style="min-width:160px">${slotRow(m?.t1||{name:'TBD'})}${slotRow(m?.t2||{name:'TBD'})}</div>`;
-  const champSlot = () => `<div class="mu" style="min-width:160px">${slotRow(fin?.t1||{name:'TBD'})}${slotRow(fin?.t2||{name:'TBD'})}</div>`;
+  const muCard = (m) => `
+    <div class="mu" style="width:180px;flex-shrink:0">
+      ${slotRow(m?.t1||{name:'TBD'})}
+      ${slotRow(m?.t2||{name:'TBD'})}
+    </div>`;
 
   const draftedFromTeam = (teamName) => {
     const players = TEAMS.flatMap(t=>t.players.map(p=>({...p,mgr:t.name}))).filter(p=>p.school===teamName);
     if (!players.length) return '';
-    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;min-width:140px">
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;min-width:140px">
       <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
         ${TEAM_LOGOS[teamName]?`<img src="${TEAM_LOGOS[teamName]}" style="width:14px;height:14px;object-fit:contain" onerror="this.style.display='none'">`:''}
         <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px">${teamName}</span>
       </div>
-      ${players.map(p=>`<div style="display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px"><span>${p.name}</span><span style="color:var(--orange)">${p.mgr}</span></div>`).join('')}
+      ${players.map(p=>`<div style="display:flex;justify-content:space-between;gap:10px;font-size:11px"><span style="color:var(--muted)">${p.name}</span><span style="color:var(--orange)">${p.mgr}</span></div>`).join('')}
     </div>`;
   };
 
   const f4Teams = [sf1?.t1,sf1?.t2,sf2?.t1,sf2?.t2].filter(t=>t&&t.name&&t.name!=='TBD');
-  const draftStrip = f4Teams.length ? `
-    <div style="margin-top:20px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">
-      <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center">Draft Picks In The Final Four</div>
-      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px">${f4Teams.map(t=>draftedFromTeam(t.name)).join('')}</div>
-    </div>` : '';
 
-  return `
-    <div style="max-width:860px;margin:0 auto">
-      <div style="text-align:center;margin-bottom:20px">
-        <img src="/final-four-logo.jpg" alt="2026 Final Four" style="height:90px;width:auto;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">
-        <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:8px">Lucas Oil Stadium · Indianapolis · April 4 &amp; 6</div>
+  // Use a TABLE layout so columns stay side-by-side reliably
+  return `<div style="max-width:860px;margin:0 auto;overflow-x:auto">
+
+    <!-- Final Four logo -->
+    <div style="text-align:center;margin-bottom:20px">
+      <img src="/final-four-logo.jpg" alt="2026 Final Four"
+        style="height:90px;width:auto;object-fit:contain;border-radius:6px;background:white"
+        onerror="this.style.display='none'">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:8px">
+        Lucas Oil Stadium · Indianapolis · April 4 &amp; 6
       </div>
+    </div>
 
-      <div style="display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap">
+    <!-- Bracket using table for reliable layout -->
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+      <tr>
+        <!-- Left label row -->
+        <td style="text-align:right;padding:0 8px 4px 0;vertical-align:bottom;width:220px">
+          <span style="font-size:10px;color:var(--orange);font-weight:700;letter-spacing:1px">🟠 EAST vs 🟢 SOUTH</span>
+        </td>
+        <td style="width:50px"></td>
+        <!-- Center: champion label -->
+        <td style="text-align:center;padding:0 0 4px 0;vertical-align:bottom">
+          <span style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Champion</span>
+        </td>
+        <td style="width:50px"></td>
+        <!-- Right label -->
+        <td style="text-align:left;padding:0 0 4px 8px;vertical-align:bottom;width:220px">
+          <span style="font-size:10px;color:var(--blue);font-weight:700;letter-spacing:1px">🔵 WEST vs 🔴 MIDWEST</span>
+        </td>
+      </tr>
+      <tr>
+        <!-- Left: SF1 card -->
+        <td style="text-align:right;padding-right:0;vertical-align:middle">
+          ${muCard(sf1)}
+        </td>
 
-        <div style="display:flex;flex-direction:column;align-items:flex-end">
-          <div style="font-size:10px;color:var(--orange);font-weight:700;letter-spacing:1px;margin-bottom:4px">🟠 EAST vs 🟢 SOUTH</div>
-          <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Semifinal · Apr 4</div>
-          ${sfSlot(sf1)}
-        </div>
+        <!-- Left connector -->
+        <td style="vertical-align:middle;padding:0">
+          <svg width="50" height="80" viewBox="0 0 50 80">
+            <!-- Line from right edge of sf1 to vertical bar, then down to championship level -->
+            <line x1="0"  y1="40" x2="25" y2="40" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="25" y1="40" x2="25" y2="65" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="25" y1="65" x2="50" y2="65" stroke="var(--border)" stroke-width="1.5"/>
+          </svg>
+        </td>
 
-        <svg width="56" height="90" viewBox="0 0 56 90" style="flex-shrink:0;overflow:visible">
-          <line x1="0" y1="36" x2="20" y2="36" stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="20" y1="36" x2="20" y2="72" stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="20" y1="72" x2="56" y2="72" stroke="var(--border)" stroke-width="1.5"/>
-        </svg>
-
-        <div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0">
-          <div class="champ-box" style="min-width:170px;text-align:center">
+        <!-- Center column: trophy + champ card stacked -->
+        <td style="vertical-align:top;text-align:center;padding:0 4px">
+          <div class="champ-box" style="margin-bottom:8px">
             <div class="champ-trophy">🏆</div>
             <div class="champ-lbl">2026 Champion</div>
             <div class="champ-name">${f4.champion||'TBD'}</div>
           </div>
-          <div style="width:1.5px;height:14px;background:var(--border)"></div>
-          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Championship · Apr 6</div>
-          ${champSlot()}
-        </div>
+          <div style="width:1.5px;height:12px;background:var(--border);margin:0 auto"></div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin:4px 0">Championship · Apr 6</div>
+          ${muCard(fin)}
+        </td>
 
-        <svg width="56" height="90" viewBox="0 0 56 90" style="flex-shrink:0;overflow:visible">
-          <line x1="56" y1="36" x2="36" y2="36" stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="36" y1="36" x2="36" y2="72" stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="36" y1="72" x2="0" y2="72" stroke="var(--border)" stroke-width="1.5"/>
-        </svg>
+        <!-- Right connector -->
+        <td style="vertical-align:middle;padding:0">
+          <svg width="50" height="80" viewBox="0 0 50 80">
+            <line x1="50" y1="40" x2="25" y2="40" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="25" y1="40" x2="25" y2="65" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="25" y1="65" x2="0"  y2="65" stroke="var(--border)" stroke-width="1.5"/>
+          </svg>
+        </td>
 
-        <div style="display:flex;flex-direction:column;align-items:flex-start">
-          <div style="font-size:10px;color:var(--blue);font-weight:700;letter-spacing:1px;margin-bottom:4px">🔵 WEST vs 🔴 MIDWEST</div>
-          <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Semifinal · Apr 4</div>
-          ${sfSlot(sf2)}
-        </div>
+        <!-- Right: SF2 card -->
+        <td style="text-align:left;padding-left:0;vertical-align:middle">
+          ${muCard(sf2)}
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align:right;padding:4px 8px 0 0;vertical-align:top">
+          <span style="font-size:10px;color:var(--muted)">Semifinal · Apr 4</span>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td style="text-align:left;padding:4px 0 0 8px;vertical-align:top">
+          <span style="font-size:10px;color:var(--muted)">Semifinal · Apr 4</span>
+        </td>
+      </tr>
+    </table>
 
-      </div>
-      ${draftStrip}
-    </div>`;
+    <!-- Draft picks strip -->
+    ${f4Teams.length ? `
+    <div style="margin-top:20px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center">Draft Picks In The Final Four</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px">${f4Teams.map(t=>draftedFromTeam(t.name)).join('')}</div>
+    </div>` : ''}
+  </div>`;
 }
 
 function renderDraftStrip() {
