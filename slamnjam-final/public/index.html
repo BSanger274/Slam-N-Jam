@@ -1136,18 +1136,35 @@ function renderFinal4() {
   const sf2 = f4.sf?.[1];
   const fin = f4.final?.[0];
 
-  const slotRow = (t) => {
+  const teamSlot = (t) => {
     const name = t?.name || 'TBD';
     const isTbd = !name || name==='TBD';
     const won = t?.won===true, lost = t?.won===false;
-    return `<div style="display:flex;align-items:center;gap:6px;padding:7px 10px;background:${won?'rgba(255,107,0,.08)':'transparent'};opacity:${lost?0.4:1};border-bottom:1px solid var(--border)">
-      ${!isTbd&&TEAM_LOGOS[name]?`<img src="${TEAM_LOGOS[name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:' <div style="width:18px;flex-shrink:0"></div>'}
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;flex:1;color:${won?'var(--orange)':isTbd?'var(--muted)':'var(--text)'};font-style:${isTbd?'italic':'normal'}">${name}</span>
-      ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>`:''}
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;
+      background:${won?'rgba(255,107,0,.1)':'var(--surface)'};
+      border:1px solid ${won?'var(--orange)':'var(--border)'};
+      border-radius:20px;opacity:${lost?0.4:1};min-width:160px;max-width:200px">
+      ${!isTbd&&TEAM_LOGOS[name]?`<img src="${TEAM_LOGOS[name]}" style="width:22px;height:22px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:' '}
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;flex:1;
+        color:${won?'var(--orange)':isTbd?'var(--muted)':'var(--text)'};
+        font-style:${isTbd?'italic':'normal'};white-space:nowrap">${name}</span>
+      ${t?.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${won?'var(--orange)':'var(--muted)'}">${t.score}</span>`:''}
     </div>`;
   };
 
-  const muCard = (m) => `<div class="mu" style="width:200px">${slotRow(m?.t1||{name:'TBD'})}${slotRow(m?.t2||{name:'TBD'})}</div>`;
+  const sfSlot = (label) => `
+    <div style="display:flex;align-items:center;justify-content:center;padding:8px 20px;
+      background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:20px;min-width:130px">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);font-style:italic;letter-spacing:1px">${label}</span>
+    </div>`;
+
+  const champSlot = () => `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 24px;
+      background:var(--surface);border:2px solid var(--gold);border-radius:24px;min-width:150px">
+      <div style="font-size:20px;margin-bottom:2px">🏆</div>
+      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">2026 Champion</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:2px">${f4.champion||'TBD'}</div>
+    </div>`;
 
   const draftedFromTeam = (teamName) => {
     const players = TEAMS.flatMap(t=>t.players.map(p=>({...p,mgr:t.name}))).filter(p=>p.school===teamName);
@@ -1157,17 +1174,21 @@ function renderFinal4() {
         ${TEAM_LOGOS[teamName]?`<img src="${TEAM_LOGOS[teamName]}" style="width:14px;height:14px;object-fit:contain" onerror="this.style.display='none'">`:''}
         <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px">${teamName}</span>
       </div>
-      ${players.map(p=>`<div style="display:flex;justify-content:space-between;gap:10px;font-size:11px"><span style="color:var(--muted)">${p.name}</span><span style="color:var(--orange)">${p.mgr}</span></div>`).join('')}
+      ${players.map(p=>`<div style="display:flex;justify-content:space-between;gap:10px;font-size:11px">
+        <span style="color:var(--muted)">${p.name}</span>
+        <span style="color:var(--orange)">${p.mgr}</span>
+      </div>`).join('')}
     </div>`;
   };
 
   const f4Teams = [sf1?.t1,sf1?.t2,sf2?.t1,sf2?.t2].filter(t=>t&&t.name&&t.name!=='TBD');
 
-  // Use inline-block / position absolute approach for reliable 3-column layout
-  return `<div style="max-width:900px;margin:0 auto">
+  // Layout: 5 columns
+  // [Left teams] [Left lines SVG] [Center: SF1 + Winner + SF2] [Right lines SVG] [Right teams]
+  return `<div style="max-width:960px;margin:0 auto">
 
     <!-- Logo -->
-    <div style="text-align:center;margin-bottom:24px">
+    <div style="text-align:center;margin-bottom:28px">
       <img src="/final-four-logo.jpg" alt="2026 Final Four"
         style="height:90px;width:auto;object-fit:contain;border-radius:6px;background:white"
         onerror="this.style.display='none'">
@@ -1176,54 +1197,80 @@ function renderFinal4() {
       </div>
     </div>
 
-    <!-- 3-column bracket row using inline-block so they NEVER wrap -->
-    <div style="white-space:nowrap;text-align:center">
+    <!-- Main bracket row — inline-block to prevent wrapping -->
+    <div style="white-space:nowrap;text-align:center;overflow-x:auto">
 
-      <!-- LEFT: SF1 -->
-      <div style="display:inline-block;vertical-align:middle;white-space:normal;width:200px;text-align:left">
-        <div style="font-size:10px;color:var(--orange);font-weight:700;letter-spacing:1px;margin-bottom:3px">🟠 EAST vs 🟢 SOUTH</div>
-        <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Semifinal · Apr 4</div>
-        ${muCard(sf1)}
-      </div>
-
-      <!-- LEFT CONNECTOR -->
-      <svg style="display:inline-block;vertical-align:middle" width="80" height="100" viewBox="0 0 80 100">
-        <line x1="0"  y1="50" x2="40" y2="50" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="40" y1="50" x2="40" y2="80" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="40" y1="80" x2="80" y2="80" stroke="var(--border)" stroke-width="1.5"/>
-      </svg>
-
-      <!-- CENTER: Trophy + Championship -->
-      <div style="display:inline-block;vertical-align:middle;white-space:normal;width:220px;text-align:center">
-        <div class="champ-box" style="margin-bottom:10px">
-          <div class="champ-trophy">🏆</div>
-          <div class="champ-lbl">2026 Champion</div>
-          <div class="champ-name">${f4.champion||'TBD'}</div>
+      <!-- LEFT TEAMS column -->
+      <div style="display:inline-block;vertical-align:middle;white-space:normal">
+        <div style="display:flex;flex-direction:column;gap:40px;align-items:flex-end">
+          <div>
+            <div style="font-size:9px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:right">🟠 East Winner</div>
+            ${teamSlot(sf1?.t1||{name:'East Winner'})}
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:right">🟢 South Winner</div>
+            ${teamSlot(sf1?.t2||{name:'South Winner'})}
+          </div>
         </div>
-        <div style="width:1.5px;height:12px;background:var(--border);margin:0 auto"></div>
-        <div style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin:4px 0 6px">Championship · Apr 6</div>
-        ${muCard(fin)}
       </div>
 
-      <!-- RIGHT CONNECTOR -->
-      <svg style="display:inline-block;vertical-align:middle" width="80" height="100" viewBox="0 0 80 100">
-        <line x1="80" y1="50" x2="40" y2="50" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="40" y1="50" x2="40" y2="80" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="40" y1="80" x2="0"  y2="80" stroke="var(--border)" stroke-width="1.5"/>
+      <!-- LEFT SVG CONNECTORS -->
+      <svg style="display:inline-block;vertical-align:middle" width="70" height="160" viewBox="0 0 70 160">
+        <!-- Top team line -->
+        <line x1="0"  y1="38"  x2="35" y2="38"  stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="35" y1="38"  x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Bottom team line -->
+        <line x1="0"  y1="122" x2="35" y2="122" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="35" y1="122" x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
+        <!-- To center -->
+        <line x1="35" y1="80"  x2="70" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
       </svg>
 
-      <!-- RIGHT: SF2 -->
-      <div style="display:inline-block;vertical-align:middle;white-space:normal;width:200px;text-align:left">
-        <div style="font-size:10px;color:var(--blue);font-weight:700;letter-spacing:1px;margin-bottom:3px">🔵 WEST vs 🔴 MIDWEST</div>
-        <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Semifinal · Apr 4</div>
-        ${muCard(sf2)}
+      <!-- CENTER column -->
+      <div style="display:inline-block;vertical-align:middle;white-space:normal">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          ${sfSlot('SEMI FINAL')}
+          <div style="display:flex;align-items:center;gap:10px">
+            ${champSlot()}
+          </div>
+          ${sfSlot('SEMI FINAL')}
+        </div>
+        <div style="font-size:10px;color:var(--muted);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-top:8px">
+          Championship · Apr 6
+        </div>
+      </div>
+
+      <!-- RIGHT SVG CONNECTORS -->
+      <svg style="display:inline-block;vertical-align:middle" width="70" height="160" viewBox="0 0 70 160">
+        <!-- Top team line -->
+        <line x1="70" y1="38"  x2="35" y2="38"  stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="35" y1="38"  x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Bottom team line -->
+        <line x1="70" y1="122" x2="35" y2="122" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="35" y1="122" x2="35" y2="80"  stroke="var(--border)" stroke-width="1.5"/>
+        <!-- To center -->
+        <line x1="35" y1="80"  x2="0"  y2="80"  stroke="var(--border)" stroke-width="1.5"/>
+      </svg>
+
+      <!-- RIGHT TEAMS column -->
+      <div style="display:inline-block;vertical-align:middle;white-space:normal">
+        <div style="display:flex;flex-direction:column;gap:40px;align-items:flex-start">
+          <div>
+            <div style="font-size:9px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">🔵 West Winner</div>
+            ${teamSlot(sf2?.t1||{name:'West Winner'})}
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">🔴 Midwest Winner</div>
+            ${teamSlot(sf2?.t2||{name:'Midwest Winner'})}
+          </div>
+        </div>
       </div>
 
     </div>
 
     <!-- Draft picks strip -->
     ${f4Teams.length ? `
-    <div style="margin-top:20px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">
+    <div style="margin-top:24px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">
       <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center">Draft Picks In The Final Four</div>
       <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px">${f4Teams.map(t=>draftedFromTeam(t.name)).join('')}</div>
     </div>` : ''}
