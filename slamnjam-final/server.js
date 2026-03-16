@@ -547,6 +547,27 @@ app.get('/api/scores', async (req, res) => {
 // History — inline fallback guarantees data is always returned
 // Champion roster data — add more years as you collect them
 const CHAMPION_ROSTERS = {
+  2022: {
+    team: 'Team McCarty',
+    draftPosition: 3,
+    players: [
+      { round: 1,  name: 'Drew Timme',           school: 'Gonzaga',    pts: null },
+      { round: 2,  name: 'David McCormack',       school: 'Kansas',     pts: null },
+      { round: 3,  name: 'Josiah Jordan James',   school: 'TN',         pts: null },
+      { round: 4,  name: 'Tyler Wahl',            school: 'Wisc',       pts: null },
+      { round: 5,  name: 'Stanley Umude',         school: 'Arkansas',   pts: null },
+      { round: 6,  name: 'Taz Moore',             school: 'Houston',    pts: null },
+      { round: 7,  name: 'Xavier Johnson',        school: 'Indiana',    pts: null },
+      { round: 8,  name: 'Khalil Shabazz',        school: 'San Fran',   pts: null },
+      { round: 9,  name: 'Keon Ellis',            school: 'Bama',       pts: null },
+      { round: 10, name: 'RJ Davis',              school: 'UNC',        pts: null },
+      { round: 11, name: 'Joe Bryant',            school: 'Norfolk St', pts: null },
+      { round: 12, name: 'Eric Hunter',           school: 'Purdue',     pts: null },
+      { round: 13, name: 'Damion Baugh',          school: 'TCU',        pts: null },
+      { round: 14, name: 'Michael Jones',         school: 'Davidson',   pts: null },
+      { round: 15, name: 'Nate Laszewski',        school: 'Nor Dame',   pts: null },
+    ]
+  },
   2023: {
     team: 'Shy Ballers',
     draftPosition: 14,
@@ -649,7 +670,7 @@ app.get('/api/champion-rosters', (req, res) => {
   res.json({ rosters: { ...CHAMPION_ROSTERS, ...saved } });
 });
 
-app.post('/api/admin/archive-season', requireAuth, (req, res) => {
+app.post('/api/admin/archive-season', requireAdmin, (req, res) => {
   try {
     const bracket   = bracketCache;
     const scores    = scoresCache;
