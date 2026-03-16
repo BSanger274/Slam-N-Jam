@@ -1542,7 +1542,7 @@ async function openBoxScore(gameId, team1, team2) {
   set('modal-game-title', `${team1} vs ${team2}`);
   scoreRow.innerHTML = '';
   body.innerHTML = '<div class="modal-loading">Loading box score…</div>';
-  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   try {
     const r = await fetch(`${API}/api/boxscore/${gameId}`);
@@ -1602,7 +1602,7 @@ async function openPreGameStats(team1, team2, gameId) {
   const body     = document.getElementById('modal-body');
   const scoreRow = document.getElementById('modal-score-row');
   set('modal-game-title', `${team1} vs ${team2}`);
-  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   body.innerHTML = '<div class="modal-loading">Loading stats…</div>';
 
@@ -1761,13 +1761,19 @@ async function loadChampionRosters() {
   return CHAMPION_ROSTERS_CACHE;
 }
 
+function ordinal(n) {
+  const s = ['th','st','nd','rd'], v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]);
+}
+
 async function openRosterModal(year, teamName) {
   const modal = document.getElementById('roster-modal');
   const body  = document.getElementById('roster-body');
-  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   document.getElementById('roster-title').textContent = `${year} · ${teamName}`;
   document.getElementById('roster-subtitle').textContent = 'CHAMPIONSHIP ROSTER';
+  // Will update with draft position once data loads
   body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Loading…</div>';
 
   const rosters = await loadChampionRosters();
@@ -1781,6 +1787,9 @@ async function openRosterModal(year, teamName) {
     </div>`;
     return;
   }
+  // Update subtitle with draft position if available
+  const draftStr = data.draftPosition ? `CHAMPIONSHIP ROSTER · Drafted ${ordinal(data.draftPosition)} Overall` : 'CHAMPIONSHIP ROSTER';
+  document.getElementById('roster-subtitle').textContent = draftStr;
 
   const total = data.players.reduce((s,p) => s + (p.pts||0), 0);
   const hasPoints = data.players.some(p => p.pts != null && p.pts > 0);
@@ -1817,7 +1826,7 @@ async function openRosterModal(year, teamName) {
 }
 
 function closeRosterModal() {
-  document.getElementById('roster-modal').classList.add('hidden');
+  document.getElementById('roster-modal').style.display = 'none';
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeRosterModal(); });
@@ -1897,7 +1906,7 @@ setInterval(refreshTicker, 60000);
 
 </script>
   <!-- CHAMPION ROSTER MODAL -->
-  <div id="roster-modal" class="hidden" style="position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeRosterModal()">
+  <div id="roster-modal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeRosterModal()">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;width:min(520px,95vw);max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6)">
       <!-- Header -->
       <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(255,184,0,.05)">
