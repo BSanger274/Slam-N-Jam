@@ -2455,13 +2455,9 @@ function refreshTicker() {
   }
   const combined = allItems.join('');
   track.innerHTML = combined + combined;
-  // Measure actual rendered width then set speed at 150px/sec
-  requestAnimationFrame(() => {
-    const halfWidth = track.scrollWidth / 2;
-    const pxPerSec  = 150;
-    const dur       = Math.round(halfWidth / pxPerSec);
-    track.style.animationDuration = Math.max(10, dur) + 's';
-  });
+  // Set duration: ~2s per item, min 15s — fast enough to read, slow enough to see all
+  const dur = Math.max(15, allItems.length * 2);
+  track.style.animationDuration = dur + 's';
 }
 
 setTimeout(refreshTicker, 1500);
