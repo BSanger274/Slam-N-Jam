@@ -555,6 +555,25 @@ app.get('/api/scores', async (req, res) => {
 // History — inline fallback guarantees data is always returned
 // Champion roster data — add more years as you collect them
 const CHAMPION_ROSTERS = {
+  2018: {
+    team: 'Team McCarty',
+    draftPosition: 2,
+    players: [
+      { round: 1,  name: 'Mikal Bridges',         school: 'Villanova',        pts: 93 },
+      { round: 2,  name: 'Grant Williams',         school: 'Tennessee',        pts: 26 },
+      { round: 3,  name: 'Mustapha Heron',         school: 'Auburn',           pts: 28 },
+      { round: 4,  name: 'Jarrett Culver',         school: 'Texas Tech',       pts: 30 },
+      { round: 5,  name: 'Matt Mobley',            school: 'St. Bon',          pts: 24 },
+      { round: 6,  name: 'Demontrae Jefferson',    school: 'Tx. Southern',     pts: 20 },
+      { round: 7,  name: 'Zavier Simpson',         school: 'Michigan',         pts: 39 },
+      { round: 8,  name: 'Khadeen Carrington',     school: 'Seton Hall',       pts: 54 },
+      { round: 9,  name: 'Marvin Smith',           school: 'UNCG',             pts: 4  },
+      { round: 10, name: 'CJ Massinburg',          school: 'Buffalo',          pts: 37 },
+      { round: 11, name: 'Kyle Allman Jr.',        school: 'Cal St. Fullerton',pts: 21 },
+      { round: 12, name: 'A.J. Harris',            school: 'New Mexico St',    pts: 2  },
+      { round: 13, name: 'Alex Robinson',          school: 'TCU',              pts: 7  },
+    ]
+  },
   2019: {
     team: 'One Putt Jackson',
     draftPosition: 17,
