@@ -1552,22 +1552,40 @@ function renderHistory() {
 async function renderDraftPositionBest() {
   const el = document.getElementById('hist-draft-best');
   if (!el) return;
-  const rosters = await loadChampionRosters();
-  if (!Object.keys(rosters).length) {
-    el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px 0">No roster data yet — will populate as seasons are archived.</p>';
-    return;
-  }
 
-  // Build: for each draft round (1-15), find the best score across all years
-  const bestByRound = {}; // round -> { pts, name, school, year, team }
-  Object.entries(rosters).forEach(([year, data]) => {
-    data.players.forEach(p => {
-      if (p.pts == null) return;
+  // Build from all-time seasons (all teams) + fallback to champion rosters
+  const seasons = await loadAllTimeSeasons();
+  const champRosters = await loadChampionRosters();
+
+  const bestByRound = {};
+
+  // Pull from all-time seasons first (has all teams)
+  Object.entries(seasons).forEach(([year, season]) => {
+    (season.teams || []).forEach(team => {
+      (team.players || []).forEach(p => {
+        if (p.pts == null || p.pts === 0) return;
+        if (!bestByRound[p.round] || p.pts > bestByRound[p.round].pts) {
+          bestByRound[p.round] = { pts: p.pts, name: p.name, school: p.school, year: parseInt(year), team: team.name };
+        }
+      });
+    });
+  });
+
+  // Fallback: also check hardcoded champion rosters for older years
+  Object.entries(champRosters).forEach(([year, data]) => {
+    if (seasons[year]) return; // already covered
+    (data.players || []).forEach(p => {
+      if (p.pts == null || p.pts === 0) return;
       if (!bestByRound[p.round] || p.pts > bestByRound[p.round].pts) {
         bestByRound[p.round] = { pts: p.pts, name: p.name, school: p.school, year: parseInt(year), team: data.team };
       }
     });
   });
+
+  if (!Object.keys(bestByRound).length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px 0">No roster data yet — will populate as seasons are archived.</p>';
+    return;
+  }
 
   const rounds = Object.keys(bestByRound).sort((a,b) => a-b);
   if (!rounds.length) {
@@ -1600,15 +1618,37 @@ async function renderDraftPositionBest() {
 async function renderAllTimeTopPlayers() {
   const el = document.getElementById('hist-top-players');
   if (!el) return;
-  const rosters = await loadChampionRosters();
 
-  // Flatten all players across all years, filter out nulls, sort by pts desc
+  const seasons = await loadAllTimeSeasons();
+  const champRosters = await loadChampionRosters();
   const all = [];
-  Object.entries(rosters).forEach(([year, data]) => {
-    data.players.forEach(p => {
-      if (p.pts != null) all.push({ ...p, year: parseInt(year), team: data.team });
+  const seen = new Set(); // avoid duplicates
+
+  // Pull from all-time seasons (all teams)
+  Object.entries(seasons).forEach(([year, season]) => {
+    (season.teams || []).forEach(team => {
+      (team.players || []).forEach(p => {
+        if (p.pts == null) return;
+        const key = `${year}-${p.name}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        all.push({ ...p, year: parseInt(year), team: team.name });
+      });
     });
   });
+
+  // Fallback: hardcoded champion rosters for older years
+  Object.entries(champRosters).forEach(([year, data]) => {
+    if (seasons[year]) return;
+    (data.players || []).forEach(p => {
+      if (p.pts == null) return;
+      const key = `${year}-${p.name}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      all.push({ ...p, year: parseInt(year), team: data.team });
+    });
+  });
+
   all.sort((a,b) => b.pts - a.pts);
 
   if (!all.length) {
@@ -2243,7 +2283,7 @@ async function archiveSeason() {
     });
     const d = await r.json();
     if (d.ok) {
-      status.textContent = `✅ Saved! ${d.year} ${d.team} · ${d.players} players · Draft pick #${d.draftPosition}`;
+      status.textContent = `✅ Saved! ${d.year} · ${d.teams} teams · ${d.players} players · Champion: ${d.champion || 'TBD'}`;
       status.style.color = 'var(--green)';
       CHAMPION_ROSTERS_CACHE = null; // bust cache so modal reloads fresh
     } else {
@@ -2258,6 +2298,7 @@ async function archiveSeason() {
 
 // ── CHAMPION ROSTER MODAL ──
 let CHAMPION_ROSTERS_CACHE = null;
+let ALL_TIME_SEASONS_CACHE = null;
 
 async function loadChampionRosters() {
   if (CHAMPION_ROSTERS_CACHE) return CHAMPION_ROSTERS_CACHE;
@@ -2267,6 +2308,17 @@ async function loadChampionRosters() {
     CHAMPION_ROSTERS_CACHE = d.rosters || {};
   } catch(e) { CHAMPION_ROSTERS_CACHE = {}; }
   return CHAMPION_ROSTERS_CACHE;
+}
+
+async function loadAllTimeSeasons() {
+  if (ALL_TIME_SEASONS_CACHE) return ALL_TIME_SEASONS_CACHE;
+  try {
+    const r = await fetch(`${API}/api/all-time-seasons`);
+    const d = await r.json();
+    ALL_TIME_SEASONS_CACHE = d.seasons || {};
+  } catch(e) { ALL_TIME_SEASONS_CACHE = {}; }
+  // Merge with hardcoded champion rosters as fallback for older years
+  return ALL_TIME_SEASONS_CACHE;
 }
 
 function ordinal(n) {
