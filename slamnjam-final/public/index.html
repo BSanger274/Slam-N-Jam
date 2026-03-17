@@ -2449,8 +2449,48 @@ function refreshTicker() {
 
   const allItems = [...liveItems,...finalItems,...upcomingItems];
   if (!allItems.length) {
-    track.innerHTML = `<span style="color:rgba(255,255,255,.3);font-size:12px;padding:0 20px">Tournament begins Mar 17 · First Four in Dayton, OH · UMBC vs Howard 6:40 PM · Texas vs NC State 9:15 PM</span>`;
-    track.style.animationDuration = '25s';
+    // Static fallback — show all upcoming games from hardcoded schedule
+    const staticGames = [
+      'TUE MAR 17 · 6:40 PM ET · UMBC vs Howard · truTV',
+      'TUE MAR 17 · 9:15 PM ET · Texas vs NC State · truTV',
+      'WED MAR 18 · 6:40 PM ET · Prairie View vs Lehigh · truTV',
+      'WED MAR 18 · 9:15 PM ET · Miami OH vs SMU · truTV',
+      'THU MAR 19 · 12:10 PM ET · N. Carolina vs VCU · TNT',
+      'THU MAR 19 · 12:15 PM ET · Ohio State vs TCU · CBS',
+      'THU MAR 19 · 1:30 PM ET · Louisville vs South Florida · TNT',
+      'THU MAR 19 · 1:50 PM ET · Wisconsin vs High Point · TBS',
+      'THU MAR 19 · 2:45 PM ET · Illinois vs Penn · TNT',
+      'THU MAR 19 · 2:50 PM ET · Duke vs Siena · CBS',
+      'THU MAR 19 · 4:05 PM ET · Michigan St vs N. Dakota St · TNT',
+      'THU MAR 19 · 4:25 PM ET · Arkansas vs Hawaii · TBS',
+      'THU MAR 19 · 6:45 PM ET · Nebraska vs Troy · truTV',
+      'THU MAR 19 · 7:10 PM ET · Michigan vs UMBC/Howard · CBS',
+      'THU MAR 19 · 7:15 PM ET · Gonzaga vs Kennesaw St · TBS',
+      'THU MAR 19 · 7:35 PM ET · Saint Marys vs Texas A&M · truTV',
+      'THU MAR 19 · 9:20 PM ET · Vanderbilt vs McNeese · truTV',
+      'THU MAR 19 · 9:45 PM ET · Georgia vs Saint Louis · CBS',
+      'THU MAR 19 · 9:50 PM ET · BYU vs TX/NCS · TBS',
+      'THU MAR 19 · 10:10 PM ET · Houston vs Idaho · truTV',
+      'FRI MAR 20 · 12:15 PM ET · Kentucky vs Santa Clara · CBS',
+      'FRI MAR 20 · 12:40 PM ET · Texas Tech vs Akron · truTV',
+      'FRI MAR 20 · 1:35 PM ET · Arizona vs LIU · TNT',
+      'FRI MAR 20 · 1:50 PM ET · Virginia vs Wright State · TBS',
+      'FRI MAR 20 · 2:50 PM ET · Iowa State vs Tennessee St · CBS',
+      'FRI MAR 20 · 3:15 PM ET · Alabama vs Hofstra · truTV',
+      'FRI MAR 20 · 4:10 PM ET · Villanova vs Utah State · TNT',
+      'FRI MAR 20 · 4:25 PM ET · Tennessee vs MIA/SMU · TBS',
+      'FRI MAR 20 · 6:50 PM ET · Clemson vs Iowa · TNT',
+      'FRI MAR 20 · 6:50 PM ET · Miami FL vs Missouri · TNT',
+      'FRI MAR 20 · 7:10 PM ET · St. Johns vs Northern Iowa · CBS',
+      'FRI MAR 20 · 7:25 PM ET · UCLA vs UCF · TBS',
+      'FRI MAR 20 · 9:25 PM ET · Florida vs PV/LEH · TNT',
+      'FRI MAR 20 · 9:25 PM ET · Purdue vs Queens · TNT',
+      'FRI MAR 20 · 9:45 PM ET · Kansas vs CA Baptist · CBS',
+      'FRI MAR 20 · 10:00 PM ET · UConn vs Furman · TBS',
+    ];
+    const staticHTML = staticGames.map(g => `<span style="color:rgba(255,255,255,.5);font-size:12px;padding:0 24px;white-space:nowrap">📅 ${g}</span>`).join('');
+    track.innerHTML = staticHTML + staticHTML;
+    track.style.animationDuration = '60s';
     return;
   }
   const combined = allItems.join('');
