@@ -672,69 +672,66 @@ app.get('/api/champion-rosters', (req, res) => {
 
 app.post('/api/admin/archive-season', requireAdmin, (req, res) => {
   try {
-    const bracket   = bracketCache;
-    const scores    = scoresCache;
-    const year      = new Date().getFullYear();
+    const year    = new Date().getFullYear();
+    const merged  = scoresCache?.merged || {};
+    const roster  = readJSON(ROSTER_F, { teams: [] });
+    const teams   = roster.teams || [];
 
-    if (!bracket) return res.json({ ok:false, error:'No bracket data' });
+    if (!teams.length) return res.json({ ok:false, error:'No roster data found — upload roster first' });
 
-    // Find the champion team name
-    const champion = bracket.final4?.champion;
-    if (!champion || champion === 'TBD') return res.json({ ok:false, error:'Champion not yet determined' });
-
-    // Find which draft team won
-    const rosters  = readJSON(ROSTER_F, []);
-    const winner   = rosters.find(t => t.players?.some(p => p.school === champion || t.name === champion));
-
-    // Build player list with accumulated points from scores cache
-    const merged   = scores?.merged || {};
-    const allPlayers = rosters.flatMap(t =>
-      t.players.map(p => ({ ...p, teamName: t.name, teamIdx: rosters.indexOf(t) }))
-    );
-
-    // Find the winning team
-    const winningTeam = rosters.find(t =>
-      t.players?.some(p => Object.keys(merged).some(name =>
-        name.toLowerCase().includes(p.name?.toLowerCase()?.split(' ')[0])
-      ))
-    );
-
-    // Get winning team from HISTORY (most recent year = current winner)
+    // Get champion from history data
     const history   = readJSON(HISTORY_F, HISTORY_DATA);
     const thisYear  = history.winners?.find(w => w.year === year);
-    const teamName  = thisYear?.winner || champion;
+    const champion  = thisYear?.winner || null;
 
-    // Find manager's players and their scores
-    const teamRoster = rosters.find(t => t.name === teamName);
-    if (!teamRoster) return res.json({ ok:false, error: `Team "${teamName}" not found in rosters` });
-
-    const players = teamRoster.players.map((p, i) => ({
-      round:  i + 1,
-      name:   p.name,
-      school: p.school,
-      pts:    merged[p.name] ?? null,
+    // Build full season record — ALL teams, ALL players with final points
+    const allTeams = teams.map((t, ti) => ({
+      name:          t.name,
+      draftPosition: ti + 1,
+      isChampion:    champion ? t.name === champion : false,
+      totalPts:      t.players.reduce((s, p) => s + (merged[p.name] ?? p.pts ?? 0), 0),
+      players:       t.players.map((p, pi) => ({
+        round:  pi + 1,
+        name:   p.name,
+        school: p.school || '—',
+        pts:    merged[p.name] ?? p.pts ?? null,
+      }))
     }));
 
-    // Find draft position (1-indexed position in rosters array)
-    const draftPosition = rosters.indexOf(teamRoster) + 1;
-
-    const entry = {
-      team: teamName,
-      draftPosition,
-      players,
+    // 1. Save all-teams archive (for All-Time stats)
+    const allTime = readJSON(path.join(DATA, 'all_time_seasons.json'), {});
+    allTime[year] = {
+      year,
+      champion,
+      teams: allTeams,
+      archivedAt: new Date().toISOString()
     };
+    writeJSON(path.join(DATA, 'all_time_seasons.json'), allTime);
 
-    // Save to disk
-    const saved = readJSON(path.join(DATA, 'champion_rosters.json'), {});
-    saved[year] = entry;
-    writeJSON(path.join(DATA, 'champion_rosters.json'), saved);
+    // 2. Save champion roster separately (for History year cards popup)
+    const champTeam = allTeams.find(t => t.isChampion) || allTeams[0];
+    const champRosters = readJSON(path.join(DATA, 'champion_rosters.json'), {});
+    champRosters[year] = {
+      team:          champTeam.name,
+      draftPosition: champTeam.draftPosition,
+      players:       champTeam.players
+    };
+    writeJSON(path.join(DATA, 'champion_rosters.json'), champRosters);
 
-    console.log(`[Archive] Saved ${year} champion: ${teamName}`);
-    res.json({ ok:true, year, team: teamName, players: players.length, draftPosition });
+    const totalPlayers = allTeams.reduce((s,t) => s + t.players.length, 0);
+    console.log(`[Archive] Saved ${year}: ${allTeams.length} teams, ${totalPlayers} players. Champion: ${champion}`);
+    res.json({ ok:true, year, teams: allTeams.length, players: totalPlayers, champion });
+
   } catch(e) {
     console.error('[Archive]', e);
     res.json({ ok:false, error: e.message });
   }
+});
+
+// All-time seasons data (for History stats sections)
+app.get('/api/all-time-seasons', (req, res) => {
+  const saved = readJSON(path.join(DATA, 'all_time_seasons.json'), {});
+  res.json({ seasons: saved });
 });
 
 app.get('/api/history', (req, res) => {
