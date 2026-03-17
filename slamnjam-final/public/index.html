@@ -172,6 +172,8 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .roster-name { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; flex:1; }
 .roster-school { font-size:11px; color:var(--muted); }
 .roster-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); min-width:36px; text-align:right; flex-shrink:0; }
+/* Hide checkmark in status badge on mobile */
+@media (max-width:768px) { .status-check { display:none !important; } }
 /* Force center alignment on roster modal points column */
 #roster-modal #roster-body table td:last-child,
 #roster-modal #roster-body table th:last-child,
@@ -203,6 +205,8 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .roster-name { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; flex:1; }
 .roster-school { font-size:11px; color:var(--muted); }
 .roster-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); min-width:36px; text-align:right; flex-shrink:0; }
+/* Hide checkmark in status badge on mobile */
+@media (max-width:768px) { .status-check { display:none !important; } }
 /* Force center alignment on roster modal points column */
 #roster-modal #roster-body table td:last-child,
 #roster-modal #roster-body table th:last-child,
@@ -468,7 +472,11 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
 <div class="page" id="page-teams">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px">ALL TEAMS</h2>
-    <input class="srch" placeholder="Search team…" oninput="filterTCards(this.value)">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input class="srch" placeholder="Search team…" oninput="filterTCards(this.value)">
+      <button onclick="openH2H()" style="background:rgba(255,107,0,.12);border:1px solid rgba(255,107,0,.3);color:var(--orange);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;padding:7px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .2s"
+        onmouseenter="this.style.background='rgba(255,107,0,.25)'" onmouseleave="this.style.background='rgba(255,107,0,.12)'">⚔️ Head-to-Head</button>
+    </div>
   </div>
   <div class="tgrid" id="team-cards"></div>
 </div>
@@ -1052,7 +1060,7 @@ function renderPlayers() {
       <td style="color:var(--muted);font-size:12px">${p.school}</td>
       <td><span class="tn" onclick="viewTeam('${esc(p.teamName)}','players')" style="font-size:12px">${p.teamName}</span></td>
       <td class="pts" style="font-size:18px">${p.pts}</td>
-      <td style="text-align:right"><span class="chip ${p.active?'':'out'}">${p.active?'✓ Active':'✗ Out'}</span></td>
+      <td style="text-align:right"><span class="chip ${p.active?'':'out'}">${p.active?'<span class="status-check">✓ </span>Active':'✗ Out'}</span></td>
     </tr>`).join('');
 }
 
