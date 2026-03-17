@@ -21,7 +21,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 header{background:rgba(8,8,16,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
 .hinner{max-width:1440px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
 .logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0;text-decoration:none}
-.logo-ball{font-size:28px;display:inline-block;animation:ballspin 10s linear infinite}
+.logo-ball{font-size:28px;display:inline-block;animation:ballspin 6s linear infinite;transform-origin:center}
+.logo-ball:hover{animation:ballspin 2s linear infinite!important;cursor:pointer}
 @keyframes ballspin{to{transform:rotate(360deg)}}
 .logo-text{font-family:'Bebas Neue',sans-serif;font-size:23px;letter-spacing:3px;color:var(--text)}
 .logo-text em{color:var(--orange);font-style:normal}
@@ -395,7 +396,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
 <header>
   <div class="hinner">
     <div class="logo" onclick="showPage('dashboard')">
-      <span class="logo-ball">🏀</span>
+      <span class="logo-ball" id="logo-ball">🏀</span>
       <span class="logo-text">SLAM<em>-N-</em>JAM</span>
     </div>
     <nav>
@@ -2203,6 +2204,191 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeBoxScore(
 // BOOT
 // ═══════════════════════════════════════════════
 startPolling();
+
+// ── DRIBBLE & SHATTER EASTER EGG ──
+let ballBouncing = false;
+
+function launchBall() {
+  if (ballBouncing) return;
+  ballBouncing = true;
+
+  const orig = document.getElementById('logo-ball');
+  const r = orig.getBoundingClientRect();
+  orig.style.opacity = '0';
+
+  // Create the ball element
+  const ball = document.createElement('div');
+  ball.textContent = '🏀';
+  ball.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;transform-origin:center;font-size:32px;transition:none;line-height:1';
+  document.body.appendChild(ball);
+
+  // Starting position (center of original ball)
+  const startX = r.left + r.width / 2;
+  const startY = r.top + r.height / 2;
+  const floorY = window.innerHeight - 60;
+  const centerX = window.innerWidth / 2;
+
+  // Phase 1: Dribble down — 3 bounces, each lower and bigger
+  const bounces = [
+    { bottomY: floorY * 0.5, size: 40,  dur: 350 },
+    { bottomY: floorY * 0.75,size: 60,  dur: 400 },
+    { bottomY: floorY,       size: 90,  dur: 450 },
+  ];
+
+  let phase = 0;
+  let phaseStart = null;
+  let curSize = 32;
+  let curX = startX;
+  let curY = startY;
+  let prevY = startY;
+  let prevX = startX;
+  let squishActive = false;
+
+  function ease(t) { return t < .5 ? 2*t*t : -1+(4-2*t)*t; }
+  function easeIn(t) { return t*t; }
+  function easeOut(t) { return t*(2-t); }
+
+  function setball(x, y, size, squishX=1, squishY=1) {
+    const halfSize = size / 2;
+    ball.style.left = (x - halfSize) + 'px';
+    ball.style.top  = (y - halfSize) + 'px';
+    ball.style.fontSize = size + 'px';
+    ball.style.transform = `scaleX(${squishX}) scaleY(${squishY}) rotate(${(performance.now()/3)%360}deg)`;
+  }
+
+  // Animate dribble phases
+  function dribblePhase(idx, resolve) {
+    if (idx >= bounces.length) { resolve(); return; }
+    const b = bounces[idx];
+    const fromY = idx === 0 ? startY : floorY;
+    const fromX = idx === 0 ? startX : centerX;
+    const fromSize = idx === 0 ? 32 : bounces[idx-1].size;
+    const toSize = b.size;
+    const halfDur = b.dur / 2;
+    let start = null;
+
+    function tick(now) {
+      if (!start) start = now;
+      const elapsed = now - start;
+
+      if (elapsed < halfDur) {
+        // Going DOWN
+        const t = elapsed / halfDur;
+        const y = fromY + easeIn(t) * (b.bottomY - fromY);
+        const x = fromX + (centerX - fromX) * t;
+        const size = fromSize + (toSize - fromSize) * t;
+        // Squish on landing
+        const squishY = t > .85 ? (1 - (t-.85)/.15 * 0.4) : 1;
+        const squishX = t > .85 ? (1 + (t-.85)/.15 * 0.4) : 1;
+        setball(x, y, size, squishX, squishY);
+      } else if (elapsed < b.dur) {
+        // Bouncing back UP a little before next dribble
+        const t = (elapsed - halfDur) / halfDur;
+        const bounceHeight = (b.bottomY - fromY) * 0.3;
+        const y = b.bottomY - easeOut(t) * bounceHeight;
+        const x = centerX;
+        const size = toSize;
+        const squishY = t < .15 ? (0.6 + t/.15 * 0.4) : 1;
+        const squishX = t < .15 ? (1.4 - t/.15 * 0.4) : 1;
+        setball(x, y, size, squishX, squishY);
+      } else {
+        dribblePhase(idx + 1, resolve);
+        return;
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Phase 2: Launch UP toward screen — rapidly growing
+  function launchUp(resolve) {
+    const fromSize = bounces[bounces.length-1].size;
+    const dur = 600;
+    let start = null;
+    function tick(now) {
+      if (!start) start = now;
+      const t = Math.min((now-start)/dur, 1);
+      const size = fromSize + easeIn(t) * (window.innerWidth * 1.4 - fromSize);
+      const y = floorY - easeIn(t) * (floorY + size/2);
+      setball(centerX, y, size, 1, 1);
+      if (t < 1) requestAnimationFrame(tick);
+      else resolve();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Phase 3: Shatter effect
+  function shatter(resolve) {
+    ball.remove();
+
+    // Flash white
+    const flash = document.createElement('div');
+    flash.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(255,150,0,.6);pointer-events:none;transition:opacity .3s';
+    document.body.appendChild(flash);
+
+    // Create crack SVG overlay
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.style.cssText = 'position:fixed;inset:0;z-index:10001;pointer-events:none;width:100%;height:100%';
+    svg.setAttribute('viewBox',`0 0 ${window.innerWidth} ${window.innerHeight}`);
+
+    // Generate random cracks from center
+    const cx = centerX, cy = window.innerHeight/2;
+    const numCracks = 12;
+    let crackHTML = '';
+    for (let i = 0; i < numCracks; i++) {
+      const angle = (i / numCracks) * Math.PI * 2;
+      const len = 150 + Math.random() * 300;
+      const wobble1x = cx + Math.cos(angle) * len * 0.4 + (Math.random()-0.5)*80;
+      const wobble1y = cy + Math.sin(angle) * len * 0.4 + (Math.random()-0.5)*80;
+      const endx = cx + Math.cos(angle) * len + (Math.random()-0.5)*60;
+      const endy = cy + Math.sin(angle) * len + (Math.random()-0.5)*60;
+      // Branch cracks
+      const branchAngle = angle + (Math.random()-.5) * 1.2;
+      const branchLen = 60 + Math.random()*100;
+      const bx = wobble1x + Math.cos(branchAngle)*branchLen;
+      const by = wobble1y + Math.sin(branchAngle)*branchLen;
+      crackHTML += `<path d="M${cx},${cy} L${wobble1x},${wobble1y} L${endx},${endy}" stroke="rgba(255,255,255,0.9)" stroke-width="${1+Math.random()*2}" fill="none" opacity="0.85"/>`;
+      crackHTML += `<path d="M${wobble1x},${wobble1y} L${bx},${by}" stroke="rgba(255,255,255,0.7)" stroke-width="1" fill="none" opacity="0.7"/>`;
+    }
+    svg.innerHTML = crackHTML;
+    document.body.appendChild(svg);
+
+    // Shake the page
+    document.body.style.transition = 'transform .05s';
+    let shakeCount = 0;
+    const shakeInterval = setInterval(() => {
+      const dx = (Math.random()-0.5)*16;
+      const dy = (Math.random()-0.5)*16;
+      document.body.style.transform = `translate(${dx}px,${dy}px)`;
+      if (++shakeCount > 12) {
+        clearInterval(shakeInterval);
+        document.body.style.transform = '';
+      }
+    }, 40);
+
+    // Fade out flash and cracks
+    setTimeout(() => { flash.style.opacity = '0'; }, 100);
+    setTimeout(() => {
+      svg.style.transition = 'opacity 1s';
+      svg.style.opacity = '0';
+    }, 500);
+    setTimeout(() => {
+      flash.remove(); svg.remove();
+      resolve();
+    }, 2000);
+  }
+
+  // Run the full sequence
+  new Promise(resolve => dribblePhase(0, resolve))
+    .then(() => new Promise(resolve => launchUp(resolve)))
+    .then(() => new Promise(resolve => shatter(resolve)))
+    .then(() => {
+      // Return ball to home
+      orig.style.transition = 'opacity .4s';
+      orig.style.opacity = '1';
+      setTimeout(() => { orig.style.transition = ''; ballBouncing = false; }, 400);
+    });
+}
 
 // ── HEAD-TO-HEAD ──
 function openH2H() {
