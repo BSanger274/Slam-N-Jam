@@ -537,7 +537,14 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
   <div class="bkt-header">
     <div>
       <div class="bkt-title">2026 NCAA BRACKET</div>
-      <div class="bkt-sub">Auto-updates from ESPN every 60 seconds · Gold badges = your drafted players</div>
+      <div class="bkt-sub">Auto-updates from ESPN every 60 seconds · Gold badges = drafted players</div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <label style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Highlight Manager:</label>
+        <select id="bracket-manager-filter" onchange="setBracketManager(this.value)"
+          style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;cursor:pointer">
+          <option value="">All Managers</option>
+        </select>
+      </div>
     </div>
     <div class="bkt-legend">
       <div class="leg"><div class="leg-dot" style="background:var(--orange)"></div>Winner</div>
@@ -761,6 +768,7 @@ async function fetchAll() {
     document.getElementById('ldot').className = 'ldot live';
     renderAll();
     refreshTicker();
+    populateBracketManagerDropdown();
     if (document.getElementById('page-bracket').classList.contains('active')) {
       renderBracket(currentRegion);
       renderDraftStrip();
@@ -1066,13 +1074,40 @@ function renderPlayers() {
 // ═══════════════════════════════════════════════
 // BRACKET
 // ═══════════════════════════════════════════════
-function draftInfo(schoolName) {
+let BRACKET_MANAGER_FILTER = '';
+
+function setBracketManager(val) {
+  BRACKET_MANAGER_FILTER = val;
+  renderBracket(currentRegion);
+  renderDraftStrip();
+}
+
+function populateBracketManagerDropdown() {
+  const sel = document.getElementById('bracket-manager-filter');
+  if (!sel || !TEAMS.length) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="">All Managers</option>' +
+    [...TEAMS].sort((a,b)=>a.name.localeCompare(b.name))
+      .map(t => `<option value="${t.name}" ${t.name===current?'selected':''}>${t.name}</option>`)
+      .join('');
+}
+
+function draftInfo(playerName) {
+  const results = [];
   for (const t of TEAMS) {
     for (const p of t.players) {
-      if (p.school === schoolName) return { team: t.name, pts: p.pts };
+      if (p.name === playerName) {
+        results.push({ team: t.name, pts: p.pts, active: p.active });
+      }
     }
   }
-  return null;
+  if (!results.length) return null;
+  // If manager filter active, only show that manager's players
+  if (BRACKET_MANAGER_FILTER) {
+    const match = results.find(r => r.team === BRACKET_MANAGER_FILTER);
+    return match || null;
+  }
+  return results[0];
 }
 
 function getTrend(schoolName) {
@@ -1174,10 +1209,29 @@ function teamLogo(name) {
 
 function renderMatchup(m) {
   const mk = (t) => {
-    const di = draftInfo(t.name);
+    const allDrafted = TEAMS.flatMap(team =>
+      team.players.filter(p => p.school === t.name).map(p => ({ ...p, teamName: team.name }))
+    );
+
     const sc = t.score!==null ? `<span class="sscore ${t.won?'hi':''}">${t.score}</span>` : '';
-    const dp = di ? `<span class="draft-pip">${di.pts}p</span>` : '';
-    const ti = di ? trendIcon(getTrend(t.name)) : '';
+    let dp = '', ti = '';
+
+    if (BRACKET_MANAGER_FILTER) {
+      // Specific manager selected — show individual pip(s) for their players only
+      const myPlayers = allDrafted.filter(p => p.teamName === BRACKET_MANAGER_FILTER);
+      if (myPlayers.length) {
+        dp = myPlayers.map(p =>
+          `<span class="draft-pip" title="${p.name}">${p.pts??0}p</span>`
+        ).join('');
+        ti = trendIcon(getTrend(t.name));
+      }
+    } else {
+      // All managers — show single count badge if any players drafted from this school
+      if (allDrafted.length) {
+        dp = `<span class="draft-pip" title="${allDrafted.map(p=>p.name+' ('+p.teamName+')').join(', ')}">👥 ${allDrafted.length}</span>`;
+      }
+    }
+
     const lg = teamLogo(t.name);
     return `<div class="slot ${slotCls(t.won,t.name)}">
       <span class="sseed">${t.seed||''}</span>
