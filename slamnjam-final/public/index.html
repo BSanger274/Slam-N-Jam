@@ -705,7 +705,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
   <div class="modal-box">
     <div class="modal-hd">
       <div class="modal-title" id="modal-game-title">Box Score</div>
-      <button class="modal-close" onclick="closeBoxScore()" style="position:relative;z-index:10;-webkit-tap-highlight-color:transparent;touch-action:manipulation">✕</button>
+      <button class="modal-close" id="modal-close-btn" style="position:relative;z-index:1002;-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer">✕</button>
     </div>
     <div class="modal-score-row" id="modal-score-row"></div>
     <div class="modal-body" id="modal-body">
@@ -2093,20 +2093,30 @@ function closeBoxScore() {
   document.getElementById('boxscore-modal').classList.add('hidden');
   document.body.style.overflow = '';
 }
+
+// Mobile-safe close button — attach both click and touchend
+(function attachModalClose() {
+  function doClose(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeBoxScore();
+  }
+  // Run immediately and also after any dynamic content loads
+  function attach() {
+    const btn = document.getElementById('modal-close-btn');
+    if (!btn) return;
+    btn.removeEventListener('click', doClose);
+    btn.removeEventListener('touchend', doClose);
+    btn.addEventListener('click', doClose);
+    btn.addEventListener('touchend', doClose, { passive: false });
+  }
+  attach();
+  document.addEventListener('DOMContentLoaded', attach);
+})();
 function closeModal(e) {
   if (e.target === document.getElementById('boxscore-modal')) closeBoxScore();
 }
-// Also add touch event directly to close button for mobile reliability
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.querySelector('.modal-close');
-  if (btn) {
-    btn.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      closeBoxScore();
-    }, { passive: false });
-  }
-});
+
 document.addEventListener('keydown', e => { if (e.key==='Escape') closeBoxScore(); });
 
 // ═══════════════════════════════════════════════
