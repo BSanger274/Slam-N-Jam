@@ -2520,19 +2520,14 @@ function refreshTicker() {
   }
   const combined = allItems.join('');
   // Build hash from game statuses only (not scores) to avoid restarting mid-scroll
-  // Only restart animation if the SET of games changed (new game added/removed)
-  // Score updates should update content without restarting the scroll position
   const gameSetHash = allMatchups.map(m => `${m.t1?.name}-${m.t2?.name}`).join('|');
   const needsRestart = gameSetHash !== lastTickerHash;
+  console.log('[Ticker] items:', allItems.length, 'needsRestart:', needsRestart, 'live:', liveItems.length, 'final:', finalItems.length, 'upcoming:', upcomingItems.length);
   lastTickerHash = gameSetHash;
-
-  // Always update innerHTML with latest scores
   track.innerHTML = combined + combined;
-
-  // Only reset animation duration if game set changed
   if (needsRestart) {
     track.style.animation = 'none';
-    track.offsetHeight; // force reflow
+    track.offsetHeight;
     track.style.animation = '';
     track.style.animationDuration = '30s';
   }
