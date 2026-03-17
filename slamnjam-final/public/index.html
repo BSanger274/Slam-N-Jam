@@ -762,6 +762,7 @@ async function fetchAll() {
     document.getElementById('lupd').textContent = 'Updated ' + t.toLocaleTimeString();
     document.getElementById('ldot').className = 'ldot live';
     renderAll();
+    refreshTicker();
     if (document.getElementById('page-bracket').classList.contains('active')) {
       renderBracket(currentRegion);
       renderDraftStrip();
@@ -2542,7 +2543,7 @@ function refreshTicker() {
   }
 }
 
-setTimeout(refreshTicker, 1500);
+// Ticker refreshes with main data poll — no separate timer needed
 setInterval(refreshTicker, 60000);
 
 </script>
