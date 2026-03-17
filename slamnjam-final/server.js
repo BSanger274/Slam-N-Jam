@@ -763,12 +763,17 @@ app.post('/api/admin/roster/csv', requireAdmin, (req, res) => {
   const { csv } = req.body;
   if (!csv) return res.status(400).json({ error: 'No CSV provided' });
 
-  const lines   = csv.trim().split('\n').slice(1);
+  // Handle all line ending types: \r\n (Windows), \r (old Mac), \n (Unix)
+  const lines   = csv.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim());
+  // Skip header row (contains TeamName or similar)
+  const dataLines = lines[0].toLowerCase().includes('teamname') ? lines.slice(1) : lines;
   const teamMap = {};
   let playerCount = 0;
 
-  for (const line of lines) {
-    const parts = line.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+  for (const line of dataLines) {
+    if (!line.trim()) continue;
+    // Handle quoted CSV fields
+    const parts = line.split(',').map(s => s.trim().replace(/^"|"$/g, '').trim());
     const [teamName, playerName, school] = parts;
     if (!teamName || !playerName) continue;
     if (!teamMap[teamName]) teamMap[teamName] = { name: teamName, players: [] };
