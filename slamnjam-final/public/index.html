@@ -1427,16 +1427,14 @@ function renderFinal4() {
     </div>
 
     <!-- Bracket: LEFT [svg] CENTER [svg] RIGHT -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:0;white-space:nowrap">
+    <div style="display:flex;align-items:center;justify-content:center;gap:0;white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;padding-bottom:8px">
 
       <!-- LEFT COLUMN: two pills stacked -->
       <div style="display:inline-flex;flex-direction:column;gap:${GAP}px;align-items:flex-end;white-space:normal;flex-shrink:0;padding-top:16px">
         <div>
-          <div style="font-size:9px;color:var(--orange);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;text-align:right">🟠 East Winner</div>
           ${teamPill(sf1?.t1||{name:'East Winner'}, sf1)}
         </div>
         <div>
-          <div style="font-size:9px;color:var(--green);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;text-align:right">🟢 South Winner</div>
           ${teamPill(sf1?.t2||{name:'South Winner'}, sf1)}
         </div>
       </div>
@@ -1478,11 +1476,9 @@ function renderFinal4() {
       <!-- RIGHT COLUMN: two pills stacked -->
       <div style="display:inline-flex;flex-direction:column;gap:${GAP}px;align-items:flex-start;white-space:normal;flex-shrink:0;padding-top:16px">
         <div>
-          <div style="font-size:9px;color:var(--blue);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">🔵 West Winner</div>
           ${teamPill(sf2?.t1||{name:'West Winner'}, sf2)}
         </div>
         <div>
-          <div style="font-size:9px;color:var(--red);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">🔴 Midwest Winner</div>
           ${teamPill(sf2?.t2||{name:'Midwest Winner'}, sf2)}
         </div>
       </div>
