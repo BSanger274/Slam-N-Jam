@@ -1407,10 +1407,10 @@ function renderFinal4() {
 
   const ROW_H  = 64;
   const GAP    = 40;
-  const TOTAL  = 168;  // exact column height
-  const TOP_Y  = 53;   // 16(pad) + 18(label) + 19(half pill)
-  const BOT_Y  = 149;  // 16+18+38+40+18+19
-  const MID    = (TOP_Y + BOT_Y) / 2;  // 101
+  const TOTAL  = 132;  // pad(16) + pill(38) + gap(40) + pill(38)
+  const TOP_Y  = 35;   // pad(16) + half-pill(19)
+  const BOT_Y  = 113;  // pad(16) + pill(38) + gap(40) + half-pill(19)
+  const MID    = (TOP_Y + BOT_Y) / 2;  // 74
   const LINE_L = 112;  // outer horizontal lines
   const TBD_L  = 145;  // TBD center line — longer
 
