@@ -572,6 +572,8 @@ const CHAMPION_ROSTERS = {
       { round: 11, name: 'Kyle Allman Jr.',        school: 'Cal St. Fullerton',pts: 21 },
       { round: 12, name: 'A.J. Harris',            school: 'New Mexico St',    pts: 2  },
       { round: 13, name: 'Alex Robinson',          school: 'TCU',              pts: 7  },
+      { round: 14, name: 'Xavier Sneed',            school: 'Kansas St',        pts: 55 },
+      { round: 15, name: 'AJ Brodeur',              school: 'Penn',             pts: 14 },
     ]
   },
   2019: {
