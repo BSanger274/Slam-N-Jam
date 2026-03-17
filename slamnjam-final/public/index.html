@@ -1766,7 +1766,7 @@ function admTab(t) {
   if (t==='live-view') loadFeed();
 }
 
-async function uploadCSV() {
+async async function uploadCSV() {
   const csv = document.getElementById('csv-in').value.trim();
   if (!csv) return showAlert('csv-alert','err','Paste CSV first');
   try {
@@ -1774,7 +1774,7 @@ async function uploadCSV() {
     const d = await r.json();
     d.ok ? showAlert('csv-alert','ok',`✓ ${d.teamCount} teams, ${d.playerCount} players uploaded`) : showAlert('csv-alert','err',d.error);
     if (d.ok) fetchAll();
-  } catch { showAlert('csv-alert','err','Server error'); }
+  } catch(e) { showAlert('csv-alert','err','Server error: '+e.message); }
 }
 
 async function addOverride() {
