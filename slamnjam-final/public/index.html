@@ -2520,16 +2520,25 @@ function refreshTicker() {
   }
   const combined = allItems.join('');
   // Build hash from game statuses only (not scores) to avoid restarting mid-scroll
-  const gameSetHash = allMatchups.map(m => `${m.t1?.name}-${m.t2?.name}`).join('|');
+  const gameSetHash = allMatchups.map(m => `${m.t1?.name}-${m.t2?.name}-${m.t1?.won??''}-${m.t2?.won??''}`).join('|');
   const needsRestart = gameSetHash !== lastTickerHash;
-  console.log('[Ticker] items:', allItems.length, 'needsRestart:', needsRestart, 'live:', liveItems.length, 'final:', finalItems.length, 'upcoming:', upcomingItems.length);
   lastTickerHash = gameSetHash;
-  track.innerHTML = combined + combined;
+
   if (needsRestart) {
+    // Full restart — game set changed
+    track.innerHTML = combined + combined;
     track.style.animation = 'none';
-    track.offsetHeight;
-    track.style.animation = '';
+    track.offsetHeight; // force reflow
+    track.style.animation = 'ticker-scroll linear infinite';
     track.style.animationDuration = '30s';
+  } else {
+    // Only update scores in-place without touching animation
+    // Replace each tick-item's score text without rebuilding DOM
+    const existing = track.querySelectorAll('.tick-item');
+    const newItems = [...new DOMParser().parseFromString(combined + combined, 'text/html').querySelectorAll('.tick-item')];
+    existing.forEach((el, i) => {
+      if (newItems[i]) el.innerHTML = newItems[i].innerHTML;
+    });
   }
 }
 
