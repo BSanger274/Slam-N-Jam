@@ -2455,9 +2455,8 @@ function refreshTicker() {
   }
   const combined = allItems.join('');
   track.innerHTML = combined + combined;
-  // Set duration: ~2s per item, min 15s — fast enough to read, slow enough to see all
-  const dur = Math.max(15, allItems.length * 2);
-  track.style.animationDuration = dur + 's';
+  // Fixed fast speed — 30s for full loop regardless of item count
+  track.style.animationDuration = '30s';
 }
 
 setTimeout(refreshTicker, 1500);
