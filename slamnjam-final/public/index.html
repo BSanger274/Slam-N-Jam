@@ -2391,6 +2391,7 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') closeRosterModa
 
 // ── LIVE TICKER ──
 function buildTickerItem(m, type) {
+  const sep = '<span class="tick-sep">|</span>';
   if (type === 'live') {
     const t1w = m.t1?.score > m.t2?.score;
     const t2w = m.t2?.score > m.t1?.score;
@@ -2401,144 +2402,114 @@ function buildTickerItem(m, type) {
       <span style="color:rgba(255,255,255,.25);font-size:11px">–</span>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:rgba(255,255,255,.9)">${m.t2?.score??''}</span>
       <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--orange)':'#fff'}">${m.t2?.name||'TBD'}</span>
-    </div></div><span class="tick-sep">|</span>`;
+    </div></div>${sep}`;
   }
   if (type === 'final') {
-    const t1w = m.t1?.won; const t2w = m.t2?.won;
-    return `<div class="tick-item"><div class="tick-final">
-      <span class="final-badge">FINAL</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--orange)':'#fff'}">${m.t1?.name||'TBD'}</span>
+    const t1w = m.t1?.won;
+    return `<div class="tick-item"><div class="tick-upcoming">
+      <span style="font-size:10px;color:var(--muted);letter-spacing:1px">FINAL</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--orange)':'var(--muted)'}">${m.t1?.name||'TBD'}</span>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:15px">${m.t1?.score??''}</span>
-      <span style="color:rgba(255,255,255,.25);font-size:11px">–</span>
+      <span style="color:rgba(255,255,255,.25)">–</span>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:15px">${m.t2?.score??''}</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--orange)':'#fff'}">${m.t2?.name||'TBD'}</span>
-    </div></div><span class="tick-sep">|</span>`;
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${!t1w?'var(--orange)':'var(--muted)'}">${m.t2?.name||'TBD'}</span>
+    </div></div>${sep}`;
   }
   if (type === 'upcoming') {
+    const d = m.date ? m.date.replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*/,'') : '';
+    const t = (m.time||'').replace(' ET','');
     return `<div class="tick-item"><div class="tick-upcoming">
-      <span class="tick-time">${m.date||''} ${m.time?'· '+m.time:''}</span>
-      <span style="color:rgba(255,255,255,.7);font-size:12px">${m.t1?.name||''} vs ${m.t2?.name||''}</span>
-      ${m.tv?`<span style="font-size:10px;color:rgba(255,255,255,.3)">${m.tv}</span>`:''}
-    </div></div><span class="tick-sep">|</span>`;
+      <span style="font-size:10px;color:var(--muted);white-space:nowrap">${d}${d&&t?' · ':''}${t}${m.tv?' · '+m.tv:''}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700">${m.t1?.name||'TBD'}</span>
+      <span style="font-size:11px;color:var(--muted)">vs</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700">${m.t2?.name||'TBD'}</span>
+    </div></div>${sep}`;
   }
   return '';
 }
 
-let lastTickerHash = '';
 function refreshTicker() {
-  if (!BRACKET) return;
-  const liveItems=[], finalItems=[], upcomingItems=[];
-  const allMatchups = [...(BRACKET._firstFour||[])];
-  ['east','west','south','midwest'].forEach(r => {
-    if (BRACKET[r]?.r64) allMatchups.push(...BRACKET[r].r64);
-  });
+  const track = document.getElementById('ticker-track');
+  const dot   = document.getElementById('ticker-dot');
+  if (!track) return;
 
-  // Sort all matchups chronologically by date+time
+  // Build sorted matchup list
+  const allMatchups = [];
+  if (BRACKET) {
+    allMatchups.push(...(BRACKET._firstFour||[]));
+    ['east','west','south','midwest'].forEach(r => {
+      if (BRACKET[r]?.r64) allMatchups.push(...BRACKET[r].r64);
+    });
+  }
+
+  // Sort chronologically
   const MONTH_ORDER = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
-  const DAY_ORDER   = {'Mon':0,'Tue':1,'Wed':2,'Thu':3,'Fri':4,'Sat':5,'Sun':6};
-  function tickerSortKey(m) {
-    if (!m.date && !m.time) return 9999999;
-    // Parse "Thu Mar 19" → day index * 10000
+  function sortKey(m) {
     const dp = (m.date||'').split(' ');
-    const month = MONTH_ORDER[dp[1]] || 0;
-    const day   = parseInt(dp[2]) || 0;
-    // Parse "2:50 PM ET" → minutes since midnight
+    const mo = MONTH_ORDER[dp[1]]||0, dy = parseInt(dp[2])||0;
     const tp = (m.time||'').replace(' ET','').trim().split(' ');
     const hm = (tp[0]||'0:0').split(':');
-    let h = parseInt(hm[0]) || 0;
-    const min = parseInt(hm[1]) || 0;
-    const isPM = tp[1] === 'PM';
-    if (isPM && h !== 12) h += 12;
-    if (!isPM && h === 12) h = 0;
-    return month * 1000000 + day * 10000 + h * 100 + min;
+    let h = parseInt(hm[0])||0; const mn = parseInt(hm[1])||0;
+    if (tp[1]==='PM' && h!==12) h+=12;
+    if (tp[1]==='AM' && h===12) h=0;
+    return mo*1000000+dy*10000+h*100+mn;
   }
-  allMatchups.sort((a, b) => tickerSortKey(a) - tickerSortKey(b));
+  allMatchups.sort((a,b) => sortKey(a)-sortKey(b));
 
+  // Categorize
+  const liveItems=[], finalItems=[], upcomingItems=[];
   allMatchups.forEach(m => {
     if (!m?.t1||!m?.t2) return;
     const hasScore = m.t1.score!=null||m.t2.score!=null;
     const hasFinal = m.t1.won!=null;
     if (hasScore && hasFinal)  finalItems.push(buildTickerItem(m,'final'));
     else if (hasScore)         liveItems.push(buildTickerItem(m,'live'));
-    else if (m.date||m.time)   upcomingItems.push(buildTickerItem(m,'upcoming'));
+    else                       upcomingItems.push(buildTickerItem(m,'upcoming'));
   });
 
-  const track = document.getElementById('ticker-track');
-  const dot   = document.getElementById('ticker-dot');
-  if (!track) return;
-
-  const hasLive = liveItems.length > 0;
-  if (dot) { dot.style.background = hasLive?'#00e676':'#555'; dot.style.animation = hasLive?'pulse-dot 1.2s ease infinite':'none'; }
-
   const allItems = [...liveItems,...finalItems,...upcomingItems];
+
+  // Static fallback if no bracket data
   if (!allItems.length) {
-    // Static fallback — show all upcoming games from hardcoded schedule
-    const staticGames = [
-      'TUE MAR 17 · 6:40 PM ET · UMBC vs Howard · truTV',
-      'TUE MAR 17 · 9:15 PM ET · Texas vs NC State · truTV',
-      'WED MAR 18 · 6:40 PM ET · Prairie View vs Lehigh · truTV',
-      'WED MAR 18 · 9:15 PM ET · Miami OH vs SMU · truTV',
-      'THU MAR 19 · 12:10 PM ET · N. Carolina vs VCU · TNT',
-      'THU MAR 19 · 12:15 PM ET · Ohio State vs TCU · CBS',
-      'THU MAR 19 · 1:30 PM ET · Louisville vs South Florida · TNT',
-      'THU MAR 19 · 1:50 PM ET · Wisconsin vs High Point · TBS',
-      'THU MAR 19 · 2:45 PM ET · Illinois vs Penn · TNT',
-      'THU MAR 19 · 2:50 PM ET · Duke vs Siena · CBS',
-      'THU MAR 19 · 4:05 PM ET · Michigan St vs N. Dakota St · TNT',
-      'THU MAR 19 · 4:25 PM ET · Arkansas vs Hawaii · TBS',
-      'THU MAR 19 · 6:45 PM ET · Nebraska vs Troy · truTV',
-      'THU MAR 19 · 7:10 PM ET · Michigan vs UMBC/Howard · CBS',
-      'THU MAR 19 · 7:15 PM ET · Gonzaga vs Kennesaw St · TBS',
-      'THU MAR 19 · 7:35 PM ET · Saint Marys vs Texas A&M · truTV',
-      'THU MAR 19 · 9:20 PM ET · Vanderbilt vs McNeese · truTV',
-      'THU MAR 19 · 9:45 PM ET · Georgia vs Saint Louis · CBS',
-      'THU MAR 19 · 9:50 PM ET · BYU vs TX/NCS · TBS',
-      'THU MAR 19 · 10:10 PM ET · Houston vs Idaho · truTV',
-      'FRI MAR 20 · 12:15 PM ET · Kentucky vs Santa Clara · CBS',
-      'FRI MAR 20 · 12:40 PM ET · Texas Tech vs Akron · truTV',
-      'FRI MAR 20 · 1:35 PM ET · Arizona vs LIU · TNT',
-      'FRI MAR 20 · 1:50 PM ET · Virginia vs Wright State · TBS',
-      'FRI MAR 20 · 2:50 PM ET · Iowa State vs Tennessee St · CBS',
-      'FRI MAR 20 · 3:15 PM ET · Alabama vs Hofstra · truTV',
-      'FRI MAR 20 · 4:10 PM ET · Villanova vs Utah State · TNT',
-      'FRI MAR 20 · 4:25 PM ET · Tennessee vs MIA/SMU · TBS',
-      'FRI MAR 20 · 6:50 PM ET · Clemson vs Iowa · TNT',
-      'FRI MAR 20 · 6:50 PM ET · Miami FL vs Missouri · TNT',
-      'FRI MAR 20 · 7:10 PM ET · St. Johns vs Northern Iowa · CBS',
-      'FRI MAR 20 · 7:25 PM ET · UCLA vs UCF · TBS',
-      'FRI MAR 20 · 9:25 PM ET · Florida vs PV/LEH · TNT',
-      'FRI MAR 20 · 9:25 PM ET · Purdue vs Queens · TNT',
-      'FRI MAR 20 · 9:45 PM ET · Kansas vs CA Baptist · CBS',
-      'FRI MAR 20 · 10:00 PM ET · UConn vs Furman · TBS',
-    ];
-    const staticHTML = staticGames.map(g => `<span style="color:rgba(255,255,255,.5);font-size:12px;padding:0 24px;white-space:nowrap">📅 ${g}</span>`).join('');
-    const staticHash = 'static|' + staticGames.length;
-    if (staticHash === lastTickerHash) return;
-    lastTickerHash = staticHash;
-    track.innerHTML = staticHTML + staticHTML;
+    const staticGames = ['TUE MAR 17 · UMBC vs Howard · truTV','TUE MAR 17 · Texas vs NC State · truTV',
+      'WED MAR 18 · Prairie View vs Lehigh · truTV','WED MAR 18 · Miami OH vs SMU · truTV',
+      'THU MAR 19 · N. Carolina vs VCU · TNT','THU MAR 19 · Ohio State vs TCU · CBS',
+      'THU MAR 19 · Louisville vs South Florida · TNT','THU MAR 19 · Wisconsin vs High Point · TBS',
+      'THU MAR 19 · Illinois vs Penn · TNT','THU MAR 19 · Duke vs Siena · CBS',
+      'THU MAR 19 · Michigan St vs N. Dakota St · TNT','THU MAR 19 · Arkansas vs Hawaii · TBS',
+      'THU MAR 19 · Nebraska vs Troy · truTV','THU MAR 19 · Michigan vs UMBC/Howard · CBS',
+      'THU MAR 19 · Gonzaga vs Kennesaw St · TBS','THU MAR 19 · Saint Marys vs Texas A&M · truTV',
+      'THU MAR 19 · Vanderbilt vs McNeese · truTV','THU MAR 19 · Georgia vs Saint Louis · CBS',
+      'THU MAR 19 · BYU vs TX/NCS · TBS','THU MAR 19 · Houston vs Idaho · truTV',
+      'FRI MAR 20 · Kentucky vs Santa Clara · CBS','FRI MAR 20 · Texas Tech vs Akron · truTV',
+      'FRI MAR 20 · Arizona vs LIU · TNT','FRI MAR 20 · Virginia vs Wright State · TBS',
+      'FRI MAR 20 · Iowa State vs Tennessee St · CBS','FRI MAR 20 · Alabama vs Hofstra · truTV',
+      'FRI MAR 20 · Villanova vs Utah State · TNT','FRI MAR 20 · Tennessee vs MIA/SMU · TBS',
+      'FRI MAR 20 · Clemson vs Iowa · TNT','FRI MAR 20 · Miami FL vs Missouri · TNT',
+      'FRI MAR 20 · St. Johns vs Northern Iowa · CBS','FRI MAR 20 · UCLA vs UCF · TBS',
+      'FRI MAR 20 · Florida vs PV/Lehigh · TNT','FRI MAR 20 · Purdue vs Queens · TNT',
+      'FRI MAR 20 · Kansas vs CA Baptist · CBS','FRI MAR 20 · UConn vs Furman · TBS'];
+    const sep = '<span class="tick-sep">|</span>';
+    const html = staticGames.map(g =>
+      `<div class="tick-item"><div class="tick-upcoming"><span style="font-size:12px;color:rgba(255,255,255,.5)">${g}</span></div></div>${sep}`
+    ).join('');
+    track.innerHTML = html + html;
     track.style.animationDuration = '60s';
+    if (dot) dot.style.background = '#555';
     return;
   }
-  const combined = allItems.join('');
-  // Build hash from game statuses only (not scores) to avoid restarting mid-scroll
-  const gameSetHash = allMatchups.map(m => `${m.t1?.name}-${m.t2?.name}-${m.t1?.won??''}-${m.t2?.won??''}`).join('|');
-  // Only restart if game set actually changed AND DOM doesn't already have correct content
-  const domCount = track.children.length;
-  const expectedCount = allItems.length * 2;
-  const needsRestart = gameSetHash !== lastTickerHash || domCount !== expectedCount;
-  lastTickerHash = gameSetHash;
 
-  if (needsRestart) {
-    track.innerHTML = combined + combined;
-    track.style.animation = 'none';
-    track.offsetHeight;
-    track.style.animation = 'ticker-scroll linear infinite';
-    track.style.animationDuration = '30s';
-  }
-  // Score-only update: patch existing items in place, no DOM rebuild
+  // Build final HTML — doubled for seamless loop
+  const html = allItems.join('');
+  track.innerHTML = html + html;
+
+  // Duration: 30s total loop
+  track.style.animationDuration = '30s';
+
+  // Update dot
+  if (dot) dot.style.background = liveItems.length ? '#00e676' : '#ffb800';
 }
 
-// Ticker refreshes with main data poll — no separate timer needed
 setInterval(refreshTicker, 60000);
 
 </script>
