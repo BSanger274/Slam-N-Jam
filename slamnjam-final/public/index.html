@@ -1766,7 +1766,7 @@ function admTab(t) {
   if (t==='live-view') loadFeed();
 }
 
-async async function uploadCSV() {
+async function uploadCSV() {
   const csv = document.getElementById('csv-in').value.trim();
   if (!csv) return showAlert('csv-alert','err','Paste CSV first');
   try {
