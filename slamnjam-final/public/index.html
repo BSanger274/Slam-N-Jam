@@ -2090,7 +2090,9 @@ async function openPreGameStats(team1, team2, gameId) {
 }
 
 function closeBoxScore() {
-  document.getElementById('boxscore-modal').classList.add('hidden');
+  const m = document.getElementById('boxscore-modal');
+  m.classList.add('hidden');
+  m.style.display = 'none';
   document.body.style.overflow = '';
 }
 function closeModal(e) {
