@@ -776,8 +776,9 @@ app.post('/api/admin/roster/csv', requireAdmin, (req, res) => {
 
   for (const line of dataLines) {
     if (!line.trim()) continue;
-    // Handle quoted CSV fields
-    const parts = line.split(',').map(s => s.trim().replace(/^"|"$/g, '').trim());
+    // Auto-detect delimiter: tab or comma
+    const delim = line.includes('\t') ? '\t' : ',';
+    const parts = line.split(delim).map(s => s.trim().replace(/^"|"$/g, '').trim());
     const [teamName, playerName, school] = parts;
     if (!teamName || !playerName) continue;
     if (!teamMap[teamName]) teamMap[teamName] = { name: teamName, players: [] };
