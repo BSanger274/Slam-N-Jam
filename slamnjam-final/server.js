@@ -540,6 +540,8 @@ app.get('/api/boxscore/:gameId', async (req, res) => {
 });
 
 // Live bracket
+app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
+
 app.get('/api/bracket', async (req, res) => {
   const bracket = await getLiveBracket();
   res.json({ bracket, cachedAt: new Date(bracketCacheTime).toISOString() });
@@ -555,6 +557,48 @@ app.get('/api/scores', async (req, res) => {
 // History — inline fallback guarantees data is always returned
 // Champion roster data — add more years as you collect them
 const CHAMPION_ROSTERS = {
+  2015: {
+    team: 'Itchy Ron',
+    draftPosition: 14,
+    players: [
+      { round: 1,  name: 'Sam Dekker',        school: 'Wisconsin',     pts: 115 },
+      { round: 2,  name: 'Demetrius Jackson',  school: 'Notre Dame',    pts: 44  },
+      { round: 3,  name: 'Delon Wright',       school: 'Utah',          pts: 33  },
+      { round: 4,  name: 'Jordan Siebert',     school: 'Dayton',        pts: 35  },
+      { round: 5,  name: 'Aaron White',        school: 'Iowa',          pts: 45  },
+      { round: 6,  name: 'Norman Powell',      school: 'UCLA',          pts: 50  },
+      { round: 7,  name: 'Shannon Evans II',   school: 'Buffalo',       pts: 15  },
+      { round: 8,  name: 'Dallas Moore',       school: 'North Florida', pts: 13  },
+      { round: 9,  name: 'Tony Parker',        school: 'UCLA',          pts: 47  },
+      { round: 10, name: 'LaDarius White',     school: 'Ole Miss',      pts: 21  },
+      { round: 11, name: 'Nate Buss',          school: 'Northern Iowa', pts: 24  },
+      { round: 12, name: 'Xavier Ford',        school: 'Buffalo',       pts: 16  },
+      { round: 13, name: 'Isaac Hamilton',     school: 'UCLA',          pts: 27  },
+      { round: 14, name: 'Jeremy Morgan',      school: 'Northern Iowa', pts: 0   },
+      { round: 15, name: 'Jon Octeus',         school: 'Purdue',        pts: 9   },
+    ]
+  },
+  2015: {
+    team: 'Itchy Ron',
+    draftPosition: 14,
+    players: [
+      { round: 1,  name: 'Sam Dekker',        school: 'Wisconsin',     pts: 115 },
+      { round: 2,  name: 'Demetrius Jackson',  school: 'Notre Dame',    pts: 44  },
+      { round: 3,  name: 'Delon Wright',       school: 'Utah',          pts: 33  },
+      { round: 4,  name: 'Jordan Siebert',     school: 'Dayton',        pts: 35  },
+      { round: 5,  name: 'Aaron White',        school: 'Iowa',          pts: 45  },
+      { round: 6,  name: 'Norman Powell',      school: 'UCLA',          pts: 50  },
+      { round: 7,  name: 'Shannon Evans II',   school: 'Buffalo',       pts: 15  },
+      { round: 8,  name: 'Dallas Moore',       school: 'North Florida', pts: 13  },
+      { round: 9,  name: 'Tony Parker',        school: 'UCLA',          pts: 47  },
+      { round: 10, name: 'LaDarius White',     school: 'Ole Miss',      pts: 21  },
+      { round: 11, name: 'Nate Buss',          school: 'Northern Iowa', pts: 24  },
+      { round: 12, name: 'Xavier Ford',        school: 'Buffalo',       pts: 16  },
+      { round: 13, name: 'Isaac Hamilton',     school: 'UCLA',          pts: 27  },
+      { round: 14, name: 'Jeremy Morgan',      school: 'Northern Iowa', pts: 0   },
+      { round: 15, name: 'Jon Octeus',         school: 'Purdue',        pts: 9   },
+    ]
+  },
   2018: {
     team: 'Team McCarty',
     draftPosition: 2,
