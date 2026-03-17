@@ -763,6 +763,10 @@ app.post('/api/admin/roster/csv', requireAdmin, (req, res) => {
   const { csv } = req.body;
   if (!csv) return res.status(400).json({ error: 'No CSV provided' });
 
+  // Debug: log what we received
+  console.log('[CSV] Raw length:', csv.length);
+  console.log('[CSV] First 200 chars:', JSON.stringify(csv.substring(0, 200)));
+  console.log('[CSV] Line endings - CRLF:', (csv.match(/\r\n/g)||[]).length, 'CR:', (csv.match(/\r(?!\n)/g)||[]).length, 'LF:', (csv.match(/(?<!\r)\n/g)||[]).length);
   // Handle all line ending types: \r\n (Windows), \r (old Mac), \n (Unix)
   const lines   = csv.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim());
   // Skip header row (contains TeamName or similar)
