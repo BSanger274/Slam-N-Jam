@@ -2423,6 +2423,7 @@ function buildTickerItem(m, type) {
   return '';
 }
 
+let lastTickerHash = '';
 function refreshTicker() {
   if (!BRACKET) return;
   const liveItems=[], finalItems=[], upcomingItems=[];
@@ -2489,13 +2490,18 @@ function refreshTicker() {
       'FRI MAR 20 · 10:00 PM ET · UConn vs Furman · TBS',
     ];
     const staticHTML = staticGames.map(g => `<span style="color:rgba(255,255,255,.5);font-size:12px;padding:0 24px;white-space:nowrap">📅 ${g}</span>`).join('');
+    const staticHash = 'static|' + staticGames.length;
+    if (staticHash === lastTickerHash) return;
+    lastTickerHash = staticHash;
     track.innerHTML = staticHTML + staticHTML;
     track.style.animationDuration = '60s';
     return;
   }
   const combined = allItems.join('');
+  const hash = combined.length + '|' + allItems.length;
+  if (hash === lastTickerHash) return; // content unchanged — don't restart animation
+  lastTickerHash = hash;
   track.innerHTML = combined + combined;
-  // Fixed fast speed — 30s for full loop regardless of item count
   track.style.animationDuration = '30s';
 }
 
