@@ -2433,13 +2433,25 @@ function refreshTicker() {
   });
 
   // Sort all matchups chronologically by date+time
-  allMatchups.sort((a, b) => {
-    const aStr = ((a.date||'') + ' ' + (a.time||'')).trim();
-    const bStr = ((b.date||'') + ' ' + (b.time||'')).trim();
-    if (!aStr) return 1;
-    if (!bStr) return -1;
-    return new Date(aStr) - new Date(bStr);
-  });
+  const MONTH_ORDER = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
+  const DAY_ORDER   = {'Mon':0,'Tue':1,'Wed':2,'Thu':3,'Fri':4,'Sat':5,'Sun':6};
+  function tickerSortKey(m) {
+    if (!m.date && !m.time) return 9999999;
+    // Parse "Thu Mar 19" → day index * 10000
+    const dp = (m.date||'').split(' ');
+    const month = MONTH_ORDER[dp[1]] || 0;
+    const day   = parseInt(dp[2]) || 0;
+    // Parse "2:50 PM ET" → minutes since midnight
+    const tp = (m.time||'').replace(' ET','').trim().split(' ');
+    const hm = (tp[0]||'0:0').split(':');
+    let h = parseInt(hm[0]) || 0;
+    const min = parseInt(hm[1]) || 0;
+    const isPM = tp[1] === 'PM';
+    if (isPM && h !== 12) h += 12;
+    if (!isPM && h === 12) h = 0;
+    return month * 1000000 + day * 10000 + h * 100 + min;
+  }
+  allMatchups.sort((a, b) => tickerSortKey(a) - tickerSortKey(b));
 
   allMatchups.forEach(m => {
     if (!m?.t1||!m?.t2) return;
