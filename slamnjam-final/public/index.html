@@ -2532,6 +2532,9 @@ function refreshTicker() {
     track.offsetHeight; // force reflow
     track.style.animation = 'ticker-scroll linear infinite';
     track.style.animationDuration = '30s';
+    setTimeout(() => {
+      console.log('[Ticker] scrollWidth:', track.scrollWidth, 'clientWidth:', track.parentElement?.clientWidth, 'items in DOM:', track.children.length);
+    }, 100);
   } else {
     // Only update scores in-place without touching animation
     // Replace each tick-item's score text without rebuilding DOM
