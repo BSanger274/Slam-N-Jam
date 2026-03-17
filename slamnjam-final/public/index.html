@@ -2432,6 +2432,15 @@ function refreshTicker() {
     if (BRACKET[r]?.r64) allMatchups.push(...BRACKET[r].r64);
   });
 
+  // Sort all matchups chronologically by date+time
+  allMatchups.sort((a, b) => {
+    const aStr = ((a.date||'') + ' ' + (a.time||'')).trim();
+    const bStr = ((b.date||'') + ' ' + (b.time||'')).trim();
+    if (!aStr) return 1;
+    if (!bStr) return -1;
+    return new Date(aStr) - new Date(bStr);
+  });
+
   allMatchups.forEach(m => {
     if (!m?.t1||!m?.t2) return;
     const hasScore = m.t1.score!=null||m.t2.score!=null;
@@ -2498,9 +2507,12 @@ function refreshTicker() {
     return;
   }
   const combined = allItems.join('');
-  const hash = combined.length + '|' + allItems.length;
-  if (hash === lastTickerHash) return; // content unchanged — don't restart animation
-  lastTickerHash = hash;
+  // Build hash from game statuses only (not scores) to avoid restarting mid-scroll
+  const statusHash = allMatchups.map(m =>
+    `${m.t1?.name}-${m.t2?.name}-${m.t1?.won??''}-${m.t2?.won??''}-${(m.t1?.score!=null)?'s':''}`
+  ).join('|');
+  if (statusHash === lastTickerHash) return; // no status changes — don't restart
+  lastTickerHash = statusHash;
   track.innerHTML = combined + combined;
   track.style.animationDuration = '30s';
 }
