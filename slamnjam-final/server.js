@@ -555,6 +555,27 @@ app.get('/api/scores', async (req, res) => {
 // History — inline fallback guarantees data is always returned
 // Champion roster data — add more years as you collect them
 const CHAMPION_ROSTERS = {
+  2019: {
+    team: 'One Putt Jackson',
+    draftPosition: 17,
+    players: [
+      { round: 1,  name: 'Corey Davis Jr.',      school: 'Houston',       pts: 61  },
+      { round: 2,  name: 'Jarrett Culver',        school: 'Texas Tech',    pts: 111 },
+      { round: 3,  name: 'Jeremy Harris',         school: 'Buffalo',       pts: 30  },
+      { round: 4,  name: 'Xavier Tillman',        school: 'Michigan St',   pts: 68  },
+      { round: 5,  name: 'Payton Pritchard',      school: 'Oregon',        pts: 48  },
+      { round: 6,  name: 'Jermaine Samuels Jr.',  school: 'Villanova',     pts: 23  },
+      { round: 7,  name: 'Cody Martin',           school: 'Nevada',        pts: 23  },
+      { round: 8,  name: 'Alex Copeland',         school: 'Yale',          pts: 24  },
+      { round: 9,  name: 'Kristian Doolittle',    school: 'Oklahoma',      pts: 27  },
+      { round: 10, name: 'Aaron Henry',           school: 'Michigan St',   pts: 52  },
+      { round: 11, name: 'Xavier Green',          school: 'ODU',           pts: 7   },
+      { round: 12, name: 'Ivan Aurrecoechea',     school: 'New Mexico St', pts: 13  },
+      { round: 13, name: 'Michale Oguine',        school: 'Montana',       pts: 3   },
+      { round: 14, name: 'Keyshawn Woods',        school: 'Ohio St',       pts: 29  },
+      { round: 15, name: 'Randy Miller Jr.',      school: 'NC Central',    pts: 18  },
+    ]
+  },
   2022: {
     team: 'Team McCarty',
     draftPosition: 3,
