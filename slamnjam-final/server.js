@@ -285,6 +285,14 @@ async function fetchESPNBracket() {
 
     const groups = data?.bracket?.fullViewable?.groups || [];
 
+    // FIX: Log what ESPN actually returns so we can debug empty bracket issues
+    console.log(`[Bracket] ESPN returned ${groups.length} groups`);
+    if (groups.length > 0) {
+      console.log('[Bracket] Group names:', groups.map(g => g.name).join(', '));
+    } else {
+      console.log('[Bracket] ESPN raw keys:', Object.keys(data?.bracket || {}).join(', '));
+    }
+
     for (const group of groups) {
       const regionName = (group.name || '').toLowerCase();
       let regionKey = null;
@@ -351,8 +359,15 @@ async function fetchESPNBracket() {
 
 async function updateFirstFourScores(bracket) {
   try {
-    // Fetch today's scoreboard to get First Four live scores
-    const dates = ['20260317', '20260318'];
+    // FIX: Use dynamic dates (First Four is Mar 17-18) instead of hardcoded strings
+    const today = new Date();
+    const dates = [];
+    for (let i = -1; i <= 1; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() + i);
+      dates.push(d.toISOString().slice(0,10).replace(/-/g,''));
+    }
+
     for (const date of dates) {
       const data = await fetchURL(
         `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?date=${date}&groups=100&limit=20`
@@ -426,6 +441,27 @@ async function getLiveBracket() {
       }
       // Preserve First Four data from seed
       if (!fresh._firstFour) fresh._firstFour = seed._firstFour;
+
+      // FIX: Only fall back to seed for regions that ESPN truly didn't return.
+      // During First Four (Mar 17-18), ESPN returns 0 r64 games — that's correct,
+      // not a failure. Do NOT overwrite the whole bracket just because r64 is empty.
+      // Instead, merge: keep ESPN data where it exists, fill gaps from seed.
+      const regions = ['east', 'west', 'south', 'midwest'];
+      for (const region of regions) {
+        if (!fresh[region] || Object.keys(fresh[region]).length === 0) {
+          // ESPN returned nothing for this region — use seed
+          fresh[region] = seed[region];
+          console.log(`[Bracket] ESPN missing ${region} — using seed data`);
+        } else {
+          // ESPN has the region — fill in any missing rounds from seed
+          for (const [roundKey, seedMatchups] of Object.entries(seed[region])) {
+            if (!fresh[region][roundKey] || fresh[region][roundKey].length === 0) {
+              fresh[region][roundKey] = seedMatchups;
+            }
+          }
+        }
+      }
+
       // Update First Four scores from live scoreboard
       await updateFirstFourScores(fresh);
       bracketCache     = fresh;
@@ -433,17 +469,14 @@ async function getLiveBracket() {
       writeJSON(BRACKET_F, { ...fresh, _cachedAt: new Date().toISOString() });
       console.log(`[${new Date().toISOString()}] Bracket refreshed from ESPN`);
     } else if (!bracketCache) {
-      // ESPN returned empty or failed — use hardcoded 2026 bracket
+      // ESPN fetch threw an error and we have nothing cached — use seed
       bracketCache = buildBlankBracket();
       bracketCacheTime = Date.now();
-      console.log('[Bracket] Using hardcoded 2026 seed bracket');
+      console.log('[Bracket] ESPN fetch failed — using hardcoded 2026 seed bracket');
     }
-    // If ESPN returned an empty bracket (all regions {}), fall back to seed
-    if (bracketCache && bracketCache.east && Object.keys(bracketCache.east).length === 0) {
-      console.log('[Bracket] ESPN returned empty bracket — using hardcoded seed');
-      bracketCache = buildBlankBracket();
-      bracketCacheTime = Date.now();
-    }
+    // NOTE: Removed the aggressive "empty east → overwrite everything" fallback.
+    // That was the bug: it nuked good bracketCache data whenever east.r64 was empty
+    // (which is expected during First Four days).
   }
   return bracketCache;
 }
@@ -691,27 +724,6 @@ app.get('/api/scores', async (req, res) => {
 // History — inline fallback guarantees data is always returned
 // Champion roster data — add more years as you collect them
 const CHAMPION_ROSTERS = {
-  2015: {
-    team: 'Itchy Ron',
-    draftPosition: 14,
-    players: [
-      { round: 1,  name: 'Sam Dekker',        school: 'Wisconsin',     pts: 115 },
-      { round: 2,  name: 'Demetrius Jackson',  school: 'Notre Dame',    pts: 44  },
-      { round: 3,  name: 'Delon Wright',       school: 'Utah',          pts: 33  },
-      { round: 4,  name: 'Jordan Siebert',     school: 'Dayton',        pts: 35  },
-      { round: 5,  name: 'Aaron White',        school: 'Iowa',          pts: 45  },
-      { round: 6,  name: 'Norman Powell',      school: 'UCLA',          pts: 50  },
-      { round: 7,  name: 'Shannon Evans II',   school: 'Buffalo',       pts: 15  },
-      { round: 8,  name: 'Dallas Moore',       school: 'North Florida', pts: 13  },
-      { round: 9,  name: 'Tony Parker',        school: 'UCLA',          pts: 47  },
-      { round: 10, name: 'LaDarius White',     school: 'Ole Miss',      pts: 21  },
-      { round: 11, name: 'Nate Buss',          school: 'Northern Iowa', pts: 24  },
-      { round: 12, name: 'Xavier Ford',        school: 'Buffalo',       pts: 16  },
-      { round: 13, name: 'Isaac Hamilton',     school: 'UCLA',          pts: 27  },
-      { round: 14, name: 'Jeremy Morgan',      school: 'Northern Iowa', pts: 0   },
-      { round: 15, name: 'Jon Octeus',         school: 'Purdue',        pts: 9   },
-    ]
-  },
   2015: {
     team: 'Itchy Ron',
     draftPosition: 14,
@@ -1101,8 +1113,11 @@ if (!fs.existsSync(HISTORY_F)) {
 app.listen(PORT, async () => {
   console.log(`\n🏀 SLAM-N-JAM server running → http://localhost:${PORT}`);
   console.log('📡 Warming ESPN cache...');
+
+  // FIX: Run bracket + averages in parallel, then scores last so it can
+  // patch bracketCache with live game data. This is the correct order.
   await Promise.all([getLiveBracket(), getSeasonAverages()]);
-  await getLiveScores(); // scores run after bracket so they can patch bracketCache
+  await getLiveScores();
   console.log('✅ Ready.\n');
 
   // Keep refreshing in background
