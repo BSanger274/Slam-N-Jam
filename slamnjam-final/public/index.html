@@ -60,7 +60,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
 /* ── STAT BLOCKS ── */
 .sbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.sb{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.sb{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;min-height:80px}
 .sb::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
 .sb.or::before{background:var(--orange)}.sb.go::before{background:var(--gold)}
 .sb.gr::before{background:var(--green)}.sb.re::before{background:var(--red)}
@@ -70,7 +70,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
 /* ── GRID / CARD ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.card{background:var(--dark3);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.card{background:var(--dark3);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
 .chd{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .ctitle{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
 .cbody{padding:16px}
@@ -950,13 +950,13 @@ function viewTeam(name, from) {
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
     <div class="pc ${p.active?'':'elim'}">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px">
-        <div class="pc-n" style="display:flex;align-items:center;gap:3px;flex-wrap:wrap;flex:1">${p.name}${trendIcon(p.trend)}</div>
-        ${!p.active?'<div class="otag" style="flex-shrink:0">OUT</div>':''}
+        <div class="pc-n" style="display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow:hidden">${p.name}${trendIcon(p.trend)}</div>
+        ${!p.active?'<div class="otag" style="flex-shrink:0;margin-left:4px">OUT</div>':''}
       </div>
       <div class="pc-s">${p.school}${p.seasonAvg ? ` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>` : ''}</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+      <div style="position:relative;margin-top:2px">
         <div class="pc-p">${p.pts}</div>
-        ${p.round != null ? '<span style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase">PICK #' + p.round + '</span>' : ''}
+        ${p.round != null ? '<span style="position:absolute;bottom:2px;right:0;font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase">PICK #' + p.round + '</span>' : ''}
       </div>
     </div>`).join('');
 
@@ -1403,16 +1403,16 @@ function renderFirstFour() {
 
     return `<div class="card" style="cursor:${canClick?'pointer':'default'};transition:border-color .2s,box-shadow .2s"
       ${canClick?`onclick="${onclick}" onmouseenter="this.style.borderColor='rgba(255,107,0,.85)';this.style.boxShadow='0 0 12px rgba(255,107,0,.3)'" onmouseleave="this.style.borderColor='';this.style.boxShadow=''"`:''}>
-      <div class="chd">
-        <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px;white-space:nowrap">${rDot} ${rLabel} Region</span>
-        <div>
+      <div class="chd" style="flex-wrap:nowrap;gap:6px">
+        <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px;white-space:nowrap;flex-shrink:0">${rDot} ${rLabel}</span>
+        <span style="font-size:10px;color:var(--muted);white-space:nowrap;flex:1;text-align:right">
           ${isFinal
-            ? `<span style="font-size:11px;color:var(--orange);font-weight:700;letter-spacing:1px">FINAL</span>${g.tv?' <span style="font-size:10px;color:var(--muted)">· '+g.tv+'</span>':''}`
-            : `<span style="font-size:10px;color:var(--gold);font-weight:700">${g.date||''} ${g.time?'· '+g.time:''}</span>${g.tv?'<span style="font-size:10px;color:var(--muted);margin-left:5px">· '+g.tv+'</span>':''}`
+            ? '<span style="color:var(--orange);font-weight:700">FINAL</span>' + (g.tv ? ' · ' + g.tv : '')
+            : (g.date||'') + (g.time ? ' · '+g.time : '') + (g.tv ? ' · '+g.tv : '')
           }
-        </div>
+        </span>
       </div>
-      <div class="cbody" style="padding:10px 14px">
+      <div class="cbody" style="padding:10px 14px;flex:1">
         <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);opacity:${t2won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
           ${TEAM_LOGOS[g.t1.name]?`<img src="${TEAM_LOGOS[g.t1.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
