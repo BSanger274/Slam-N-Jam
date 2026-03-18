@@ -276,6 +276,65 @@ async function fetchESPNBracket() {
   }
 }
 
+async function updateFirstFourScores(bracket) {
+  try {
+    // Fetch today's scoreboard to get First Four live scores
+    const dates = ['20260317', '20260318'];
+    for (const date of dates) {
+      const data = await fetchURL(
+        `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?date=${date}&groups=100&limit=20`
+      );
+      const events = data?.events || [];
+      for (const ev of events) {
+        const comp = ev.competitions?.[0];
+        if (!comp) continue;
+        const teams = comp.competitors || [];
+        if (teams.length < 2) continue;
+        const t1name = teams[0]?.team?.shortDisplayName || teams[0]?.team?.displayName || '';
+        const t2name = teams[1]?.team?.shortDisplayName || teams[1]?.team?.displayName || '';
+        const t1score = teams[0]?.score !== undefined ? parseInt(teams[0].score) : null;
+        const t2score = teams[1]?.score !== undefined ? parseInt(teams[1].score) : null;
+        const t1won = teams[0]?.winner === true;
+        const t2won = teams[1]?.winner === true;
+        const status = ev.status?.type?.name || '';
+        const isLive = status === 'STATUS_IN_PROGRESS';
+        const isFinal = status === 'STATUS_FINAL';
+
+        // Match against our First Four games
+        if (!bracket._firstFour) continue;
+        for (const ff of bracket._firstFour) {
+          const ff1 = (ff.t1?.name||'').toLowerCase();
+          const ff2 = (ff.t2?.name||'').toLowerCase();
+          const e1  = t1name.toLowerCase();
+          const e2  = t2name.toLowerCase();
+          if ((ff1.includes(e1)||e1.includes(ff1)) && (ff2.includes(e2)||e2.includes(ff2))) {
+            if (isLive || isFinal) {
+              ff.t1.score = t1score; ff.t1.won = isFinal ? t1won : null;
+              ff.t2.score = t2score; ff.t2.won = isFinal ? t2won : null;
+              ff.status = status;
+              ff.clock = ev.status?.displayClock || '';
+              ff.period = ev.status?.period || '';
+            }
+            break;
+          }
+          if ((ff1.includes(e2)||e2.includes(ff1)) && (ff2.includes(e1)||e1.includes(ff2))) {
+            if (isLive || isFinal) {
+              ff.t1.score = t2score; ff.t1.won = isFinal ? t2won : null;
+              ff.t2.score = t1score; ff.t2.won = isFinal ? t1won : null;
+              ff.status = status;
+              ff.clock = ev.status?.displayClock || '';
+              ff.period = ev.status?.period || '';
+            }
+            break;
+          }
+        }
+      }
+    }
+  } catch(e) {
+    console.error('[FirstFour scores]', e.message);
+  }
+}
+
 async function getLiveBracket() {
   if (Date.now() - bracketCacheTime > BRACKET_TTL || !bracketCache) {
     const fresh = await fetchESPNBracket();
@@ -294,6 +353,8 @@ async function getLiveBracket() {
       }
       // Preserve First Four data from seed
       if (!fresh._firstFour) fresh._firstFour = seed._firstFour;
+      // Update First Four scores from live scoreboard
+      await updateFirstFourScores(fresh);
       bracketCache     = fresh;
       bracketCacheTime = Date.now();
       writeJSON(BRACKET_F, { ...fresh, _cachedAt: new Date().toISOString() });
