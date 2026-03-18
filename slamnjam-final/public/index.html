@@ -947,7 +947,7 @@ function viewTeam(name, from) {
     </div>
     <div style="text-align:right"><div class="dp">${t.totalPts}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px">Total Points</div></div>`;
   document.getElementById('d-alive').textContent = `${alive} active`;
-  document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>b.pts-a.pts).map(p=>`
+  document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
     <div class="pc ${p.active?'':'elim'}">
       ${!p.active?'<div class="otag">OUT</div>':''}
       <div class="pc-n" style="display:flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend)}</div>
