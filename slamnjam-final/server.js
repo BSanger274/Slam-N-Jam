@@ -82,6 +82,7 @@ function fetchURL(url) {
 // ════════════════════════════════════════════════════════
 let scoreCache     = {};
 let liveHalfCache  = new Set();
+let minutesCache   = {}; // player name -> minutes played in current game
 let scoreCacheTime = 0;
 const SCORE_TTL    = 60_000;
 
@@ -223,23 +224,50 @@ async function fetchLiveScores() {
       const s = ev.status?.type?.name || '';
       return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_FINAL' || s === 'STATUS_HALFTIME';
     });
+    const freshMinutes = {}; // player -> minutes played this game
     await Promise.all(activeEvents.slice(0, 10).map(async ev => {
+      const evStatus = ev.status?.type?.name || '';
+      const isFinal  = evStatus === 'STATUS_FINAL';
       try {
         const summary = await fetchURL(`https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=${ev.id}`);
+        // Get game clock for pace calculation
+        const period = ev.status?.period || 0;
+        const clock  = ev.status?.displayClock || '0:00';
+        const [mm, ss] = clock.split(':').map(Number);
+        const clockMins = mm + (ss || 0) / 60;
+        // Minutes elapsed: each half is 20 mins
+        // Period 1: 20 - clockMins elapsed. Period 2: 20 + (20 - clockMins) elapsed
+        const minsElapsed = isFinal ? 40 :
+          period === 1 ? Math.max(0, 20 - clockMins) :
+          period === 2 ? Math.max(20, 40 - clockMins) :
+          period > 2   ? 40 + (period - 2) * 5 : 0; // OT
+
         for (const teamData of (summary.boxscore?.players || [])) {
           for (const statGroup of (teamData.statistics || [])) {
             const labels = statGroup.labels || [];
             const iPts = labels.indexOf('PTS') >= 0 ? labels.indexOf('PTS') : 13;
+            const iMin = labels.indexOf('MIN') >= 0 ? labels.indexOf('MIN') : 0;
             for (const athlete of (statGroup.athletes || [])) {
               if (athlete.didNotPlay) continue;
               const name = athlete.athlete?.displayName;
               const pts  = parseFloat((athlete.stats || [])[iPts]) || 0;
-              if (name && pts > 0) scores[name] = pts;
+              const minRaw = (athlete.stats || [])[iMin] || '0';
+              // MIN is stored as "MM:SS" or just a number
+              const playerMins = typeof minRaw === 'string' && minRaw.includes(':')
+                ? (() => { const [m,s] = minRaw.split(':').map(Number); return m + (s||0)/60; })()
+                : parseFloat(minRaw) || 0;
+              if (name) {
+                if (pts > 0) scores[name] = pts;
+                // Use player's actual minutes if available, else use game clock
+                freshMinutes[name] = playerMins > 0 ? playerMins : minsElapsed;
+              }
             }
           }
         }
       } catch(e) {}
     }));
+    // Update minutesCache with latest data
+    Object.assign(minutesCache, freshMinutes);
 
     console.log(`[Scores] ${Object.keys(scores).length} players, ${allEvents.length} events, ${liveHalf.size} schools in 1st half`);
     return { scores, liveHalf };
@@ -1143,12 +1171,24 @@ app.get('/api/teams', async (req, res) => {
       const avg = avgs[p.name] ?? null;
       let trend = null;
 
-      // ── OPTION 2 (ACTIVE): No animations during 1st half of live games ──
-      // Check if this player's school has a game currently in 1st half
-      const schoolLower = (p.school || '').toLowerCase();
-      const inFirstHalf = [...liveHalf].some(s => s.includes(schoolLower) || schoolLower.includes(s));
+      // ── OPTION 1 (ACTIVE): Pace-adjusted trend — mimics DraftKings style ──
+      // Uses player's actual minutes played to project final score
+      // No animation until 8+ minutes played to avoid noise at game start
+      const GAME_MINUTES = 40;
+      const minsPlayed = minutesCache[p.name] || 0;
 
-      if (avg && avg > 0 && pts > 0 && !inFirstHalf) {
+      if (avg && avg > 0 && pts > 0 && minsPlayed >= 8) {
+        // Project what player will score by end of game at current pace
+        const projectedFinal = pts / (minsPlayed / GAME_MINUTES);
+        const ratio = projectedFinal / avg;
+        if      (ratio >= 1.5) trend = 'hot3';
+        else if (ratio >= 1.3) trend = 'hot2';
+        else if (ratio >= 1.2) trend = 'hot1';
+        else if (ratio <= 0.5) trend = 'cold3';
+        else if (ratio <= 0.7) trend = 'cold2';
+        else if (ratio <= 0.8) trend = 'cold1';
+      } else if (avg && avg > 0 && pts > 0 && minsPlayed === 0) {
+        // Game is over (no live minutes tracked) — compare final score to avg directly
         const ratio = pts / avg;
         if      (ratio >= 1.5) trend = 'hot3';
         else if (ratio >= 1.3) trend = 'hot2';
@@ -1158,22 +1198,13 @@ app.get('/api/teams', async (req, res) => {
         else if (ratio <= 0.8) trend = 'cold1';
       }
 
-      // ── OPTION 1 (SAVED FOR LATER): Pace-adjusted trend ──
-      // To activate: remove Option 2 block above and uncomment below
-      // Requires passing gameMinutesPlayed per school from liveHalf (upgrade needed)
-      //
-      // const GAME_MINUTES = 40;
-      // const minutesPlayed = liveMinutes[schoolLower] || 0; // need to track this
-      // const paceRatio = minutesPlayed > 5  // only after 5 mins to avoid noise
-      //   ? (pts / avg) / (minutesPlayed / GAME_MINUTES)
-      //   : null;
-      // if (paceRatio !== null) {
-      //   if      (paceRatio >= 1.5) trend = 'hot3';
-      //   else if (paceRatio >= 1.3) trend = 'hot2';
-      //   else if (paceRatio >= 1.2) trend = 'hot1';
-      //   else if (paceRatio <= 0.5) trend = 'cold3';
-      //   else if (paceRatio <= 0.7) trend = 'cold2';
-      //   else if (paceRatio <= 0.8) trend = 'cold1';
+      // ── OPTION 2 (SAVED): No animations during 1st half ──
+      // To reactivate: replace above block with this
+      // const schoolLower = (p.school || '').toLowerCase();
+      // const inFirstHalf = [...liveHalf].some(s => s.includes(schoolLower) || schoolLower.includes(s));
+      // if (avg && avg > 0 && pts > 0 && !inFirstHalf) {
+      //   const ratio = pts / avg;
+      //   if (ratio >= 1.5) trend = 'hot3'; ...etc
       // }
 
       total += pts;
