@@ -765,15 +765,40 @@ app.get('/api/boxscore/:gameId', async (req, res) => {
       const teamName = teamData.team?.displayName || 'Unknown';
       const players  = [];
       for (const statGroup of (teamData.statistics || [])) {
+        // Use labels array to find correct stat positions — ESPN order can vary
+        const labels = statGroup.labels || [];
+        const idx = (name) => {
+          const i = labels.indexOf(name);
+          return i >= 0 ? i : null;
+        };
+        // Fallback positions if labels missing (standard ESPN order)
+        const iMin = idx('MIN') ?? 0;
+        const iFg  = idx('FG')  ?? 1;
+        const i3pt = idx('3PT') ?? 2;
+        const iFt  = idx('FT')  ?? 3;
+        const iReb = idx('REB') ?? 6;
+        const iAst = idx('AST') ?? 7;
+        const iStl = idx('STL') ?? 8;
+        const iBlk = idx('BLK') ?? 9;
+        const iTo  = idx('TO')  ?? 10;
+        const iPts = idx('PTS') ?? 13;
+
         for (const athlete of (statGroup.athletes || [])) {
           const stats = athlete.stats || [];
           players.push({
             name: athlete.athlete?.displayName || '—',
             starter: athlete.starter || false,
             dnp:     athlete.didNotPlay || false,
-            min: stats[0]||'0', fg: stats[1]||'0-0', threeP: stats[2]||'0-0',
-            ft:  stats[3]||'0-0', reb: stats[6]||'0', ast: stats[7]||'0',
-            stl: stats[8]||'0',  blk: stats[9]||'0',  to:  stats[10]||'0', pts: stats[13]||'0',
+            min:    stats[iMin] || '0',
+            fg:     stats[iFg]  || '0-0',
+            threeP: stats[i3pt] || '0-0',
+            ft:     stats[iFt]  || '0-0',
+            reb:    stats[iReb] || '0',
+            ast:    stats[iAst] || '0',
+            stl:    stats[iStl] || '0',
+            blk:    stats[iBlk] || '0',
+            to:     stats[iTo]  || '0',
+            pts:    stats[iPts] || '0',
           });
         }
       }
