@@ -81,6 +81,7 @@ function fetchURL(url) {
 //  ESPN SCORING CACHE
 // ════════════════════════════════════════════════════════
 let scoreCache     = {};
+let liveHalfCache  = new Set();
 let scoreCacheTime = 0;
 const SCORE_TTL    = 60_000;
 
@@ -203,8 +204,8 @@ async function fetchLiveScores() {
         }
       }
     }
-    console.log(`[Scores] ${Object.keys(scores).length} players, ${allEvents.length} events`);
-    return scores;
+    console.log(`[Scores] ${Object.keys(scores).length} players, ${allEvents.length} events, ${liveHalf.size} schools in 1st half`);
+    return { scores, liveHalf };
   } catch (e) {
     console.error('[Scores] ESPN fetch failed:', e.message);
     return null;
@@ -215,12 +216,13 @@ async function getLiveScores() {
   if (Date.now() - scoreCacheTime > SCORE_TTL) {
     const fresh = await fetchLiveScores();
     if (fresh !== null) {
-      scoreCache     = fresh;
+      scoreCache     = fresh.scores;
+      liveHalfCache  = fresh.liveHalf;
       scoreCacheTime = Date.now();
       console.log(`[${new Date().toISOString()}] Scores refreshed — ${Object.keys(scoreCache).length} players`);
     }
   }
-  return scoreCache;
+  return { scores: scoreCache, liveHalf: liveHalfCache };
 }
 
 // ════════════════════════════════════════════════════════
@@ -518,7 +520,7 @@ const HARDCODED_AVERAGES = {
   "Eric Dailey": 11.6,
   "Amani Lyles": 9.2,
   "Preston Edmead": 15.9,
-  "Hank Alvey": 15.0,
+  "Hank Avery": 8.6,
   "Aaron Nkrumah": 17.6,
   "Henri Veesaar": 10.8,
   "Corey Washington": 13.8,
@@ -898,9 +900,9 @@ function buildBlankBracket() {
 //  MERGED SCORES
 // ════════════════════════════════════════════════════════
 async function getMergedScores() {
-  const live      = await getLiveScores();
+  const { scores: live, liveHalf } = await getLiveScores();
   const overrides = readJSON(OVERRIDE_F, {});
-  return { ...live, ...overrides };
+  return { scores: { ...live, ...overrides }, liveHalf };
 }
 
 // ════════════════════════════════════════════════════════
@@ -1095,14 +1097,20 @@ app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
 app.get('/api/teams', async (req, res) => {
   const rosters = readJSON(ROSTER_F, { teams: [] });
-  const [scores, avgs] = await Promise.all([getMergedScores(), getSeasonAverages()]);
+  const [{ scores, liveHalf }, avgs] = await Promise.all([getMergedScores(), getSeasonAverages()]);
   const teams = (rosters.teams || []).map(team => {
     let total = 0;
     const players = (team.players || []).map(p => {
       const pts = scores[p.name] ?? p.pts ?? 0;
       const avg = avgs[p.name] ?? null;
       let trend = null;
-      if (avg && avg > 0 && pts > 0) {
+
+      // ── OPTION 2 (ACTIVE): No animations during 1st half of live games ──
+      // Check if this player's school has a game currently in 1st half
+      const schoolLower = (p.school || '').toLowerCase();
+      const inFirstHalf = [...liveHalf].some(s => s.includes(schoolLower) || schoolLower.includes(s));
+
+      if (avg && avg > 0 && pts > 0 && !inFirstHalf) {
         const ratio = pts / avg;
         if      (ratio >= 1.5) trend = 'hot3';
         else if (ratio >= 1.3) trend = 'hot2';
@@ -1111,6 +1119,25 @@ app.get('/api/teams', async (req, res) => {
         else if (ratio <= 0.7) trend = 'cold2';
         else if (ratio <= 0.8) trend = 'cold1';
       }
+
+      // ── OPTION 1 (SAVED FOR LATER): Pace-adjusted trend ──
+      // To activate: remove Option 2 block above and uncomment below
+      // Requires passing gameMinutesPlayed per school from liveHalf (upgrade needed)
+      //
+      // const GAME_MINUTES = 40;
+      // const minutesPlayed = liveMinutes[schoolLower] || 0; // need to track this
+      // const paceRatio = minutesPlayed > 5  // only after 5 mins to avoid noise
+      //   ? (pts / avg) / (minutesPlayed / GAME_MINUTES)
+      //   : null;
+      // if (paceRatio !== null) {
+      //   if      (paceRatio >= 1.5) trend = 'hot3';
+      //   else if (paceRatio >= 1.3) trend = 'hot2';
+      //   else if (paceRatio >= 1.2) trend = 'hot1';
+      //   else if (paceRatio <= 0.5) trend = 'cold3';
+      //   else if (paceRatio <= 0.7) trend = 'cold2';
+      //   else if (paceRatio <= 0.8) trend = 'cold1';
+      // }
+
       total += pts;
       return { ...p, pts, seasonAvg: avg, trend };
     });
@@ -1197,7 +1224,7 @@ app.get('/api/bracket', async (req, res) => {
 });
 
 app.get('/api/scores', async (req, res) => {
-  const live      = await getLiveScores();
+  const { scores: live } = await getLiveScores();
   const overrides = readJSON(OVERRIDE_F, {});
   res.json({ live, overrides, merged: { ...live, ...overrides }, liveCount: Object.keys(live).length });
 });
