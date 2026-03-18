@@ -338,7 +338,7 @@ const HARDCODED_AVERAGES = {
   "Cayden Boozer": 9.0,
   "Dame Sarr": 8.5,
   "Nikolas Khamenia": 7.3,
-  "Maliq Brown": 7.0,
+  "Mikel Brown": 18.2,
   "Caleb Foster": 8.5,
   "Brayden Burries": 16.0,
   "Koa Peat": 13.8,
