@@ -122,7 +122,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;transition:border-color .2s;position:relative}
 .pc:not(.elim):hover{border-color:var(--orange)}
 .pc.elim{opacity:.4}
-.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;flex-wrap:nowrap;overflow:hidden}
+.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;gap:3px;min-width:0}.pc-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
 .pc-s{font-size:11px;color:var(--muted);margin-top:2px}
 .pc-p{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);margin-top:5px}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
@@ -950,7 +950,7 @@ function viewTeam(name, from) {
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
     <div class="pc ${p.active?'':'elim'}">
       ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
-      <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.name}${trendIcon(p.trend)}</div>
+      <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}"><span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
       <div class="pc-s">${p.school}${p.seasonAvg ? ` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>` : ''}</div>
       <div style="position:relative;margin-top:2px">
         <div class="pc-p">${p.pts}</div>
