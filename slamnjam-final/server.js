@@ -95,11 +95,16 @@ async function fetchLiveScores() {
 
     const scores    = {};
     const allEvents = [];
+    const seenIds   = new Set(); // FIX: deduplicate events across date queries
 
     for (const date of dates) {
       try {
         const data = await fetchURL(`https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=100&limit=50&date=${date}`);
-        allEvents.push(...(data.events || []));
+        for (const ev of (data.events || [])) {
+          if (ev.id && seenIds.has(ev.id)) continue; // skip duplicate
+          if (ev.id) seenIds.add(ev.id);
+          allEvents.push(ev);
+        }
       } catch(e) {}
     }
 
