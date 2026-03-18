@@ -189,6 +189,16 @@ async function fetchLiveScores() {
             }
           }
         }
+        // Track schools in 1st half for Option 2 trend suppression
+        const evStatus = event.status?.type?.name || '';
+        const evPeriod = parseInt(event.status?.period || 0);
+        if (evStatus === 'STATUS_IN_PROGRESS' && evPeriod <= 1) {
+          for (const team of (comp.competitors || [])) {
+            const name = (team.team?.shortDisplayName || team.team?.displayName || '').toLowerCase();
+            if (name) liveHalf.add(name);
+          }
+        }
+
         // Fall back to leaders if no detailed stats found
         if (!gotDetailedStats) {
           for (const team of (comp.competitors || [])) {
