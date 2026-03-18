@@ -1247,7 +1247,8 @@ function renderMatchup(m) {
   const isTbd = !t1n || t1n==='TBD' || !t2n || t2n==='TBD';
   // Clickable: show box score if game played, show pre-game stats if not TBD
   const clickable = !isTbd && m.id;
-  const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
+  const gameId = m.espnId || m.id;
+  const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${gameId}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
   // Schedule info bar — show date/time/tv but NOT location
   const isLive = m.status === 'STATUS_IN_PROGRESS';
   const isFinal = m.status === 'STATUS_FINAL';
