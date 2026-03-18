@@ -878,7 +878,21 @@ function trendIcon(trend) {
 function renderTopScorers(allP) {
   const top = allP.filter(p=>p.pts>0).sort((a,b)=>b.pts-a.pts).slice(0,8);
   document.getElementById('top-scorers').innerHTML = top.length
-    ? top.map((p,i)=>`<div class="pr"><div class="pnum">${i+1}</div>${teamLogo(p.school)?`<img src="${TEAM_LOGOS[p.school]||''}" style="width:22px;height:22px;object-fit:contain;flex-shrink:0;border-radius:3px" onerror="this.style.display='none'" alt="">`:''}<div class="pi"><div class="pi-n" style="display:flex;align-items:center;gap:2px">${p.name}${trendIcon(p.trend)}</div><div class="pi-m">${p.school} · <em style="color:var(--orange);font-style:normal">${p.teamName||''}</em>${p.seasonAvg?` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>`:''}</div></div><div class="p-pts">${p.pts}</div></div>`).join('')
+    ? top.map((p,i)=>{
+        const logoUrl = TEAM_LOGOS[p.school] || '';
+        const logoHtml = logoUrl
+          ? `<img src="${logoUrl}" style="width:22px;height:22px;object-fit:contain;border-radius:3px" onerror="this.style.display='none'" alt="">`
+          : '';
+        return `<div class="pr">
+          <div class="pnum">${i+1}</div>
+          <div style="width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center">${logoHtml}</div>
+          <div class="pi">
+            <div class="pi-n" style="display:flex;align-items:center;gap:2px">${p.name}${trendIcon(p.trend)}</div>
+            <div class="pi-m">${p.school} · <em style="color:var(--orange);font-style:normal">${p.teamName||''}</em>${p.seasonAvg?` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>`:''}</div>
+          </div>
+          <div class="p-pts">${p.pts}</div>
+        </div>`;
+      }).join('')
     : '<p style="color:var(--muted);font-size:13px">No scoring data yet. Upload rosters to get started.</p>';
 }
 
@@ -1140,6 +1154,72 @@ const TEAM_LOGOS = {
   'Tennessee St': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2634.png',
   'Texas':        'https://a.espncdn.com/i/teamlogos/ncaa/500/251.png',
   'NC State':     'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png',
+  // ── Roster abbreviation aliases (matches rosters.json school names) ──
+  'NC St':        'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png',
+  'Mich St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/127.png',
+  'So Florida':   'https://a.espncdn.com/i/teamlogos/ncaa/500/58.png',
+  'Tx Tech':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2641.png',
+  'St Johns':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2569.png',
+  'St Marys':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2608.png',
+  'Texas A&M':    'https://a.espncdn.com/i/teamlogos/ncaa/500/245.png',
+  'Pr View':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2504.png',
+  'Tenn':         'https://a.espncdn.com/i/teamlogos/ncaa/500/2633.png',
+  'Tenn St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2634.png',
+  'Wisc':         'https://a.espncdn.com/i/teamlogos/ncaa/500/275.png',
+  'Vandy':        'https://a.espncdn.com/i/teamlogos/ncaa/500/238.png',
+  'Kennesaw St':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2908.png',
+  'Iowa St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/66.png',
+  'Utah St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/328.png',
+  'Ohio St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/194.png',
+  'Miami FL':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2390.png',
+  'Miami OH':     'https://a.espncdn.com/i/teamlogos/ncaa/500/193.png',
+  'Cal Baptist':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2856.png',
+  'McNeese St':   'https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png',
+  'Wright St':    'https://a.espncdn.com/i/teamlogos/ncaa/500/2750.png',
+  'High Point':   'https://a.espncdn.com/i/teamlogos/ncaa/500/2729.png',
+  'Santa Clara':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2607.png',
+  'St Louis':     'https://a.espncdn.com/i/teamlogos/ncaa/500/139.png',
+  'Hawaii':       'https://a.espncdn.com/i/teamlogos/ncaa/500/62.png',
+  'VCU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2670.png',
+  'UCF':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2116.png',
+  'UNC':          'https://a.espncdn.com/i/teamlogos/ncaa/500/153.png',
+  'UConn':        'https://a.espncdn.com/i/teamlogos/ncaa/500/41.png',
+  'Hofstra':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2206.png',
+  'Siena':        'https://a.espncdn.com/i/teamlogos/ncaa/500/2561.png',
+  'Mich St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/127.png',
+  'Tenn':         'https://a.espncdn.com/i/teamlogos/ncaa/500/2633.png',
+  'Tenn St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2634.png',
+  'Iowa St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/66.png',
+  'Ohio St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/194.png',
+  'So Florida':   'https://a.espncdn.com/i/teamlogos/ncaa/500/58.png',
+  'Tx Tech':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2641.png',
+  'St Johns':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2569.png',
+  'St Marys':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2608.png',
+  'St Louis':     'https://a.espncdn.com/i/teamlogos/ncaa/500/139.png',
+  'UNC':          'https://a.espncdn.com/i/teamlogos/ncaa/500/153.png',
+  'Wisc':         'https://a.espncdn.com/i/teamlogos/ncaa/500/275.png',
+  'Vandy':        'https://a.espncdn.com/i/teamlogos/ncaa/500/238.png',
+  'Tx Tech':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2641.png',
+  'Kennesaw St':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2908.png',
+  'Utah St':      'https://a.espncdn.com/i/teamlogos/ncaa/500/328.png',
+  'Wright St':    'https://a.espncdn.com/i/teamlogos/ncaa/500/2750.png',
+  'Cal Baptist':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2856.png',
+  'McNeese St':   'https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png',
+  'High Point':   'https://a.espncdn.com/i/teamlogos/ncaa/500/2729.png',
+  'Santa Clara':  'https://a.espncdn.com/i/teamlogos/ncaa/500/2607.png',
+  'Miami FL':     'https://a.espncdn.com/i/teamlogos/ncaa/500/2390.png',
+  'Miami OH':     'https://a.espncdn.com/i/teamlogos/ncaa/500/193.png',
+  'Pr View':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2504.png',
+  'Hawaii':       'https://a.espncdn.com/i/teamlogos/ncaa/500/62.png',
+  'Hofstra':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2206.png',
+  'Gonzaga':      'https://a.espncdn.com/i/teamlogos/ncaa/500/2250.png',
+  'Furman':       'https://a.espncdn.com/i/teamlogos/ncaa/500/231.png',
+  'Siena':        'https://a.espncdn.com/i/teamlogos/ncaa/500/2561.png',
+  'VCU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2670.png',
+  'UCF':          'https://a.espncdn.com/i/teamlogos/ncaa/500/2116.png',
+  'BYU':          'https://a.espncdn.com/i/teamlogos/ncaa/500/252.png',
+  'Akron':        'https://a.espncdn.com/i/teamlogos/ncaa/500/2006.png',
+  'Troy':         'https://a.espncdn.com/i/teamlogos/ncaa/500/2653.png',
 };
 
 function teamLogo(name) {
