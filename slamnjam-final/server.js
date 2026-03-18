@@ -435,7 +435,7 @@ const HARDCODED_AVERAGES = {
   "Dallin Hall": 13.6,
   "Jamarques Lawrence": 10.8,
   "Michael Cooper": 13.4,
-  "Tramon Mack": 17.2,
+  "Tramon Mark": 17.2,
   "Dailyn Swain": 13.0,
   "Jordan Pope": 12.6,
   "Matas Vokietaitis": 11.4,
