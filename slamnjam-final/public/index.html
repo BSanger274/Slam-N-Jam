@@ -2469,7 +2469,8 @@ async function openRosterModal(year, teamName) {
 }
 
 function closeRosterModal() {
-  document.getElementById('roster-modal').style.display = 'none';
+  const m = document.getElementById('roster-modal');
+  if (m) m.style.display = 'none';
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeRosterModal(); });
