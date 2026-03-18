@@ -122,7 +122,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;transition:border-color .2s;position:relative}
 .pc:not(.elim):hover{border-color:var(--orange)}
 .pc.elim{opacity:.4}
-.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700}
+.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;flex-wrap:wrap}
 .pc-s{font-size:11px;color:var(--muted);margin-top:2px}
 .pc-p{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);margin-top:5px}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
@@ -1411,13 +1411,13 @@ function renderFirstFour() {
         </span>
       </div>
       <div class="cbody" style="padding:10px 14px;flex:1;min-height:90px">
-        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);opacity:${t2won?0.45:1}">
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;min-height:36px;border-bottom:1px solid var(--border);opacity:${t2won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
           ${TEAM_LOGOS[g.t1.name]?`<img src="${TEAM_LOGOS[g.t1.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t1won?'color:var(--orange)':''}">${g.t1.name}</span>
           ${g.t1.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${t1won?'var(--orange)':'var(--muted)'};min-width:28px;text-align:right">${g.t1.score}</span>`:''}
         </div>
-        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;opacity:${t1won?0.45:1}">
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;min-height:36px;opacity:${t1won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t2.seed}</span>
           ${TEAM_LOGOS[g.t2.name]?`<img src="${TEAM_LOGOS[g.t2.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t2won?'color:var(--orange)':''}">${g.t2.name}</span>
