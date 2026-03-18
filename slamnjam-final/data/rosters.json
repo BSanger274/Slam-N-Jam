@@ -1,0 +1,1620 @@
+{
+  "teams": [
+    {
+      "name": "Money Bross",
+      "players": [
+        {
+          "name": "Jeremy Fears",
+          "school": "Mich St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Darryn Peterson",
+          "school": "Kansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Cayden Boozer",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jaxon Kohler",
+          "school": "Mich St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Coen Carr",
+          "school": "Mich St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jaron Pierre",
+          "school": "SMU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "MJ Collins",
+          "school": "Utah St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "AK Okereke",
+          "school": "Vandy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "David Punch",
+          "school": "TCU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Rashaun Agee",
+          "school": "Texas A&M",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Davis Fogle",
+          "school": "Gonzaga",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Thomas Dowd",
+          "school": "Troy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Daniel Jacobsen",
+          "school": "Purdue",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Marcus Hill",
+          "school": "Texas A&M",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Joseph Omojafo",
+          "school": "So Florida",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Itchy Ron",
+      "players": [
+        {
+          "name": "Cameron Boozer",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Ivan Kharchenkov",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Duke Miles",
+          "school": "Vandy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Oscar Cluff",
+          "school": "Purdue",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Wes Enis",
+          "school": "So Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Paulius Muraukas",
+          "school": "St Marys",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Paul McNeil Jr.",
+          "school": "NC St",
+          "pts": 11,
+          "active": false
+        },
+        {
+          "name": "Blake Buchanan",
+          "school": "Iowa St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Simeon Cottle",
+          "school": "Kennesaw St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jaylen Petty",
+          "school": "Tx Tech",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Cooper Koch",
+          "school": "Iowa",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Cruz Davis",
+          "school": "Hofstra",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "TJ Burch",
+          "school": "Wright St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Matt Able",
+          "school": "NC St",
+          "pts": 4,
+          "active": false
+        },
+        {
+          "name": "Pop Isaacs",
+          "school": "Texas A&M",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Studio K",
+      "players": [
+        {
+          "name": "Zuby Ejiofor",
+          "school": "St Johns",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Thijs De Ridder",
+          "school": "Virginia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Bryce Hopkin",
+          "school": "St Johns",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Seth Trimble",
+          "school": "UNC",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Oziyah Sellers",
+          "school": "St Johns",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dillion Mitchell",
+          "school": "St Johns",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Ian Jackson",
+          "school": "St Johns",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jacari White",
+          "school": "Virginia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Devin McGlockton",
+          "school": "Vandy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Ugonna Onyenso",
+          "school": "Virginia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Braeden Carrington",
+          "school": "Wisc",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Divine Ugochukwu",
+          "school": "Mich St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dallin Hall",
+          "school": "Virginia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jamarques Lawrence",
+          "school": "Nebraska",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Michael Cooper",
+          "school": "Wright St",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "One Putt",
+      "players": [
+        {
+          "name": "Kingston Fleming",
+          "school": "Houston",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Boogie Fland",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Trevon Brazile",
+          "school": "Arkansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Braylon Mullins",
+          "school": "UConn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Latrell Wrightsell",
+          "school": "Alabama",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "DJ Wagner",
+          "school": "Arkansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Izaiyah Nelson",
+          "school": "So Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tru Washington",
+          "school": "Miami FL",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Kanon Catchings",
+          "school": "Georgia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tramon Mark",
+          "school": "Texas",
+          "pts": 17,
+          "active": true
+        },
+        {
+          "name": "Allen Graves",
+          "school": "Santa Clara",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jalen Washington",
+          "school": "Vandy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Chase McCarty",
+          "school": "Houston",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jordan Scott",
+          "school": "Mich St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Felix Okpara",
+          "school": "Tenn",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Committee",
+      "players": [
+        {
+          "name": "Alex Condon",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Fletcher Loyer",
+          "school": "Purdue",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Christian Anderson",
+          "school": "Tx Tech",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Milos Uzan",
+          "school": "Houston",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Trey McKenny",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "CJ Cox",
+          "school": "Purdue",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nasir Whitlock",
+          "school": "Lehigh",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Rienk Mast",
+          "school": "Nebraska",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Xavier Edmonds",
+          "school": "TCU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jordan Pope",
+          "school": "Texas",
+          "pts": 5,
+          "active": true
+        },
+        {
+          "name": "Duke Brennan",
+          "school": "Villanova",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Derek Dixon",
+          "school": "UNC",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Rylan Griffen",
+          "school": "Texas A&M",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Mouhamed Dioubate",
+          "school": "Kentucky",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dre Bullock",
+          "school": "Hawaii",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "One Legler Up",
+      "players": [
+        {
+          "name": "Yexel Lendeberg",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Solo Ball",
+          "school": "UConn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tarris Reed Jr",
+          "school": "UConn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "JaKobi Gillespie",
+          "school": "Tenn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Malik Reneau",
+          "school": "Miami FL",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Flory Bidunga",
+          "school": "Kansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Amari Allen",
+          "school": "Alabama",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Mason Failsey",
+          "school": "Utah St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Blue Cain",
+          "school": "Georgia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Skyy Clark",
+          "school": "UCLA",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Acaden Lewis",
+          "school": "Villanova",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Braden Frager",
+          "school": "Nebraska",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Colloin Chandler",
+          "school": "Kentucky",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Adam Miller",
+          "school": "Gonzaga",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tavion Banks",
+          "school": "Iowa",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Team P",
+      "players": [
+        {
+          "name": "Thomsa Haugh",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Alex Karaban",
+          "school": "UConn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Malik Thomas",
+          "school": "Virginia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Motiejus Krivas",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Chris Cenac",
+          "school": "Houston",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tavari Johnson",
+          "school": "Akron",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nikolas Khamenia",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Chance Mallory",
+          "school": "Virginia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Mario Saint Supery",
+          "school": "Gonzaga",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Austin Rapp",
+          "school": "Wisc",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Bryson Tiller",
+          "school": "Kansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Omer Mayers",
+          "school": "Purdue",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Isaiah Brown",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Caleb Foster",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Xavier Booker",
+          "school": "UCLA",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Super Suresh",
+      "players": [
+        {
+          "name": "Brayden Burries",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Xaivian Lee",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Patrick Ngongba",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Boopie Miller",
+          "school": "SMU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Ace Buckner",
+          "school": "Clemson",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Urban Klazar",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Aiden Shererell",
+          "school": "Alabama",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Kur Teng",
+          "school": "Mich St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Sam Hoiberg",
+          "school": "Nebraska",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Cedric Taylor",
+          "school": "Howard",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Kennard Davis",
+          "school": "BYU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dwayne Aristode",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Micah Handlohten",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Somotochukwu Cyril",
+          "school": "Georgia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Isiah Harwell",
+          "school": "Houston",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Pit Bulls",
+      "players": [
+        {
+          "name": "Isaiah Evans",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Trey Kaufman Renn",
+          "school": "Purdue",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Andrej Stojakovic",
+          "school": "Illinois",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nate Ament",
+          "school": "Tenn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Robert Wright III",
+          "school": "BYU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Donovan Atwell",
+          "school": "Tx Tech",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Donovan Dent",
+          "school": "UCLA",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nolan Winter",
+          "school": "Wisc",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jayden Stone",
+          "school": "Missouri",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Marcus Milldender",
+          "school": "Georgia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jamarion Batemon",
+          "school": "Iowa St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Victor Valdes",
+          "school": "Troy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Alex Wilkens",
+          "school": "Furman",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Eian Elmer",
+          "school": "Miami OH",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Micah Robinson",
+          "school": "TCU",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Kelly Heroes",
+      "players": [
+        {
+          "name": "Jaden Bradley",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Elliot Cadeau",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Rueben Chinyelu",
+          "school": "Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Kylan Boswell",
+          "school": "Illinois",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tobe Awaka",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Roddy Gale",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tre Donaldson",
+          "school": "Miami FL",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dominique Daniels",
+          "school": "Cal Baptist",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Devin Royal",
+          "school": "Ohio St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Larry Johnson",
+          "school": "McNeese St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Rob Martin",
+          "school": "High Point",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tyshawn Archie",
+          "school": "McNeese St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Zvonimir Ivisic",
+          "school": "Illinois",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Shammah Scott",
+          "school": "Akron",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Travis Harper",
+          "school": "Tenn St",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Team McCarty",
+      "players": [
+        {
+          "name": "Koa Peat",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tyler Tanner",
+          "school": "Vandy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "David Mirkovic",
+          "school": "Illinois",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Joseph Tugler",
+          "school": "Houston",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Carson Cooper",
+          "school": "Mich St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Sam Lewis",
+          "school": "Virginia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dailyn Swain",
+          "school": "Texas",
+          "pts": 13,
+          "active": true
+        },
+        {
+          "name": "Dontae Horne",
+          "school": "Pr View",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dame Sarr",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Eric Dailey",
+          "school": "UCLA",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Amani Lyles",
+          "school": "Akron",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Preston Edmead",
+          "school": "Hofstra",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "JP Estrella",
+          "school": "Tenn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Hank Avery",
+          "school": "Lehigh",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Aaron Nkrumah",
+          "school": "Tenn St",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Morley Brothers",
+      "players": [
+        {
+          "name": "Morez Johnson",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Aday Mara",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Billy Richmond III",
+          "school": "Arkansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nimari Burnett",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Henri Veesaar",
+          "school": "UNC",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Malique Ewin",
+          "school": "Arkansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Corey Washington",
+          "school": "SMU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Joson Sanon",
+          "school": "St Johns",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Christin Hammond",
+          "school": "Santa Clara",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Themus Fulks",
+          "school": "UCF",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Terry Anderson",
+          "school": "High Point",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Samet Yigitoglu",
+          "school": "SMU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nick Pringle",
+          "school": "Arkansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "RJ Godfrey",
+          "school": "Clemson",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Will Tschetter",
+          "school": "Michigan",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "The Prophecy",
+      "players": [
+        {
+          "name": "Darius Acuff",
+          "school": "Arkansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Braden Smith",
+          "school": "Purdue",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Aden Holloway",
+          "school": "Alabama",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Maliq Brown",
+          "school": "Duke",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Bennett Stirz",
+          "school": "Iowa",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tre White",
+          "school": "Kansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jvonne Hadley",
+          "school": "Louisville",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Killyan Toure",
+          "school": "Iowa St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Darrion Williams",
+          "school": "NC St",
+          "pts": 21,
+          "active": false
+        },
+        {
+          "name": "Quadir Copeland",
+          "school": "NC St",
+          "pts": 16,
+          "active": false
+        },
+        {
+          "name": "Ven-Allen Lubin",
+          "school": "NC St",
+          "pts": 6,
+          "active": false
+        },
+        {
+          "name": "Ethan Roberts",
+          "school": "Penn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Eric Reibe",
+          "school": "UConn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Luka Bogavac",
+          "school": "UNC",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nate Heise",
+          "school": "Iowa St",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Shy Ballers",
+      "players": [
+        {
+          "name": "Milan Momcilovic",
+          "school": "Iowa St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Graham Ike",
+          "school": "Gonzaga",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Ryan Conwell",
+          "school": "Louisville",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Silas Demary",
+          "school": "UConn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tyler Nickels",
+          "school": "Vandy",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tyron Grant Foster",
+          "school": "Gonzaga",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "LeJuan Watts",
+          "school": "Tx Tech",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Matas Vokietaitis",
+          "school": "Texas",
+          "pts": 15,
+          "active": true
+        },
+        {
+          "name": "Tomoslav Ivisic",
+          "school": "Illinois",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Isaac McKneely",
+          "school": "Louisville",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jordan Burks",
+          "school": "UCF",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tai Reon Joseph",
+          "school": "Pr View",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Elijah Mahl",
+          "school": "Santa Clara",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Braden Huff",
+          "school": "Gonzaga",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Gavin Doty",
+          "school": "Siena",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Old School",
+      "players": [
+        {
+          "name": "AJ Dybantsa",
+          "school": "BYU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Emanuel Sharp",
+          "school": "Houston",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Nick Boyd",
+          "school": "Wisc",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jeremiah Wilkerson",
+          "school": "Georgia",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Otega Oweh",
+          "school": "Kentucky",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Melvin Council",
+          "school": "Kansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Terrece Hill",
+          "school": "VCU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "BJ Edwards",
+          "school": "SMU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tyler Perkins",
+          "school": "Villanova",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Riley Kungel",
+          "school": "UCF",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Lazar Djokovic",
+          "school": "VCU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "TJ Power",
+          "school": "Penn",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jadrian Tracey",
+          "school": "VCU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jayden Pierre",
+          "school": "TCU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Cole Bowser",
+          "school": "Furman",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "All World",
+      "players": [
+        {
+          "name": "Joshua Jefferson",
+          "school": "Iowa St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tamin Lipsey",
+          "school": "Iowa St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Meleek Thomas",
+          "school": "Arkansas",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Pryce Sandfort",
+          "school": "Nebraska",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Tyler Bilodeau",
+          "school": "UCLA",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Mouhamed Dioubate",
+          "school": "Kentucky",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "John Mobley Jr",
+          "school": "Ohio St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Joshua Dent",
+          "school": "St Marys",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Shelton Henderson",
+          "school": "Miami FL",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "A Bynum",
+          "school": "Ohio St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Joseph Pinion",
+          "school": "So Florida",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Christoph Tilly",
+          "school": "Ohio St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Brant Byers",
+          "school": "Miami OH",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Bryce Lindsay",
+          "school": "Villanova",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "CamRon Fletcher",
+          "school": "High Point",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "name": "Nutty Professor",
+      "players": [
+        {
+          "name": "Keaton Wagler",
+          "school": "Illinois",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Labaron Philon",
+          "school": "Alabama",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "John Blackwell",
+          "school": "Wisc",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Anthony Dellorso",
+          "school": "Arizona",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Bruce Thornton",
+          "school": "Ohio St",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Mark Mitchell",
+          "school": "Missouri",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Mikey Lewis",
+          "school": "St Marys",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Trent Perry",
+          "school": "UCLA",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Denzel Aberdeen",
+          "school": "Kentucky",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Robbie Avila",
+          "school": "St Louis",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Peter Suder",
+          "school": "Miami OH",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Jarin Stevenson",
+          "school": "UNC",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Dylan Darling",
+          "school": "St Johns",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Liutauras Lelevicius",
+          "school": "TCU",
+          "pts": 0,
+          "active": true
+        },
+        {
+          "name": "Javohn Garcia",
+          "school": "McNeese St",
+          "pts": 0,
+          "active": true
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-03-18T00:00:00.000Z"
+}
