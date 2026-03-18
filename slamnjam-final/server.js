@@ -137,11 +137,13 @@ async function fetchLiveScores() {
                   ff.t1.won=status==='STATUS_FINAL'?w1:null;
                   ff.t2.won=status==='STATUS_FINAL'?w2:null;
                   ff.status=status; ff.clock=event.status?.displayClock||''; ff.period=event.status?.period||'';
+                  ff.espnId=event.id||ff.id;
                 } else if ((n1.includes(e2)||e2.includes(n1)) && (n2.includes(e1)||e1.includes(n2))) {
                   ff.t1.score=sc2; ff.t2.score=sc1;
                   ff.t1.won=status==='STATUS_FINAL'?w2:null;
                   ff.t2.won=status==='STATUS_FINAL'?w1:null;
                   ff.status=status; ff.clock=event.status?.displayClock||''; ff.period=event.status?.period||'';
+                  ff.espnId=event.id||ff.id;
                 }
               }
               // Update r64 bracket matchups
@@ -154,10 +156,12 @@ async function fetchLiveScores() {
                     m.t1.score=sc1; m.t2.score=sc2;
                     m.t1.won=status==='STATUS_FINAL'?w1:null; m.t2.won=status==='STATUS_FINAL'?w2:null;
                     m.status=status; m.clock=event.status?.displayClock||''; m.period=event.status?.period||'';
+                    if(event.id) m.espnId=event.id;
                   } else if ((n1.includes(e2)||e2.includes(n1)) && (n2.includes(e1)||e1.includes(n2))) {
                     m.t1.score=sc2; m.t2.score=sc1;
                     m.t1.won=status==='STATUS_FINAL'?w2:null; m.t2.won=status==='STATUS_FINAL'?w1:null;
                     m.status=status; m.clock=event.status?.displayClock||''; m.period=event.status?.period||'';
+                    if(event.id) m.espnId=event.id;
                   }
                 }
               }
