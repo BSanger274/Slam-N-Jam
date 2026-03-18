@@ -1249,8 +1249,14 @@ function renderMatchup(m) {
   const clickable = !isTbd && m.id;
   const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${m.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
   // Schedule info bar — show date/time/tv but NOT location
+  const isLive = m.status === 'STATUS_IN_PROGRESS';
+  const isFinal = m.status === 'STATUS_FINAL';
   const hasInfo = m.date || m.time;
-  const schedBar = hasInfo && !hasScore ? `<div style="padding:3px 7px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:4px">
+  const schedBar = isLive
+    ? `<div style="padding:3px 7px;font-size:10px;color:var(--green);letter-spacing:.5px;border-bottom:1px solid var(--border);font-weight:700">● LIVE${m.clock?' · '+m.clock:''}${m.period?' · '+['','1ST','2ND','OT'][m.period]||'':''} · ${m.tv||''}</div>`
+    : isFinal
+    ? `<div style="padding:3px 7px;font-size:10px;color:var(--orange);letter-spacing:.5px;border-bottom:1px solid var(--border);font-weight:700">FINAL · ${m.tv||''}</div>`
+    : hasInfo && !hasScore ? `<div style="padding:3px 7px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:4px">
     <span style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.5px">${m.date||''} ${m.time?'· '+m.time:''}</span>
     <span style="font-size:9px;color:var(--muted)">${m.tv||''}</span>
   </div>` : '';
