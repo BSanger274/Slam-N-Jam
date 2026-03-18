@@ -901,9 +901,9 @@ function buildBlankBracket() {
 //  MERGED SCORES
 // ════════════════════════════════════════════════════════
 async function getMergedScores() {
-  const { scores: live, liveHalf } = await getLiveScores();
+  const { scores: live } = await getLiveScores();
   const overrides = readJSON(OVERRIDE_F, {});
-  return { scores: { ...live, ...overrides }, liveHalf };
+  return { ...live, ...overrides };
 }
 
 // ════════════════════════════════════════════════════════
@@ -1098,7 +1098,8 @@ app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
 app.get('/api/teams', async (req, res) => {
   const rosters = readJSON(ROSTER_F, { teams: [] });
-  const [{ scores, liveHalf }, avgs] = await Promise.all([getMergedScores(), getSeasonAverages()]);
+  const [scores, avgs] = await Promise.all([getMergedScores(), getSeasonAverages()]);
+  const liveHalf = liveHalfCache;
   const teams = (rosters.teams || []).map(team => {
     let total = 0;
     const players = (team.players || []).map(p => {
