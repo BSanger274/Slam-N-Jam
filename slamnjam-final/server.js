@@ -111,26 +111,6 @@ async function fetchLiveScores() {
       } catch(e) {}
     }
 
-    // Fetch full box scores for active games to get ALL player stats, not just leaders
-    const activeEvents = allEvents.filter(ev => ev.status?.type?.name === 'STATUS_IN_PROGRESS' || ev.status?.type?.name === 'STATUS_FINAL');
-    await Promise.all(activeEvents.slice(0, 10).map(async ev => {
-      try {
-        const summary = await fetchURL(`https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=${ev.id}`);
-        for (const teamData of (summary.boxscore?.players || [])) {
-          for (const statGroup of (teamData.statistics || [])) {
-            const labels = statGroup.labels || [];
-            const iPts = labels.indexOf('PTS') >= 0 ? labels.indexOf('PTS') : 13;
-            for (const athlete of (statGroup.athletes || [])) {
-              if (athlete.didNotPlay) continue;
-              const name = athlete.athlete?.displayName;
-              const pts  = parseFloat((athlete.stats || [])[iPts]) || 0;
-              if (name && pts > 0) scores[name] = pts;
-            }
-          }
-        }
-      } catch(e) {}
-    }));
-
     for (const event of allEvents) {
       for (const comp of (event.competitions || [])) {
         // Patch bracket scores from live events
@@ -212,7 +192,10 @@ async function fetchLiveScores() {
         // Track schools in 1st half for Option 2 trend suppression
         const evStatus = event.status?.type?.name || '';
         const evPeriod = parseInt(event.status?.period || 0);
-        if (evStatus === 'STATUS_IN_PROGRESS' && evPeriod <= 1) {
+        // Period 1 = first half in college basketball
+        // Also catch halftime status
+        const isFirstHalf = (evStatus === 'STATUS_IN_PROGRESS' && evPeriod <= 1) || evStatus === 'STATUS_HALFTIME';
+        if (isFirstHalf) {
           for (const team of (comp.competitors || [])) {
             const name = (team.team?.shortDisplayName || team.team?.displayName || '').toLowerCase();
             if (name) liveHalf.add(name);
@@ -235,6 +218,29 @@ async function fetchLiveScores() {
         }
       }
     }
+    // Fetch full box scores for active/final games — gets ALL players not just leaders
+    const activeEvents = allEvents.filter(ev => {
+      const s = ev.status?.type?.name || '';
+      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_FINAL' || s === 'STATUS_HALFTIME';
+    });
+    await Promise.all(activeEvents.slice(0, 10).map(async ev => {
+      try {
+        const summary = await fetchURL(`https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=${ev.id}`);
+        for (const teamData of (summary.boxscore?.players || [])) {
+          for (const statGroup of (teamData.statistics || [])) {
+            const labels = statGroup.labels || [];
+            const iPts = labels.indexOf('PTS') >= 0 ? labels.indexOf('PTS') : 13;
+            for (const athlete of (statGroup.athletes || [])) {
+              if (athlete.didNotPlay) continue;
+              const name = athlete.athlete?.displayName;
+              const pts  = parseFloat((athlete.stats || [])[iPts]) || 0;
+              if (name && pts > 0) scores[name] = pts;
+            }
+          }
+        }
+      } catch(e) {}
+    }));
+
     console.log(`[Scores] ${Object.keys(scores).length} players, ${allEvents.length} events, ${liveHalf.size} schools in 1st half`);
     return { scores, liveHalf };
   } catch (e) {
