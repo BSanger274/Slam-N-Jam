@@ -231,35 +231,76 @@ const AVG_TTL    = 6 * 60 * 60 * 1000;
 
 async function fetchSeasonAverages() {
   const avgs = {};
-  try {
-    const data = await fetchURL(
-      'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=100&limit=50'
-    );
-    for (const event of (data.events || [])) {
-      for (const comp of (event.competitions || [])) {
-        for (const team of (comp.competitors || [])) {
-          const teamId = team.team?.id;
-          if (!teamId) continue;
-          try {
-            const rData = await fetchURL(
-              `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/${teamId}/roster`
-            );
-            for (const athlete of (rData.athletes || [])) {
-              const name = athlete.displayName || athlete.fullName;
-              if (!name) continue;
-              for (const stat of (athlete.statistics || [])) {
-                if (stat.name === 'ppg' || stat.abbreviation === 'PPG') {
-                  avgs[name] = parseFloat(stat.value) || 0;
-                }
-              }
+
+  // ESPN team IDs for all 68 tournament teams (2026)
+  // Keyed by school abbreviation used in our roster
+  const TOURNAMENT_TEAM_IDS = {
+    'Duke': 150, 'Ohio State': 194, 'St Johns': 2569, 'Kansas': 2305,
+    'Louisville': 97, 'Michigan St': 127, 'UCLA': 26, 'UConn': 41,
+    'Arizona': 12, 'Villanova': 222, 'Wisconsin': 275, 'Arkansas': 8,
+    'BYU': 252, 'Gonzaga': 2250, 'Miami FL': 2390, 'Purdue': 2509,
+    'Florida': 57, 'Clemson': 228, 'Vanderbilt': 238, 'Nebraska': 158,
+    'N. Carolina': 153, 'Illinois': 356, 'Saint Marys': 2608, 'Houston': 248,
+    'Michigan': 130, 'Georgia': 61, 'Texas Tech': 2641, 'Alabama': 333,
+    'Tennessee': 2633, 'Virginia': 258, 'Kentucky': 96, 'Iowa State': 66,
+    'Texas': 251, 'NC St': 152, 'Howard': 47, 'Iowa': 2294,
+    'McNeese St': 2377, 'Troy': 2653, 'VCU': 2670, 'Penn': 219,
+    'Texas A&M': 245, 'Idaho': 70, 'Utah St': 328, 'High Point': 2729,
+    'Hawaii': 62, 'Kennesaw St': 2908, 'Missouri': 142, 'Queens': 2455,
+    'Akron': 2006, 'Hofstra': 2206, 'Wright St': 2750, 'Santa Clara': 2607,
+    'Tenn St': 2634, 'Furman': 231, 'LIU': 2934, 'Siena': 2561,
+    'So Florida': 58, 'N. Dakota St': 2449, 'UCF': 2116, 'TCU': 2628,
+    'Northern Iowa': 2254, 'CA Baptist': 2856, 'South Florida': 58,
+    'SMU': 2567, 'Miami OH': 193, 'Prairie View': 2504, 'Lehigh': 2348,
+    'UMBC': 2413, 'St Marys': 2608, 'St Johns': 2569, 'Mich St': 127,
+    'Tx Tech': 2641, 'Wisc': 275, 'Tenn': 2633, 'Vandy': 238,
+    'UNC': 153, 'Ohio St': 194, 'Pr View': 2504
+  };
+
+  const seen = new Set();
+  const teamIds = Object.values(TOURNAMENT_TEAM_IDS).filter(id => {
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+
+  console.log(`[Averages] Fetching rosters for ${teamIds.length} tournament teams...`);
+  let fetched = 0;
+
+  // Fetch in batches of 5 to avoid overwhelming ESPN
+  for (let i = 0; i < teamIds.length; i += 5) {
+    const batch = teamIds.slice(i, i + 5);
+    await Promise.all(batch.map(async (teamId) => {
+      try {
+        const rData = await fetchURL(
+          `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/${teamId}/roster`
+        );
+        for (const athlete of (rData.athletes || [])) {
+          const name = athlete.displayName || athlete.fullName;
+          if (!name) continue;
+          for (const stat of (athlete.statistics || [])) {
+            if (stat.name === 'ppg' || stat.abbreviation === 'PPG' ||
+                stat.name === 'points' || stat.displayName === 'Points Per Game') {
+              const val = parseFloat(stat.value) || 0;
+              if (val > 0) avgs[name] = val;
             }
-          } catch { }
+          }
+          // Also check averages array
+          for (const avg of (athlete.averages || [])) {
+            if (avg.abbreviation === 'PPG' || avg.name === 'ppg') {
+              const val = parseFloat(avg.value) || 0;
+              if (val > 0) avgs[name] = val;
+            }
+          }
         }
+        fetched++;
+      } catch(e) {
+        // Skip teams that fail — non-critical
       }
-    }
-  } catch (e) {
-    console.error('[Averages] fetch failed:', e.message);
+    }));
   }
+
+  console.log(`[Averages] Got PPG for ${Object.keys(avgs).length} players from ${fetched} teams`);
   return avgs;
 }
 
