@@ -1304,13 +1304,16 @@ function renderFirstFour() {
   const gameCard = (g) => {
     const t1won = g.t1.won===true, t2won = g.t2.won===true;
     const hasScore = g.t1.score!=null || g.t2.score!=null;
+    const isFinal = g.status === 'STATUS_FINAL' || (hasScore && (t1won || t2won));
     const rColor = regionColor[g.region] || 'var(--muted)';
     const rDot   = regionDot[g.region]   || '⚪';
     const rLabel = g.region.charAt(0).toUpperCase() + g.region.slice(1);
     const t1n = (g.t1.name||'').replace(/'/g,'');
     const t2n = (g.t2.name||'').replace(/'/g,'');
     const canClick = t1n && t2n && t1n!=='TBD' && t2n!=='TBD';
-    const onclick = canClick ? (hasScore ? `openBoxScore('${g.id}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${g.id}')`) : '';
+    // FIX: use espnId for box score, fall back to seed id only for pre-game stats
+    const gameId = g.espnId || g.id;
+    const onclick = canClick ? (hasScore ? `openBoxScore('${gameId}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${g.id}')`) : '';
     const tapLabel = hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS';
 
     return `<div class="card" style="cursor:${canClick?'pointer':'default'};transition:border-color .2s,box-shadow .2s"
@@ -1318,8 +1321,10 @@ function renderFirstFour() {
       <div class="chd">
         <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px">${rDot} ${rLabel} Region</span>
         <div>
-          <span style="font-size:10px;color:var(--gold);font-weight:700">${g.date||''} ${g.time?'· '+g.time:''}</span>
-          ${g.tv?`<span style="font-size:10px;color:var(--muted);margin-left:5px">· ${g.tv}</span>`:''}
+          ${isFinal
+            ? `<span style="font-size:11px;color:var(--orange);font-weight:700;letter-spacing:1px">FINAL</span>${g.tv?' <span style="font-size:10px;color:var(--muted)">· '+g.tv+'</span>':''}`
+            : `<span style="font-size:10px;color:var(--gold);font-weight:700">${g.date||''} ${g.time?'· '+g.time:''}</span>${g.tv?'<span style="font-size:10px;color:var(--muted);margin-left:5px">· '+g.tv+'</span>':''}`
+          }
         </div>
       </div>
       <div class="cbody" style="padding:10px 14px">
@@ -1327,15 +1332,13 @@ function renderFirstFour() {
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
           ${TEAM_LOGOS[g.t1.name]?`<img src="${TEAM_LOGOS[g.t1.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t1won?'color:var(--orange)':''}">${g.t1.name}</span>
-          ${g.t1.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t1won?'var(--orange)':'var(--muted)'}">${g.t1.score}</span>`:''}
-          ${t1won?'<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>':''}
+          ${g.t1.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${t1won?'var(--orange)':'var(--muted)'};min-width:28px;text-align:right">${g.t1.score}</span>`:''}
         </div>
         <div style="display:flex;align-items:center;gap:8px;padding:7px 0;opacity:${t1won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t2.seed}</span>
           ${TEAM_LOGOS[g.t2.name]?`<img src="${TEAM_LOGOS[g.t2.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t2won?'color:var(--orange)':''}">${g.t2.name}</span>
-          ${g.t2.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${t2won?'var(--orange)':'var(--muted)'}">${g.t2.score}</span>`:''}
-          ${t2won?'<span style="font-size:10px;background:rgba(255,107,0,.15);color:var(--orange);padding:2px 5px;border-radius:4px;font-weight:700">ADV</span>':''}
+          ${g.t2.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${t2won?'var(--orange)':'var(--muted)'};min-width:28px;text-align:right">${g.t2.score}</span>`:''}
         </div>
       </div>
       ${canClick?`<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${tapLabel}</div>`:''}
