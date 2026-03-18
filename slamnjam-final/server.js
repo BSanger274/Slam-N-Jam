@@ -111,6 +111,26 @@ async function fetchLiveScores() {
       } catch(e) {}
     }
 
+    // Fetch full box scores for active games to get ALL player stats, not just leaders
+    const activeEvents = allEvents.filter(ev => ev.status?.type?.name === 'STATUS_IN_PROGRESS' || ev.status?.type?.name === 'STATUS_FINAL');
+    await Promise.all(activeEvents.slice(0, 10).map(async ev => {
+      try {
+        const summary = await fetchURL(`https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=${ev.id}`);
+        for (const teamData of (summary.boxscore?.players || [])) {
+          for (const statGroup of (teamData.statistics || [])) {
+            const labels = statGroup.labels || [];
+            const iPts = labels.indexOf('PTS') >= 0 ? labels.indexOf('PTS') : 13;
+            for (const athlete of (statGroup.athletes || [])) {
+              if (athlete.didNotPlay) continue;
+              const name = athlete.athlete?.displayName;
+              const pts  = parseFloat((athlete.stats || [])[iPts]) || 0;
+              if (name && pts > 0) scores[name] = pts;
+            }
+          }
+        }
+      } catch(e) {}
+    }));
+
     for (const event of allEvents) {
       for (const comp of (event.competitions || [])) {
         // Patch bracket scores from live events
