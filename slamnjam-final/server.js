@@ -96,6 +96,7 @@ async function fetchLiveScores() {
     }
 
     const scores    = {};
+    const liveHalf  = new Set(); // schools currently in 1st half
     const allEvents = [];
     const seenIds   = new Set(); // FIX: deduplicate events across date queries
 
