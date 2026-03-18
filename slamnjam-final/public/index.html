@@ -954,7 +954,10 @@ function viewTeam(name, from) {
         ${!p.active?'<div class="otag" style="flex-shrink:0">OUT</div>':''}
       </div>
       <div class="pc-s">${p.school}${p.seasonAvg ? ` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>` : ''}</div>
-      <div class="pc-p">${p.pts}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+        <div class="pc-p">${p.pts}</div>
+        ${p.round ? `<span style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Pick #${p.round}</span>` : ''}
+      </div>
     </div>`).join('');
 
   // Round-by-round breakdown
