@@ -71,7 +71,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 /* ── GRID / CARD ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .card{background:var(--dark3);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
-.chd{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chd{padding:8px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;min-height:40px}
 .ctitle{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
 .cbody{padding:16px}
 
@@ -949,10 +949,8 @@ function viewTeam(name, from) {
   document.getElementById('d-alive').textContent = `${alive} active`;
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
     <div class="pc ${p.active?'':'elim'}">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px">
-        <div class="pc-n" style="display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow:hidden">${p.name}${trendIcon(p.trend)}</div>
-        ${!p.active?'<div class="otag" style="flex-shrink:0;margin-left:4px">OUT</div>':''}
-      </div>
+      ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
+      <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.name}${trendIcon(p.trend)}</div>
       <div class="pc-s">${p.school}${p.seasonAvg ? ` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>` : ''}</div>
       <div style="position:relative;margin-top:2px">
         <div class="pc-p">${p.pts}</div>
