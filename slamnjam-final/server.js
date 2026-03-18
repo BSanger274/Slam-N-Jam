@@ -1101,11 +1101,13 @@ if (!fs.existsSync(HISTORY_F)) {
 app.listen(PORT, async () => {
   console.log(`\n🏀 SLAM-N-JAM server running → http://localhost:${PORT}`);
   console.log('📡 Warming ESPN cache...');
-  await Promise.all([getLiveScores(), getLiveBracket(), getSeasonAverages()]);
+  await getLiveBracket();   // bracket must load first so scores can patch it
+  await getLiveScores();
+  await getSeasonAverages();
   console.log('✅ Ready.\n');
 
   // Keep refreshing in background
   setInterval(getLiveScores,    SCORE_TTL);
-  setInterval(getLiveBracket,   BRACKET_TTL);
+  setInterval(async () => { await getLiveBracket(); await getLiveScores(); }, BRACKET_TTL);
   setInterval(getSeasonAverages, AVG_TTL);
 });
