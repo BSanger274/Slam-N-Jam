@@ -30,8 +30,8 @@ header{background:rgba(8,8,16,.95);backdrop-filter:blur(20px);border-bottom:1px 
 nav{display:flex;gap:2px;overflow-x:auto}
 .nb{background:none;border:none;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 13px;cursor:pointer;border-radius:6px;transition:all .2s;white-space:nowrap;flex-shrink:0}
 .nb:hover,.nb.active{background:rgba(255,107,0,.12);color:var(--orange)}
-.nb.bkt{border:1px solid rgba(255,184,0,.25);color:var(--gold)}
-.nb.bkt:hover,.nb.bkt.active{background:rgba(255,184,0,.1);border-color:var(--gold);color:var(--gold)}
+.nb.bkt{border:1px solid transparent}
+.nb.bkt:hover{background:rgba(255,255,255,.05);color:var(--text)}.nb.bkt.active{background:rgba(255,184,0,.1);border-color:var(--gold);color:var(--gold)}
 .hright{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .ldot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;transition:background .3s}
 .ldot.offline{background:var(--red)}
@@ -235,7 +235,7 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .do-nm{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;flex:1;cursor:pointer;transition:color .2s}
 .do-nm:hover{color:var(--orange)}
 /* ── HOT / COLD TREND ICONS ── */
-.trend-wrap{display:inline-flex;align-items:center;gap:1px;margin-left:5px;flex-shrink:0;position:relative}
+.trend-wrap{display:inline-flex;align-items:center;gap:0px;margin-left:3px;flex-shrink:0;position:relative}
 
 /* FIRE */
 .fire-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px}
@@ -1412,7 +1412,7 @@ function renderFirstFour() {
           }
         </span>
       </div>
-      <div class="cbody" style="padding:10px 14px;flex:1">
+      <div class="cbody" style="padding:10px 14px;flex:1;min-height:90px">
         <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);opacity:${t2won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
           ${TEAM_LOGOS[g.t1.name]?`<img src="${TEAM_LOGOS[g.t1.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
