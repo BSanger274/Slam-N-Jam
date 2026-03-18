@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,40 +155,6 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .rtab{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:6px 14px;border-radius:16px;cursor:pointer;transition:all .2s}
 .rtab.active,.rtab:hover{background:rgba(255,184,0,.1);border-color:var(--gold);color:var(--gold)}
 
-/* Bracket scroll container */
-/* History logo active/hover */
-#hist-logo, #teams-logo, #players-logo { transition: filter .2s; }
-button.nb:hover #hist-logo, button.nb.active #hist-logo,
-button.nb:hover #teams-logo, button.nb.active #teams-logo,
-button.nb:hover #players-logo, button.nb.active #players-logo { filter: invert(38%) sepia(98%) saturate(1000%) hue-rotate(358deg) brightness(1.05) !important; }
-/* Dashboard SVG icon */
-button.nb:hover #dashboard-logo { opacity:1 !important; stroke:var(--orange); }
-button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
-
-/* Champion roster modal */
-.hc { cursor:pointer; transition:background .15s; }
-.hc:hover { background:rgba(255,184,0,.06); border-radius:8px; }
-.roster-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
-.roster-row:last-child { border-bottom:none; }
-.roster-round { font-family:'Bebas Neue',sans-serif; font-size:13px; color:var(--muted); width:24px; flex-shrink:0; text-align:center; }
-.roster-name { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; flex:1; }
-.roster-school { font-size:11px; color:var(--muted); }
-.roster-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); min-width:36px; text-align:right; flex-shrink:0; }
-/* Hide checkmark in status badge on mobile */
-@media (max-width:768px) { .status-check { display:none !important; } }
-/* Force center alignment on roster modal points column */
-#roster-modal #roster-body table td:last-child,
-#roster-modal #roster-body table th:last-child,
-#roster-modal #roster-body table tfoot td:last-child {
-  text-align:center !important;
-}
-
-/* HOF badge */
-@keyframes hof-pulse{0%,100%{box-shadow:0 0 4px 1px rgba(255,184,0,.5)}50%{box-shadow:0 0 10px 3px rgba(255,184,0,.95)}}
-.hof-badge{display:inline-flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:1.5px;color:#111;background:linear-gradient(135deg,#ffd700,#ffaa00,#ffd700);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;animation:hof-pulse 2s ease-in-out infinite;flex-shrink:0}
-
-.bkt-scroll{overflow-x:auto;padding-bottom:20px;-webkit-overflow-scrolling:touch}
-.bkt-wrap{display:inline-flex;gap:0;align-items:flex-start;padding:4px 4px 4px 0;min-height:600px}
 /* History logo active/hover */
 #hist-logo, #teams-logo, #players-logo { transition: filter .2s; }
 button.nb:hover #hist-logo, button.nb.active #hist-logo,
@@ -554,8 +521,9 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
     </div>
   </div>
   <div class="rtabs">
-    <div class="rtab" onclick="showRegion('firstfour')">🎯 First Four</div>
-    <div class="rtab active" onclick="showRegion('east')">🟠 East</div>
+    <!-- FIX: First Four is now the default active tab (it's Mar 17-18, play-in days) -->
+    <div class="rtab active" onclick="showRegion('firstfour')">🎯 First Four</div>
+    <div class="rtab" onclick="showRegion('east')">🟠 East</div>
     <div class="rtab" onclick="showRegion('west')">🔵 West</div>
     <div class="rtab" onclick="showRegion('south')">🟢 South</div>
     <div class="rtab" onclick="showRegion('midwest')">🔴 Midwest</div>
@@ -746,7 +714,8 @@ let HISTORY  = [];
 let adminTok = localStorage.getItem('snj_adm') || null;
 let pTxt = '', pSta = 'all';
 let prevFrom = 'teams'; // for back button
-let currentRegion = 'east';
+// FIX: Default to firstfour — it's Mar 17-18 (play-in days)
+let currentRegion = 'firstfour';
 let pollTimer = null;
 
 // ═══════════════════════════════════════════════
@@ -981,37 +950,11 @@ function renderRoundBreakdown(t) {
   const el = document.getElementById('d-rounds');
   if (!el) return;
 
-  const ROUND_NAMES = {
-    68: 'First Four', 64: 'Round of 64', 32: 'Round of 32',
-    16: 'Sweet 16', 8: 'Elite Eight', 4: 'Final Four', 2: 'Championship'
-  };
-
-  // Group players by round bracket
-  // Use ESPN bracket to figure out which round each player is in
-  // For now bucket by active/eliminated and points scored
-  // Simpler: group by how many pts scored — use tournament round data if available
-  // Best approach: use BRACKET data to see which round teams are in
-
-  // Build round buckets from bracket data
-  const rounds = [];
-  if (BRACKET) {
-    const roundKeys = [
-      { key: 'r64', label: 'Round of 64',  num: 1 },
-      { key: 'r32', label: 'Round of 32',  num: 2 },
-      { key: 'r16', label: 'Sweet 16',     num: 3 },
-      { key: 'r8',  label: 'Elite Eight',  num: 4 },
-    ];
-    // Track which players scored in each round
-    // We don't have per-round scoring stored, so show current total with alive status
-  }
-
-  // Since we don't store per-round pts, show summary by active/eliminated groups
   const active    = t.players.filter(p => p.active);
   const eliminated = t.players.filter(p => !p.active);
   const totalPts  = t.totalPts || 0;
   const activePts = active.reduce((s,p) => s + (p.pts||0), 0);
   const elimPts   = eliminated.reduce((s,p) => s + (p.pts||0), 0);
-  const maxPts    = Math.max(activePts, elimPts, 1);
 
   if (!t.players.length) {
     el.innerHTML = '<div style="color:var(--muted);font-size:13px">No roster data yet.</div>';
@@ -1103,7 +1046,6 @@ function draftInfo(playerName) {
     }
   }
   if (!results.length) return null;
-  // If manager filter active, only show that manager's players
   if (BRACKET_MANAGER_FILTER) {
     const match = results.find(r => r.team === BRACKET_MANAGER_FILTER);
     return match || null;
@@ -1129,7 +1071,6 @@ function slotCls(won, name) {
 
 
 // ── TEAM LOGO HELPER ──
-// Returns ESPN CDN logo URL for a team name
 const TEAM_LOGOS = {
   'Duke':         'https://a.espncdn.com/i/teamlogos/ncaa/500/150.png',
   'Siena':        'https://a.espncdn.com/i/teamlogos/ncaa/500/2561.png',
@@ -1180,7 +1121,7 @@ const TEAM_LOGOS = {
   'Houston':      'https://a.espncdn.com/i/teamlogos/ncaa/500/248.png',
   'Idaho':        'https://a.espncdn.com/i/teamlogos/ncaa/500/70.png',
   'Michigan':     'https://a.espncdn.com/i/teamlogos/ncaa/500/130.png',
-  'UMBC':         '/logo-umbc.png',  /* local */
+  'UMBC':         '/logo-umbc.png',
   'Howard':       'https://a.espncdn.com/i/teamlogos/ncaa/500/47.png',
   'Georgia':      'https://a.espncdn.com/i/teamlogos/ncaa/500/61.png',
   'Saint Louis':  'https://a.espncdn.com/i/teamlogos/ncaa/500/139.png',
@@ -1204,7 +1145,6 @@ const TEAM_LOGOS = {
 function teamLogo(name) {
   const url = TEAM_LOGOS[name];
   if (!url) return '';
-  // Add white background for logos that have dark/transparent backgrounds
   return `<img class="slogo" src="${url}" alt="${name}" onerror="this.style.display='none'">`;
 }
 
@@ -1218,7 +1158,6 @@ function renderMatchup(m) {
     let dp = '', ti = '';
 
     if (BRACKET_MANAGER_FILTER) {
-      // Specific manager selected — show individual pip(s) for their players only
       const myPlayers = allDrafted.filter(p => p.teamName === BRACKET_MANAGER_FILTER);
       if (myPlayers.length) {
         dp = myPlayers.map(p =>
@@ -1227,7 +1166,6 @@ function renderMatchup(m) {
         ti = trendIcon(getTrend(t.name));
       }
     } else {
-      // All managers — show single count badge if any players drafted from this school
       if (allDrafted.length) {
         dp = `<span class="draft-pip" title="${allDrafted.map(p=>p.name+' ('+p.teamName+')').join(', ')}">👥 ${allDrafted.length}</span>`;
       }
@@ -1245,11 +1183,9 @@ function renderMatchup(m) {
   const t1n = (m.t1.name||'').replace(/'/g,'');
   const t2n = (m.t2.name||'').replace(/'/g,'');
   const isTbd = !t1n || t1n==='TBD' || !t2n || t2n==='TBD';
-  // Clickable: show box score if game played, show pre-game stats if not TBD
   const clickable = !isTbd && m.id;
   const gameId = m.espnId || m.id;
   const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${gameId}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
-  // Schedule info bar — show date/time/tv but NOT location
   const isLive = m.status === 'STATUS_IN_PROGRESS';
   const isFinal = m.status === 'STATUS_FINAL';
   const hasInfo = m.date || m.time;
@@ -1265,8 +1201,7 @@ function renderMatchup(m) {
   return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${schedBar}${tapBar}</div>`;
 }
 
-// Heights per round for positioning matchups
-const MU_H = 95; // px per matchup card — spacing between card tops
+const MU_H = 95;
 const ROUND_CONFIGS = [
   { key:'r64',  label:'Round of 64',  count:8 },
   { key:'r32',  label:'Round of 32',  count:4 },
@@ -1275,7 +1210,13 @@ const ROUND_CONFIGS = [
 ];
 
 function renderBracket(region) {
-  if (!BRACKET) { document.getElementById('bracket-view').innerHTML = '<p style="color:var(--muted);padding:20px">Loading bracket…</p>'; return; }
+  // FIX: Don't show "Loading bracket..." — show a connecting message instead
+  // The bracket will populate as soon as fetchAll() returns
+  if (!BRACKET) {
+    document.getElementById('bracket-view').innerHTML =
+      '<p style="color:var(--muted);padding:20px;font-size:13px">⏳ Connecting to server…</p>';
+    return;
+  }
   if (region==='final4')    { document.getElementById('bracket-view').innerHTML = renderFinal4(); return; }
   if (region==='firstfour') { document.getElementById('bracket-view').innerHTML = renderFirstFour(); return; }
   const reg = BRACKET[region];
@@ -1288,15 +1229,13 @@ function renderBracket(region) {
     { key:'r8',  label:'Elite Eight' },
   ];
 
-  // Card dimensions
-  const CARD_H   = 72;  // actual rendered card height
-  const CARD_GAP = 42;  // gap between cards
-  const UNIT     = CARD_H + CARD_GAP; // space per card slot = 114px
+  const CARD_H   = 72;
+  const CARD_GAP = 42;
+  const UNIT     = CARD_H + CARD_GAP;
   const COL_W    = 185;
   const CONN_W   = 22;
   const LABEL_H  = 32;
 
-  // Total height based on R64 (8 cards)
   const totalH = 8 * UNIT + LABEL_H + 20;
 
   let html = `<div class="bkt-scroll"><div style="display:inline-flex;gap:0;align-items:flex-start;min-height:${totalH}px">`;
@@ -1305,10 +1244,10 @@ function renderBracket(region) {
     const matchups = reg[rc.key] || [];
     if (!matchups.length) return;
 
-    const count    = matchups.length;         // 8,4,2,1
-    const slots    = 8 / count;               // slots each card occupies: 1,2,4,8
-    const slotH    = slots * UNIT;            // height of each slot
-    const cardTop  = (slotH - CARD_H) / 2;   // center card within slot
+    const count    = matchups.length;
+    const slots    = 8 / count;
+    const slotH    = slots * UNIT;
+    const cardTop  = (slotH - CARD_H) / 2;
 
     html += `<div style="width:${COL_W}px;flex-shrink:0;position:relative;height:${totalH}px">`;
     html += `<div class="rcol-label">${rc.label}</div>`;
@@ -1320,7 +1259,6 @@ function renderBracket(region) {
 
     html += `</div>`;
 
-    // Connector column
     if (ri < rounds.length - 1) {
       const nextMatchups = reg[rounds[ri+1].key] || [];
       if (!nextMatchups.length) return;
@@ -1328,17 +1266,13 @@ function renderBracket(region) {
       html += `<div style="width:${CONN_W}px;flex-shrink:0;position:relative;height:${totalH}px">`;
       html += `<div class="rcol-label" style="visibility:hidden">x</div>`;
 
-      // Draw connector for each pair of current matchups → one next matchup
       for (let i = 0; i < nextMatchups.length; i++) {
         const topMi   = i * 2;
         const botMi   = i * 2 + 1;
         if (botMi >= matchups.length) break;
 
-        // Center of top card = middle of its slot
         const topCenter = LABEL_H + topMi * slotH + slotH / 2;
-        // Center of bottom card = middle of its slot
         const botCenter = LABEL_H + botMi * slotH + slotH / 2;
-        const midY      = (topCenter + botCenter) / 2;
         const lineH     = botCenter - topCenter;
 
         html += `<svg style="position:absolute;top:${topCenter}px;left:0;overflow:visible;pointer-events:none" width="${CONN_W}" height="${lineH}" viewBox="0 0 ${CONN_W} ${lineH}">
@@ -1469,16 +1403,15 @@ function renderFinal4() {
 
   const ROW_H  = 64;
   const GAP    = 40;
-  const TOTAL  = 132;  // pad(16) + pill(38) + gap(40) + pill(38)
-  const TOP_Y  = 35;   // pad(16) + half-pill(19)
-  const BOT_Y  = 113;  // pad(16) + pill(38) + gap(40) + half-pill(19)
-  const MID    = (TOP_Y + BOT_Y) / 2;  // 74
-  const LINE_L = 112;  // outer horizontal lines
-  const TBD_L  = 145;  // TBD center line — longer
+  const TOTAL  = 132;
+  const TOP_Y  = 35;
+  const BOT_Y  = 113;
+  const MID    = (TOP_Y + BOT_Y) / 2;
+  const LINE_L = 112;
+  const TBD_L  = 145;
 
   return `<div style="max-width:960px;margin:0 auto">
 
-    <!-- Logo -->
     <div style="text-align:center;margin-bottom:28px">
       <img src="/final-four-logo.svg" alt="2026 Final Four"
         style="height:135px;width:auto;object-fit:contain;border-radius:6px"
@@ -1488,22 +1421,13 @@ function renderFinal4() {
       </div>
     </div>
 
-    <!-- Bracket: LEFT [svg] CENTER [svg] RIGHT -->
     <div style="display:flex;align-items:center;justify-content:center;gap:0;white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;padding-bottom:8px">
 
-      <!-- LEFT COLUMN: two pills stacked -->
       <div style="display:inline-flex;flex-direction:column;gap:${GAP}px;align-items:flex-end;white-space:normal;flex-shrink:0;padding-top:16px">
-        <div>
-          ${teamPill(sf1?.t1||{name:'East Winner'}, sf1)}
-        </div>
-        <div>
-          ${teamPill(sf1?.t2||{name:'South Winner'}, sf1)}
-        </div>
+        <div>${teamPill(sf1?.t1||{name:'East Winner'}, sf1)}</div>
+        <div>${teamPill(sf1?.t2||{name:'South Winner'}, sf1)}</div>
       </div>
 
-      <!-- LEFT SVG CONNECTOR
-           Two horizontal lines from pills → vertical bar → one horizontal to center
-           Mirrors the left half of the bracket image -->
       <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
         <line x1="0"        y1="${TOP_Y}" x2="${LINE_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="0"        y1="${BOT_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
@@ -1512,7 +1436,6 @@ function renderFinal4() {
         <text x="${LINE_L + TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">TBD</text>
       </svg>
 
-      <!-- CENTER: champion box only -->
       <div style="display:inline-flex;flex-direction:column;align-items:center;flex-shrink:0;white-space:normal;vertical-align:middle">
         <div class="champ-box" style="min-width:190px;text-align:center">
           <div class="champ-trophy">🏆</div>
@@ -1526,7 +1449,6 @@ function renderFinal4() {
         `:''}
       </div>
 
-      <!-- RIGHT SVG CONNECTOR: mirror of left -->
       <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
         <line x1="${LINE_L+TBD_L}" y1="${TOP_Y}" x2="${TBD_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="${LINE_L+TBD_L}" y1="${BOT_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
@@ -1535,19 +1457,13 @@ function renderFinal4() {
         <text x="${TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">TBD</text>
       </svg>
 
-      <!-- RIGHT COLUMN: two pills stacked -->
       <div style="display:inline-flex;flex-direction:column;gap:${GAP}px;align-items:flex-start;white-space:normal;flex-shrink:0;padding-top:16px">
-        <div>
-          ${teamPill(sf2?.t1||{name:'West Winner'}, sf2)}
-        </div>
-        <div>
-          ${teamPill(sf2?.t2||{name:'Midwest Winner'}, sf2)}
-        </div>
+        <div>${teamPill(sf2?.t1||{name:'West Winner'}, sf2)}</div>
+        <div>${teamPill(sf2?.t2||{name:'Midwest Winner'}, sf2)}</div>
       </div>
 
     </div>
 
-    <!-- Draft picks strip -->
     ${f4Teams.length?`
     <div style="margin-top:24px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">
       <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center">Draft Picks In The Final Four</div>
@@ -1591,7 +1507,6 @@ function renderHistory() {
   const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
   const max = sorted[0]?.[1]||1;
   set('h-mt', sorted[0]?.[0]||'—'); set('h-mt-s', `${sorted[0]?.[1]||0} championships`);
-  // Championship count section removed — replaced by Dynasty Tracker
   document.getElementById('hist-grid').innerHTML = HISTORY.map((h,i)=>`
     <div class="hc" onclick="openRosterModal(${h.year},'${h.winner.replace(/'/g,"\\'")}')">
       <div class="hc-yr">${h.year}</div>
@@ -1599,24 +1514,20 @@ function renderHistory() {
       <div class="hc-t">${h.year===2020?'⚠ COVID-19':i===0?'🏆 Defending':'🏀 Champion'}</div>
     </div>`).join('');
 
-  // Render the three new sections
   renderDraftPositionBest();
   renderAllTimeTopPlayers();
   renderDynastyTracker();
 }
 
-// ── SECTION 1: Best Score by Draft Position ──
 async function renderDraftPositionBest() {
   const el = document.getElementById('hist-draft-best');
   if (!el) return;
 
-  // Build from all-time seasons (all teams) + fallback to champion rosters
   const seasons = await loadAllTimeSeasons();
   const champRosters = await loadChampionRosters();
 
   const bestByRound = {};
 
-  // Pull from all-time seasons first (has all teams)
   Object.entries(seasons).forEach(([year, season]) => {
     (season.teams || []).forEach(team => {
       (team.players || []).forEach(p => {
@@ -1628,9 +1539,8 @@ async function renderDraftPositionBest() {
     });
   });
 
-  // Fallback: also check hardcoded champion rosters for older years
   Object.entries(champRosters).forEach(([year, data]) => {
-    if (seasons[year]) return; // already covered
+    if (seasons[year]) return;
     (data.players || []).forEach(p => {
       if (p.pts == null || p.pts === 0) return;
       if (!bestByRound[p.round] || p.pts > bestByRound[p.round].pts) {
@@ -1645,11 +1555,6 @@ async function renderDraftPositionBest() {
   }
 
   const rounds = Object.keys(bestByRound).sort((a,b) => a-b);
-  if (!rounds.length) {
-    el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px 0">No point data available yet.</p>';
-    return;
-  }
-
   const maxPts = Math.max(...rounds.map(r => bestByRound[r].pts));
 
   el.innerHTML = rounds.map(r => {
@@ -1671,7 +1576,6 @@ async function renderDraftPositionBest() {
   }).join('');
 }
 
-// ── SECTION 2: All-Time Top Tournament Players ──
 async function renderAllTimeTopPlayers() {
   const el = document.getElementById('hist-top-players');
   if (!el) return;
@@ -1679,9 +1583,8 @@ async function renderAllTimeTopPlayers() {
   const seasons = await loadAllTimeSeasons();
   const champRosters = await loadChampionRosters();
   const all = [];
-  const seen = new Set(); // avoid duplicates
+  const seen = new Set();
 
-  // Pull from all-time seasons (all teams)
   Object.entries(seasons).forEach(([year, season]) => {
     (season.teams || []).forEach(team => {
       (team.players || []).forEach(p => {
@@ -1694,7 +1597,6 @@ async function renderAllTimeTopPlayers() {
     });
   });
 
-  // Fallback: hardcoded champion rosters for older years
   Object.entries(champRosters).forEach(([year, data]) => {
     if (seasons[year]) return;
     (data.players || []).forEach(p => {
@@ -1740,19 +1642,15 @@ async function renderAllTimeTopPlayers() {
   ${all.length > 20 ? `<div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted)">Showing top 20 of ${all.length} players</div>` : ''}`;
 }
 
-// ── SECTION 3: Dynasty Tracker ──
 function renderDynastyTracker() {
   const el = document.getElementById('hist-dynasty');
   if (!el) return;
 
-  // Count wins and find streaks
   const counts = {};
   HISTORY.filter(h=>h.winner!=='*Vacant*').forEach(h => {
     counts[h.winner] = (counts[h.winner]||0) + 1;
   });
 
-  // Find best streaks
-  const streaks = {};
   let cur = null, curLen = 0, bestStreaks = {};
   [...HISTORY].reverse().forEach(h => {
     if (h.winner === '*Vacant*') { cur = null; curLen = 0; return; }
@@ -1765,20 +1663,7 @@ function renderDynastyTracker() {
     }
   });
 
-  // Multi-title winners sorted by count
   const multi = Object.entries(counts).filter(([,c])=>c>1).sort((a,b)=>b[1]-a[1]);
-
-  // Build timeline — group consecutive years by same winner
-  const timeline = [];
-  let lastWinner = null;
-  [...HISTORY].reverse().forEach(h => {
-    if (h.winner === lastWinner && timeline.length) {
-      timeline[timeline.length-1].years.push(h.year);
-    } else {
-      timeline.push({ winner: h.winner, years: [h.year] });
-      lastWinner = h.winner;
-    }
-  });
 
   const HOF = new Set(['Juice / Steve Dyer','Committee','Jim & Frank','Montreal Jacques','Reese']);
   const colors = ['var(--orange)','var(--blue)','var(--green)','var(--red)','var(--gold)',
@@ -1787,7 +1672,6 @@ function renderDynastyTracker() {
   multi.forEach(([name],i) => { winnerColor[name] = colors[i % colors.length]; });
 
   el.innerHTML = `
-    <!-- Multi-title champions -->
     <div style="margin-bottom:20px">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">MULTI-TITLE CHAMPIONS</div>
       <div style="display:flex;flex-wrap:wrap;gap:10px">
@@ -1804,7 +1688,6 @@ function renderDynastyTracker() {
       </div>
     </div>
 
-    <!-- Year timeline -->
     <div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">CHAMPIONSHIP TIMELINE</div>
       <div style="display:flex;flex-wrap:wrap;gap:3px">
@@ -1956,7 +1839,6 @@ function apiFetch(path, body) {
 // ═══════════════════════════════════════════════
 const PMAP = {dashboard:0,teams:1,players:2,bracket:3,history:4,admin:5};
 function showPage(id) {
-  // Close any open modals when navigating
   closeBoxScore();
   closeRosterModal();
   closeH2H();
@@ -1969,9 +1851,7 @@ function showPage(id) {
   if (id==='admin')    initAdmin();
   if (id==='bracket')  { renderBracket(currentRegion); renderDraftStrip(); }
   if (id==='history')  renderHistory();
-  // Sync nav icon colors with active state
   const LOGO_MAP = { history:'hist-logo', teams:'teams-logo', players:'players-logo' };
-  // Dashboard uses SVG — handle separately
   const dashSvg = document.getElementById('dashboard-logo');
   if (dashSvg) { dashSvg.style.opacity = id==='dashboard'?'1':'0.5'; dashSvg.style.stroke = id==='dashboard'?'#ff6b00':'currentColor'; }
   Object.entries(LOGO_MAP).forEach(([page, logoId]) => {
@@ -2071,7 +1951,6 @@ async function openPreGameStats(team1, team2, gameId) {
   document.body.style.overflow = 'hidden';
   body.innerHTML = '<div class="modal-loading">Loading stats…</div>';
 
-  // Find matchup schedule info from bracket data
   let gameInfo = null;
   if (BRACKET) {
     for (const reg of Object.values(BRACKET)) {
@@ -2085,7 +1964,6 @@ async function openPreGameStats(team1, team2, gameId) {
     }
   }
 
-  // Header with both team logos
   scoreRow.innerHTML = `
     <div class="modal-team">
       ${TEAM_LOGOS[team1] ? `<img src="${TEAM_LOGOS[team1]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
@@ -2106,7 +1984,6 @@ async function openPreGameStats(team1, team2, gameId) {
     </div>`;
 
   try {
-    // Fetch both season averages and live scores in parallel
     const [avgsRes, scoresRes] = await Promise.all([
       fetch(`${API}/api/averages`).then(r=>r.json()).catch(()=>({averages:{}})),
       fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{}}))
@@ -2117,15 +1994,12 @@ async function openPreGameStats(team1, team2, gameId) {
     const liveCount  = scoresRes.liveCount || 0;
     const isLive     = liveCount > 0;
 
-    // Update status badge
     const badge = document.getElementById('game-status-badge');
     if (badge) badge.innerHTML = isLive
       ? '<span style="color:var(--green)">● LIVE</span>'
       : '<span style="color:var(--gold)">Upcoming Game</span>';
 
-    // Build drafted players table for one team
     const teamSection = (schoolName) => {
-      // Find ALL drafted players from this school across all managers
       const draftedPlayers = [];
       TEAMS.forEach(t => {
         t.players.forEach(p => {
@@ -2228,33 +2102,21 @@ function launchBall() {
   const r = orig.getBoundingClientRect();
   orig.style.opacity = '0';
 
-  // Create the ball element
   const ball = document.createElement('div');
   ball.textContent = '🏀';
   ball.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;transform-origin:center;font-size:32px;transition:none;line-height:1';
   document.body.appendChild(ball);
 
-  // Starting position (center of original ball)
   const startX = r.left + r.width / 2;
   const startY = r.top + r.height / 2;
   const floorY = window.innerHeight - 60;
   const centerX = window.innerWidth / 2;
 
-  // Phase 1: Dribble down — 3 bounces, each lower and bigger
   const bounces = [
     { bottomY: floorY * 0.5, size: 40,  dur: 350 },
     { bottomY: floorY * 0.75,size: 60,  dur: 400 },
     { bottomY: floorY,       size: 90,  dur: 450 },
   ];
-
-  let phase = 0;
-  let phaseStart = null;
-  let curSize = 32;
-  let curX = startX;
-  let curY = startY;
-  let prevY = startY;
-  let prevX = startX;
-  let squishActive = false;
 
   function ease(t) { return t < .5 ? 2*t*t : -1+(4-2*t)*t; }
   function easeIn(t) { return t*t; }
@@ -2268,7 +2130,6 @@ function launchBall() {
     ball.style.transform = `scaleX(${squishX}) scaleY(${squishY}) rotate(${(performance.now()/3)%360}deg)`;
   }
 
-  // Animate dribble phases
   function dribblePhase(idx, resolve) {
     if (idx >= bounces.length) { resolve(); return; }
     const b = bounces[idx];
@@ -2284,17 +2145,14 @@ function launchBall() {
       const elapsed = now - start;
 
       if (elapsed < halfDur) {
-        // Going DOWN
         const t = elapsed / halfDur;
         const y = fromY + easeIn(t) * (b.bottomY - fromY);
         const x = fromX + (centerX - fromX) * t;
         const size = fromSize + (toSize - fromSize) * t;
-        // Squish on landing
         const squishY = t > .85 ? (1 - (t-.85)/.15 * 0.4) : 1;
         const squishX = t > .85 ? (1 + (t-.85)/.15 * 0.4) : 1;
         setball(x, y, size, squishX, squishY);
       } else if (elapsed < b.dur) {
-        // Bouncing back UP a little before next dribble
         const t = (elapsed - halfDur) / halfDur;
         const bounceHeight = (b.bottomY - fromY) * 0.3;
         const y = b.bottomY - easeOut(t) * bounceHeight;
@@ -2312,7 +2170,6 @@ function launchBall() {
     requestAnimationFrame(tick);
   }
 
-  // Phase 2: Launch UP toward screen — rapidly growing
   function launchUp(resolve) {
     const fromSize = bounces[bounces.length-1].size;
     const dur = 600;
@@ -2329,21 +2186,17 @@ function launchBall() {
     requestAnimationFrame(tick);
   }
 
-  // Phase 3: Shatter effect
   function shatter(resolve) {
     ball.remove();
 
-    // Flash white
     const flash = document.createElement('div');
     flash.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(255,150,0,.6);pointer-events:none;transition:opacity .3s';
     document.body.appendChild(flash);
 
-    // Create crack SVG overlay
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.style.cssText = 'position:fixed;inset:0;z-index:10001;pointer-events:none;width:100%;height:100%';
     svg.setAttribute('viewBox',`0 0 ${window.innerWidth} ${window.innerHeight}`);
 
-    // Generate random cracks from center
     const cx = centerX, cy = window.innerHeight/2;
     const numCracks = 12;
     let crackHTML = '';
@@ -2354,7 +2207,6 @@ function launchBall() {
       const wobble1y = cy + Math.sin(angle) * len * 0.4 + (Math.random()-0.5)*80;
       const endx = cx + Math.cos(angle) * len + (Math.random()-0.5)*60;
       const endy = cy + Math.sin(angle) * len + (Math.random()-0.5)*60;
-      // Branch cracks
       const branchAngle = angle + (Math.random()-.5) * 1.2;
       const branchLen = 60 + Math.random()*100;
       const bx = wobble1x + Math.cos(branchAngle)*branchLen;
@@ -2365,7 +2217,6 @@ function launchBall() {
     svg.innerHTML = crackHTML;
     document.body.appendChild(svg);
 
-    // Shake the page
     document.body.style.transition = 'transform .05s';
     let shakeCount = 0;
     const shakeInterval = setInterval(() => {
@@ -2378,7 +2229,6 @@ function launchBall() {
       }
     }, 40);
 
-    // Fade out flash and cracks
     setTimeout(() => { flash.style.opacity = '0'; }, 100);
     setTimeout(() => {
       svg.style.transition = 'opacity 1s';
@@ -2390,12 +2240,10 @@ function launchBall() {
     }, 2000);
   }
 
-  // Run the full sequence
   new Promise(resolve => dribblePhase(0, resolve))
     .then(() => new Promise(resolve => launchUp(resolve)))
     .then(() => new Promise(resolve => shatter(resolve)))
     .then(() => {
-      // Return ball to home
       orig.style.transition = 'opacity .4s';
       orig.style.opacity = '1';
       setTimeout(() => { orig.style.transition = ''; ballBouncing = false; }, 400);
@@ -2407,7 +2255,6 @@ function openH2H() {
   const modal = document.getElementById('h2h-modal');
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  // Populate dropdowns
   const opts = TEAMS.sort((a,b)=>b.totalPts-a.totalPts)
     .map(t => `<option value="${t.name}">${t.name} (${t.totalPts} pts)</option>`).join('');
   document.getElementById('h2h-team1').innerHTML = '<option value="">Select Team 1…</option>' + opts;
@@ -2437,7 +2284,6 @@ function renderH2H() {
   const t2Wins  = t2.totalPts > t1.totalPts;
   const maxPts  = Math.max(t1.totalPts, t2.totalPts, 1);
 
-  // Summary header
   const summary = `
     <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
       <div style="text-align:center">
@@ -2455,7 +2301,6 @@ function renderH2H() {
       </div>
     </div>`;
 
-  // Points bar comparison
   const bars = `
     <div style="margin-bottom:20px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
@@ -2474,15 +2319,13 @@ function renderH2H() {
       </div>
     </div>`;
 
-  // Player comparison — side by side
-  const maxLen = Math.max(t1.players.length, t2.players.length);
   const t1sorted = [...t1.players].sort((a,b)=>b.pts-a.pts);
   const t2sorted = [...t2.players].sort((a,b)=>b.pts-a.pts);
+  const maxLen = Math.max(t1.players.length, t2.players.length);
 
   const playerRows = `
     <div style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Player Comparison</div>
     <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:4px">
-      <!-- Headers -->
       <div style="font-size:10px;color:var(--muted);letter-spacing:1px;padding-bottom:6px;border-bottom:1px solid var(--border)">Player · PTS</div>
       <div></div>
       <div style="font-size:10px;color:var(--muted);letter-spacing:1px;padding-bottom:6px;border-bottom:1px solid var(--border);text-align:right">PTS · Player</div>
@@ -2532,7 +2375,7 @@ async function archiveSeason() {
     if (d.ok) {
       status.textContent = `✅ Saved! ${d.year} · ${d.teams} teams · ${d.players} players · Champion: ${d.champion || 'TBD'}`;
       status.style.color = 'var(--green)';
-      CHAMPION_ROSTERS_CACHE = null; // bust cache so modal reloads fresh
+      CHAMPION_ROSTERS_CACHE = null;
     } else {
       status.textContent = `❌ ${d.error}`;
       status.style.color = '#ff4444';
@@ -2564,7 +2407,6 @@ async function loadAllTimeSeasons() {
     const d = await r.json();
     ALL_TIME_SEASONS_CACHE = d.seasons || {};
   } catch(e) { ALL_TIME_SEASONS_CACHE = {}; }
-  // Merge with hardcoded champion rosters as fallback for older years
   return ALL_TIME_SEASONS_CACHE;
 }
 
@@ -2580,7 +2422,6 @@ async function openRosterModal(year, teamName) {
   document.body.style.overflow = 'hidden';
   document.getElementById('roster-title').textContent = `${year} · ${teamName}`;
   document.getElementById('roster-subtitle').textContent = 'CHAMPIONSHIP ROSTER';
-  // Will update with draft position once data loads
   body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Loading…</div>';
 
   const rosters = await loadChampionRosters();
@@ -2594,12 +2435,10 @@ async function openRosterModal(year, teamName) {
     </div>`;
     return;
   }
-  // Update subtitle with draft position if available
   const draftStr = data.draftPosition ? `CHAMPIONSHIP ROSTER · Drafted ${ordinal(data.draftPosition)} Overall` : 'CHAMPIONSHIP ROSTER';
   document.getElementById('roster-subtitle').textContent = draftStr;
 
   const total = data.players.reduce((s,p) => s + (p.pts != null ? p.pts : 0), 0);
-  const hasPoints = data.players.some(p => p.pts != null && p.pts > 0);
 
   body.innerHTML = `
     <table style="width:100%;border-collapse:collapse">
@@ -2663,7 +2502,6 @@ function buildTickerItem(m, type) {
       <span style="font-size:10px;color:var(--muted);margin-left:4px">${m.tv||''}</span>
     </div></div>${sep}`;
   }
-  // upcoming — match screenshot style
   const d = (m.date||'').replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*/,'');
   const t = (m.time||'').replace('ET','').trim();
   const dt = [d, t].filter(Boolean).join(' · ');
@@ -2678,15 +2516,13 @@ function buildTickerItem(m, type) {
 let tickerPos = 0;
 let tickerRAF = null;
 let tickerHalfWidth = 0;
-const TICKER_SPEED = 0.6; // px per frame (~36px/sec at 60fps)
+const TICKER_SPEED = 0.6;
 
 function tickerLoop() {
   const track = document.getElementById('ticker-track');
   if (!track) { tickerRAF = requestAnimationFrame(tickerLoop); return; }
   if (tickerHalfWidth > 0) {
     tickerPos += TICKER_SPEED;
-    // Seamless loop — when we reach the end of first copy, jump back silently
-    // Since second copy is identical, user never sees the reset
     if (tickerPos >= tickerHalfWidth) tickerPos -= tickerHalfWidth;
     track.style.transform = `translateX(${-tickerPos}px)`;
   }
@@ -2697,6 +2533,8 @@ function refreshTicker() {
   const track = document.getElementById('ticker-track');
   const dot   = document.getElementById('ticker-dot');
   if (!track) return;
+  // FIX: Don't render ticker until BRACKET is loaded — avoids empty "Loading scores..." state
+  if (!BRACKET) return;
 
   const allMatchups = [];
   if (BRACKET) {
@@ -2733,13 +2571,11 @@ function refreshTicker() {
 
   const spacer = '<span style="display:inline-block;width:80px;flex-shrink:0"></span>';
   const html = allItems.join('') + spacer;
-  track.innerHTML = html + html; // double for seamless loop
+  track.innerHTML = html + html;
 
-  // Measure half-width AFTER render
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       tickerHalfWidth = track.scrollWidth / 2;
-      // Don't reset position if already scrolling — keeps momentum
       if (tickerPos >= tickerHalfWidth) tickerPos = 0;
     });
   });
@@ -2755,7 +2591,6 @@ setInterval(refreshTicker, 60000);
   <!-- CHAMPION ROSTER MODAL -->
   <div id="roster-modal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeRosterModal()">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;width:min(520px,95vw);max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6)">
-      <!-- Header -->
       <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(255,184,0,.05)">
         <div>
           <div id="roster-title" style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--gold)"></div>
@@ -2763,7 +2598,6 @@ setInterval(refreshTicker, 60000);
         </div>
         <button onclick="closeRosterModal()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1">✕</button>
       </div>
-      <!-- Body -->
       <div id="roster-body" style="overflow-y:auto;padding:16px 20px;flex:1"></div>
     </div>
   </div>
