@@ -255,7 +255,7 @@ async function fetchSeasonAverages() {
     'SMU': 2567, 'Miami OH': 193, 'Prairie View': 2504, 'Lehigh': 2348,
     'UMBC': 2413, 'St Marys': 2608, 'St Johns': 2569, 'Mich St': 127,
     'Tx Tech': 2641, 'Wisc': 275, 'Tenn': 2633, 'Vandy': 238,
-    'UNC': 153, 'Ohio St': 194, 'Pr View': 2504
+    'UNC': 153, 'Ohio St': 194, 'Prairie View A&M': 2504, 'Pr View': 2504
   };
 
   const seen = new Set();
@@ -338,6 +338,7 @@ const HARDCODED_AVERAGES = {
   "Cayden Boozer": 9.0,
   "Dame Sarr": 8.5,
   "Nikolas Khamenia": 7.3,
+  "Maliq Brown": 7.0,
   "Mikel Brown": 18.2,
   "Caleb Foster": 8.5,
   "Brayden Burries": 16.0,
@@ -436,7 +437,7 @@ const HARDCODED_AVERAGES = {
   "Jamarques Lawrence": 10.8,
   "Michael Cooper": 13.4,
   "Tramon Mark": 13.5,
-  "Dailyn Swain": 13.0,
+  "Dailyn Swain": 17.8,
   "Jordan Pope": 12.6,
   "Matas Vokietaitis": 11.4,
   "Darrion Williams": 14.0,
@@ -817,9 +818,9 @@ function buildBlankBracket() {
   return {
     _source: '2026-selection-sunday',
     _firstFour: [
-      { id:'ff3', region:'midwest', date:'Tue Mar 17', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:16,name:'UMBC',score:83,won:false}, t2:{seed:16,name:'Howard',score:86,won:true} },
-      { id:'ff1', region:'west',    date:'Tue Mar 17', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:11,name:'Texas',score:68,won:true}, t2:{seed:11,name:'NC State',score:66,won:false} },
-      { id:'ff4', region:'south',   date:'Wed Mar 18', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(16,'Prairie View'), t2:team(16,'Lehigh')      },
+      { id:'ff3', espnId:'401856435', region:'midwest', date:'Tue Mar 17', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:16,name:'UMBC',score:83,won:false}, t2:{seed:16,name:'Howard',score:86,won:true} },
+      { id:'ff1', espnId:'401856434', region:'west',    date:'Tue Mar 17', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:11,name:'Texas',score:68,won:true}, t2:{seed:11,name:'NC State',score:66,won:false} },
+      { id:'ff4', region:'south',   date:'Wed Mar 18', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(16,'Prairie View A&M'), t2:team(16,'Lehigh')      },
       { id:'ff2', region:'midwest', date:'Wed Mar 18', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(11,'Miami OH'),     t2:team(11,'SMU')         }
     ],
     east: {
