@@ -482,8 +482,8 @@ function buildBlankBracket() {
   return {
     _source: '2026-selection-sunday',
     _firstFour: [
-      { id:'ff3', region:'midwest', date:'Tue Mar 17', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(16,'UMBC'),        t2:team(16,'Howard')      },
-      { id:'ff1', region:'west',    date:'Tue Mar 17', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(11,'Texas'),        t2:team(11,'NC State')    },
+      { id:'ff3', region:'midwest', date:'Tue Mar 17', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:16,name:'UMBC',score:83,won:false}, t2:{seed:16,name:'Howard',score:86,won:true} },
+      { id:'ff1', region:'west',    date:'Tue Mar 17', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:11,name:'Texas',score:68,won:true}, t2:{seed:11,name:'NC State',score:66,won:false} },
       { id:'ff4', region:'south',   date:'Wed Mar 18', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(16,'Prairie View'), t2:team(16,'Lehigh')      },
       { id:'ff2', region:'midwest', date:'Wed Mar 18', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(11,'Miami OH'),     t2:team(11,'SMU')         }
     ],
@@ -508,7 +508,7 @@ function buildBlankBracket() {
         { id:'w2', date:'Fri Mar 20', time:'4:10 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(8,'Villanova'), t2:team(9,'Utah State')      },
         { id:'w3', date:'Thu Mar 19', time:'1:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(5,'Wisconsin'), t2:team(12,'High Point')     },
         { id:'w4', date:'Thu Mar 19', time:'4:25 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(4,'Arkansas'),  t2:team(13,"Hawai'i")        },
-        { id:'w5', date:'Thu Mar 19', time:'9:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(6,'BYU'),       t2:team(11,'TX/NCS (TBD)')   },
+        { id:'w5', date:'Thu Mar 19', time:'9:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(6,'BYU'),       t2:team(11,'Texas')   },
         { id:'w6', date:'Thu Mar 19', time:'7:15 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(3,'Gonzaga'),   t2:team(14,'Kennesaw State') },
         { id:'w7', date:'Fri Mar 20', time:'6:50 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(7,'Miami FL'),  t2:team(10,'Missouri')       },
         { id:'w8', date:'Fri Mar 20', time:'9:25 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(2,'Purdue'),    t2:team(15,'Queens')         }
@@ -534,7 +534,7 @@ function buildBlankBracket() {
     },
     midwest: {
       r64: [
-        { id:'m1', date:'Thu Mar 19', time:'7:10 PM ET',  location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1:team(1,'Michigan'),   t2:team(16,'UMBC/HOW (TBD)') },
+        { id:'m1', date:'Thu Mar 19', time:'7:10 PM ET',  location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1:team(1,'Michigan'),   t2:team(16,'Howard') },
         { id:'m2', date:'Thu Mar 19', time:'9:45 PM ET',  location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1:team(8,'Georgia'),    t2:team(9,'Saint Louis')      },
         { id:'m3', date:'Fri Mar 20', time:'12:40 PM ET', location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1:team(5,'Texas Tech'), t2:team(12,'Akron')           },
         { id:'m4', date:'Fri Mar 20', time:'3:15 PM ET',  location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1:team(4,'Alabama'),    t2:team(13,'Hofstra')         },
