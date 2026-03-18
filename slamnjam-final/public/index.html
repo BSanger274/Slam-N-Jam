@@ -60,7 +60,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
 /* ── STAT BLOCKS ── */
 .sbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.sb{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden}
+.sb{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
 .sb::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
 .sb.or::before{background:var(--orange)}.sb.go::before{background:var(--gold)}
 .sb.gr::before{background:var(--green)}.sb.re::before{background:var(--red)}
@@ -956,7 +956,7 @@ function viewTeam(name, from) {
       <div class="pc-s">${p.school}${p.seasonAvg ? ` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>` : ''}</div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
         <div class="pc-p">${p.pts}</div>
-        ${p.round ? '<span style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Pick #' + p.round + '</span>' : ''}
+        ${p.round != null ? '<span style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase">PICK #' + p.round + '</span>' : ''}
       </div>
     </div>`).join('');
 
@@ -1282,7 +1282,7 @@ function renderMatchup(m) {
     <span style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.5px">${m.date||''} ${m.time?'· '+m.time:''}</span>
     <span style="font-size:9px;color:var(--muted)">${m.tv||''}</span>
   </div>` : '';
-  const tapBar = clickable ? `<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
+  const tapBar = clickable ? `<div style="text-align:center;display:flex;align-items:center;justify-content:center;height:22px;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
   return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${schedBar}${tapBar}</div>`;
 }
 
@@ -1404,7 +1404,7 @@ function renderFirstFour() {
     return `<div class="card" style="cursor:${canClick?'pointer':'default'};transition:border-color .2s,box-shadow .2s"
       ${canClick?`onclick="${onclick}" onmouseenter="this.style.borderColor='rgba(255,107,0,.85)';this.style.boxShadow='0 0 12px rgba(255,107,0,.3)'" onmouseleave="this.style.borderColor='';this.style.boxShadow=''"`:''}>
       <div class="chd">
-        <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px">${rDot} ${rLabel} Region</span>
+        <span style="font-size:11px;font-weight:700;color:${rColor};letter-spacing:1px;white-space:nowrap">${rDot} ${rLabel} Region</span>
         <div>
           ${isFinal
             ? `<span style="font-size:11px;color:var(--orange);font-weight:700;letter-spacing:1px">FINAL</span>${g.tv?' <span style="font-size:10px;color:var(--muted)">· '+g.tv+'</span>':''}`
@@ -1426,7 +1426,7 @@ function renderFirstFour() {
           ${g.t2.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${t2won?'var(--orange)':'var(--muted)'};min-width:28px;text-align:right">${g.t2.score}</span>`:''}
         </div>
       </div>
-      ${canClick?`<div style="text-align:center;padding:2px 0;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${tapLabel}</div>`:''}
+      ${canClick?`<div style="text-align:center;display:flex;align-items:center;justify-content:center;height:22px;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${tapLabel}</div>`:''}
     </div>`;
   };
 
