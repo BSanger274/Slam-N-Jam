@@ -238,8 +238,8 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .trend-wrap{display:inline-flex;align-items:center;gap:1px;margin-left:5px;flex-shrink:0;position:relative}
 
 /* FIRE */
-.fire-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px}
-.fire-emoji{font-size:15px;position:relative;z-index:2;animation:fire-bob 1s ease-in-out infinite alternate}
+.fire-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px}
+.fire-emoji{font-size:12px;position:relative;z-index:2;animation:fire-bob 1s ease-in-out infinite alternate}
 @keyframes fire-bob{0%{transform:scale(1) rotate(-4deg)}100%{transform:scale(1.15) rotate(4deg)}}
 .fparticle{position:absolute;bottom:1px;width:3px;height:3px;border-radius:50%;opacity:0;
   animation:frise var(--dur,1s) ease-out var(--delay,0s) infinite}
@@ -250,8 +250,8 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 }
 
 /* SNOWFLAKE */
-.snow-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px}
-.snow-svg{width:17px;height:17px;animation:snow-spin 4s linear infinite,snow-pulse 2s ease-in-out infinite alternate}
+.snow-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px}
+.snow-svg{width:14px;height:14px;animation:snow-spin 4s linear infinite,snow-pulse 2s ease-in-out infinite alternate}
 @keyframes snow-spin{to{transform:rotate(360deg)}}
 @keyframes snow-pulse{
   0%  {filter:brightness(1) drop-shadow(0 0 2px rgba(0,200,255,.5));transform:rotate(0deg) scale(1)}
@@ -949,8 +949,10 @@ function viewTeam(name, from) {
   document.getElementById('d-alive').textContent = `${alive} active`;
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
     <div class="pc ${p.active?'':'elim'}">
-      ${!p.active?'<div class="otag">OUT</div>':''}
-      <div class="pc-n" style="display:flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend)}</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px">
+        <div class="pc-n" style="display:flex;align-items:center;gap:3px;flex-wrap:wrap;flex:1">${p.name}${trendIcon(p.trend)}</div>
+        ${!p.active?'<div class="otag" style="flex-shrink:0">OUT</div>':''}
+      </div>
       <div class="pc-s">${p.school}${p.seasonAvg ? ` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>` : ''}</div>
       <div class="pc-p">${p.pts}</div>
     </div>`).join('');
