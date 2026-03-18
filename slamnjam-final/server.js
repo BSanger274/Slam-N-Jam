@@ -158,14 +158,44 @@ async function fetchLiveScores() {
             }
           }
         }
-        // Player points
+        // Player points — use linescores/statistics for full box score data
+        // Fall back to leaders array if detailed stats not available
+        let gotDetailedStats = false;
         for (const team of (comp.competitors || [])) {
-          for (const leader of (team.leaders || [])) {
-            if (leader.name === 'points') {
-              for (const l of (leader.leaders || [])) {
-                const name = l.athlete?.displayName;
-                const pts  = parseFloat(l.value) || 0;
-                if (name) scores[name] = (scores[name] || 0) + pts;
+          // Try statistics array first (has every player, not just leaders)
+          const teamStats = team.statistics || [];
+          for (const statGroup of teamStats) {
+            if (statGroup.name === 'scoring' || statGroup.abbreviation === 'PTS') {
+              for (const athlete of (statGroup.athletes || [])) {
+                const name = athlete.athlete?.displayName;
+                const pts  = parseFloat(athlete.value) || 0;
+                if (name && pts > 0) {
+                  scores[name] = (scores[name] || 0) + pts;
+                  gotDetailedStats = true;
+                }
+              }
+            }
+          }
+          // Also check linescores
+          for (const ls of (team.linescores || [])) {
+            const name = ls.athlete?.displayName || ls.displayName;
+            const pts  = parseFloat(ls.value) || 0;
+            if (name && pts > 0) {
+              scores[name] = (scores[name] || 0) + pts;
+              gotDetailedStats = true;
+            }
+          }
+        }
+        // Fall back to leaders if no detailed stats found
+        if (!gotDetailedStats) {
+          for (const team of (comp.competitors || [])) {
+            for (const leader of (team.leaders || [])) {
+              if (leader.name === 'points') {
+                for (const l of (leader.leaders || [])) {
+                  const name = l.athlete?.displayName;
+                  const pts  = parseFloat(l.value) || 0;
+                  if (name) scores[name] = (scores[name] || 0) + pts;
+                }
               }
             }
           }
