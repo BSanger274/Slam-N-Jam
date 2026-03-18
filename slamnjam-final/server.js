@@ -93,11 +93,79 @@ const SCORE_TTL    = 60_000; // 60 seconds
 
 async function fetchLiveScores() {
   try {
-    // NCAA Tournament group ID = 100
-    const data   = await fetchURL('https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=100&limit=50');
+    // Fetch multiple dates to cover full tournament
+    const today = new Date();
+    const dates = [];
+    for (let i = -1; i <= 1; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() + i);
+      dates.push(d.toISOString().slice(0,10).replace(/-/g,''));
+    }
+    
     const scores = {};
-    for (const event of (data.events || [])) {
+    const allEvents = [];
+    
+    for (const date of dates) {
+      try {
+        const data = await fetchURL(`https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=100&limit=50&date=${date}`);
+        allEvents.push(...(data.events || []));
+      } catch(e) {}
+    }
+
+    for (const event of allEvents) {
       for (const comp of (event.competitions || [])) {
+        // Update bracket scores from live events
+        if (bracketCache) {
+          const comps = comp.competitors || [];
+          if (comps.length >= 2) {
+            const name1 = comps[0]?.team?.shortDisplayName || comps[0]?.team?.displayName || '';
+            const name2 = comps[1]?.team?.shortDisplayName || comps[1]?.team?.displayName || '';
+            const sc1 = comps[0]?.score !== undefined ? parseInt(comps[0].score) : null;
+            const sc2 = comps[1]?.score !== undefined ? parseInt(comps[1].score) : null;
+            const w1 = comps[0]?.winner === true;
+            const w2 = comps[1]?.winner === true;
+            const status = event.status?.type?.name || '';
+            const isActive = status === 'STATUS_IN_PROGRESS' || status === 'STATUS_FINAL';
+            if (isActive && sc1 !== null) {
+              // Update First Four
+              for (const ff of (bracketCache._firstFour || [])) {
+                const n1 = (ff.t1?.name||'').toLowerCase();
+                const n2 = (ff.t2?.name||'').toLowerCase();
+                const e1 = name1.toLowerCase(); const e2 = name2.toLowerCase();
+                if ((n1.includes(e1)||e1.includes(n1)) && (n2.includes(e2)||e2.includes(n2))) {
+                  ff.t1.score=sc1; ff.t2.score=sc2;
+                  ff.t1.won=status==='STATUS_FINAL'?w1:null;
+                  ff.t2.won=status==='STATUS_FINAL'?w2:null;
+                  ff.status=status; ff.clock=event.status?.displayClock||''; ff.period=event.status?.period||'';
+                } else if ((n1.includes(e2)||e2.includes(n1)) && (n2.includes(e1)||e1.includes(n2))) {
+                  ff.t1.score=sc2; ff.t2.score=sc1;
+                  ff.t1.won=status==='STATUS_FINAL'?w2:null;
+                  ff.t2.won=status==='STATUS_FINAL'?w1:null;
+                  ff.status=status; ff.clock=event.status?.displayClock||''; ff.period=event.status?.period||'';
+                }
+              }
+              // Update r64 bracket matchups
+              for (const region of ['east','west','south','midwest']) {
+                for (const m of (bracketCache[region]?.r64 || [])) {
+                  const n1 = (m.t1?.name||'').toLowerCase();
+                  const n2 = (m.t2?.name||'').toLowerCase();
+                  const e1 = name1.toLowerCase(); const e2 = name2.toLowerCase();
+                  if ((n1.includes(e1)||e1.includes(n1)) && (n2.includes(e2)||e2.includes(n2))) {
+                    m.t1.score=sc1; m.t2.score=sc2;
+                    m.t1.won=status==='STATUS_FINAL'?w1:null; m.t2.won=status==='STATUS_FINAL'?w2:null;
+                    m.status=status; m.clock=event.status?.displayClock||''; m.period=event.status?.period||'';
+                  } else if ((n1.includes(e2)||e2.includes(n1)) && (n2.includes(e1)||e1.includes(n2))) {
+                    m.t1.score=sc2; m.t2.score=sc1;
+                    m.t1.won=status==='STATUS_FINAL'?w2:null; m.t2.won=status==='STATUS_FINAL'?w1:null;
+                    m.status=status; m.clock=event.status?.displayClock||''; m.period=event.status?.period||'';
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // Player points
         for (const team of (comp.competitors || [])) {
           for (const leader of (team.leaders || [])) {
             if (leader.name === 'points') {
@@ -111,10 +179,11 @@ async function fetchLiveScores() {
         }
       }
     }
+    console.log(`[Scores] ${Object.keys(scores).length} players, ${allEvents.length} events`);
     return scores;
   } catch (e) {
     console.error('[Scores] ESPN fetch failed:', e.message);
-    return null; // null = keep old cache
+    return null;
   }
 }
 
