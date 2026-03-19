@@ -942,6 +942,23 @@ async function getLiveBracket() {
       if (fresh.final4?.champion && fresh.final4.champion !== 'TBD') merged.final4.champion = fresh.final4.champion;
     }
 
+    // Auto-advance R64 winners into R32 slots
+    // R64 games are paired: [0,1] -> r32[0], [2,3] -> r32[1], [4,5] -> r32[2], [6,7] -> r32[3]
+    for (const region of ['east','west','south','midwest']) {
+      const r64 = merged[region]?.r64 || [];
+      const r32 = merged[region]?.r32 || [];
+      for (let i = 0; i < r64.length; i += 2) {
+        const g1 = r64[i], g2 = r64[i+1];
+        const slot = r32[i/2];
+        if (!slot) continue;
+        // Get winner of each game (won:true) or leave TBD
+        const w1 = g1 ? (g1.t1?.won ? g1.t1 : g1.t2?.won ? g1.t2 : null) : null;
+        const w2 = g2 ? (g2.t1?.won ? g2.t1 : g2.t2?.won ? g2.t2 : null) : null;
+        if (w1) slot.t1 = { seed: w1.seed, name: w1.name, score: null, won: null };
+        if (w2) slot.t2 = { seed: w2.seed, name: w2.name, score: null, won: null };
+      }
+    }
+
     const saved = readJSON(BRACKET_F, null);
     if (saved && saved._manualOverrides) {
       merged._manualOverrides = saved._manualOverrides;
