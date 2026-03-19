@@ -2015,9 +2015,11 @@ async function openBoxScore(gameId, team1, team2) {
     const r = await fetch(`${API}/api/boxscore/${gameId}`);
     const d = await r.json();
     if (!d.ok) throw new Error(d.error || 'Failed');
+    const isFinal    = (d.gameStatus||'').toLowerCase().includes('final');
+    const isLive     = (d.gameStatus||'').toLowerCase().includes('live') || (d.gameStatus||'').toLowerCase().includes('progress');
     const c = d.competitors || [];
-    const statusColor = (d.gameStatus||'').toLowerCase().includes('final') ? 'var(--muted)' :
-                        (d.gameStatus||'').toLowerCase().includes('live')  ? 'var(--green)' : 'var(--blue)';
+    const statusColor = isFinal ? 'var(--muted)' :
+                        isLive  ? 'var(--green)' : 'var(--blue)';
     scoreRow.innerHTML = `
       <div class="modal-team">
         <div class="modal-team-name">${c[0]?.name||'—'}</div>
@@ -2034,8 +2036,29 @@ async function openBoxScore(gameId, team1, team2) {
         <div style="font-size:10px;color:var(--muted)">${c[1]?.record||''}</div>
       </div>`;
     if (!d.teams?.length) throw new Error('No box score data');
-    body.innerHTML = d.teams.map(team => `
-      <div class="modal-team-section">
+
+    // Build drafted player lookup: playerName -> managerName
+    const draftedMap = {};
+    TEAMS.forEach(t => t.players.forEach(p => { draftedMap[p.name] = t.name; }));
+
+    // Full box score section per team (with drafted rows highlighted)
+    const fullBoxSection = (team) => {
+      const rows = team.players.map(p => {
+        const mgr = draftedMap[p.name];
+        const isDrafted = !!mgr;
+        const rowStyle = isDrafted ? 'background:rgba(255,107,0,0.07)' : '';
+        if (p.dnp) return `<tr class="dnp"><td colspan="11" style="text-align:left;padding:5px 8px">${p.name} — DNP</td></tr>`;
+        return `<tr style="${rowStyle}">
+          <td style="text-align:left">
+            ${p.starter?'<span class="starter-dot"></span>':''}${p.name}
+            ${isDrafted ? `<span style="font-size:10px;color:var(--orange);margin-left:5px;font-weight:700">${mgr}</span>` : ''}
+          </td>
+          <td>${p.min}</td><td>${p.fg}</td><td>${p.threeP}</td><td>${p.ft}</td>
+          <td>${p.reb}</td><td>${p.ast}</td><td>${p.stl}</td><td>${p.blk}</td><td>${p.to}</td>
+          <td class="bs-pts">${p.pts}</td>
+        </tr>`;
+      }).join('');
+      return `<div class="modal-team-section">
         <div class="modal-team-label">${team.teamName}</div>
         <table class="bs-tbl">
           <thead><tr>
@@ -2044,17 +2067,13 @@ async function openBoxScore(gameId, team1, team2) {
             <th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th>
             <th style="color:var(--orange)">PTS</th>
           </tr></thead>
-          <tbody>${team.players.map(p => p.dnp
-            ? `<tr class="dnp"><td colspan="11" style="text-align:left;padding:5px 8px">${p.name} — DNP</td></tr>`
-            : `<tr>
-                <td>${p.starter?'<span class="starter-dot"></span>':''}${p.name}</td>
-                <td>${p.min}</td><td>${p.fg}</td><td>${p.threeP}</td><td>${p.ft}</td>
-                <td>${p.reb}</td><td>${p.ast}</td><td>${p.stl}</td><td>${p.blk}</td><td>${p.to}</td>
-                <td class="bs-pts">${p.pts}</td>
-              </tr>`
-          ).join('')}</tbody>
+          <tbody>${rows}</tbody>
         </table>
-      </div>`).join('');
+      </div>`;
+    };
+
+    body.innerHTML = d.teams.map(team => fullBoxSection(team)).join('');
+
   } catch(e) {
     body.innerHTML = `<div class="modal-error">
       <div style="font-size:24px;margin-bottom:10px">📋</div>
