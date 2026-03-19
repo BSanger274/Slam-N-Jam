@@ -600,7 +600,7 @@ const HARDCODED_AVERAGES = {
   "Jayden Stone": 11.2,
   "Victor Valdes": 8.6,
   "Alex Wilkins": 17.7,
-  "Eian Elmer": 12.9,
+  "Eian Elmer": 12.6,
   "Micah Robinson": 9.4,
   "Tre Donaldson": 12.4,
   "Dominique Daniels": 23.2,
@@ -644,8 +644,7 @@ const HARDCODED_AVERAGES = {
   "LeJuan Watts": 14.8,
   "Isaac McKneely": 13.4,
   "Jordan Burks": 10.8,
-  "Tai'Reon Joseph": 18.2,
-  "Tai'Reon Joseph": 18.2,
+  "Tai Reon Joseph": 12.1,
   "Elijah Mahi": 12.6,
   "Gavin Doty": 17.9,
   "Nick Boyd": 10.8,
@@ -1069,7 +1068,7 @@ function buildBlankBracket() {
 const HARDCODED_OVERRIDES = {
   // First Four — Wed Mar 18
   "Dontae Horne":       25,
-  "Tai'Reon Joseph":      5,
+  "Tai Reon Joseph":      5,
   "Nasir Whitlock":      5,
   "Hank Alvey":         23,
   "Jaron Pierre Jr.":   18,
