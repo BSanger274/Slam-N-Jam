@@ -1231,10 +1231,45 @@ function teamLogo(name) {
   return `<img class="slogo" src="${url}" alt="${name}" onerror="this.style.display='none'">`;
 }
 
+const SCHOOL_NAME_MAP = {
+  'Ohio State':      'Ohio St',
+  "St. John's":      'St Johns',
+  'St Johns':        'St Johns',
+  'South Florida':   'So Florida',
+  'Michigan State':  'Mich St',
+  'Michigan St':     'Mich St',
+  'Texas Tech':      'Tx Tech',
+  'Tennessee':       'Tenn',
+  'Tennessee State': 'Tenn St',
+  'Tennessee St':    'Tenn St',
+  'Connecticut':     'UConn',
+  'North Carolina':  'UNC',
+  'N. Carolina':     'UNC',
+  'NC State':        'NC St',
+  'Virginia Commonwealth': 'VCU',
+  'Saint Louis':     'St Louis',
+  "Saint Mary's":    'St Marys',
+  'Prairie View':    'Prairie View A&M',
+  'CA Baptist':      'Cal Baptist',
+  'California Baptist': 'Cal Baptist',
+  'Vanderbilt':      'Vandy',
+  'Wisconsin':       'Wisc',
+  'Miami':           'Miami FL',
+  'Miami (OH)':      'Miami OH',
+  'Iowa State':      'Iowa St',
+  'McNeese':         'McNeese St',
+  'Kennesaw State':  'Kennesaw St',
+  'Utah State':      'Utah St',
+  'Wright State':    'Wright St',
+};
+function normSchool(name) {
+  return SCHOOL_NAME_MAP[name] || name;
+}
+
 function renderMatchup(m) {
   const mk = (t) => {
     const allDrafted = TEAMS.flatMap(team =>
-      team.players.filter(p => p.school === t.name).map(p => ({ ...p, teamName: team.name }))
+      team.players.filter(p => p.school === normSchool(t.name)).map(p => ({ ...p, teamName: team.name }))
     );
 
     const sc = t.score!==null ? `<span class="sscore ${t.won?'hi':''}">${t.score}</span>` : '';
@@ -1472,7 +1507,7 @@ function renderFinal4() {
   };
 
   const draftedFromTeam = (teamName) => {
-    const players = TEAMS.flatMap(t=>t.players.map(p=>({...p,mgr:t.name}))).filter(p=>p.school===teamName);
+    const players = TEAMS.flatMap(t=>t.players.map(p=>({...p,mgr:t.name}))).filter(p=>p.school===normSchool(teamName));
     if (!players.length) return '';
     return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;min-width:140px">
       <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
