@@ -528,7 +528,7 @@ const HARDCODED_AVERAGES = {
   "Jeremy Fears": 12.8,
   "Jaxon Kohler": 12.4,
   "Coen Carr": 13.8,
-  "Jaron Pierre": 11.6,
+  "Jaron Pierre Jr.": 11.6,
   "MJ Collins": 14.2,
   "AK Okereke": 10.8,
   "David Punch": 9.6,
@@ -1228,7 +1228,19 @@ app.get('/api/teams', async (req, res) => {
   const teams = (rosters.teams || []).map(team => {
     let total = 0;
     const players = (team.players || []).map(p => {
-      const pts = scores[p.name] ?? p.pts ?? 0;
+      const SERVER_ALIASES = {
+        'DJ Wagner':        'D.J. Wagner',
+        'JP Estrella':      'J.P. Estrella',
+        'BJ Edwards':       'B.J. Edwards',
+        'CJ Cox':           'C.J. Cox',
+        'John Mobley Jr':   'John Mobley Jr.',
+        'Travis Harper':    'Travis Harper II',
+        'Melvin Council':   'Melvin Council Jr.',
+        'Tyron Grant-Foster':'Tyon Grant-Foster',
+      };
+      // Check both direct name and any ESPN alias that maps to this player
+      const aliasedName = Object.entries(SERVER_ALIASES).find(([,v]) => v === p.name)?.[0];
+      const pts = scores[p.name] ?? (aliasedName ? scores[aliasedName] : undefined) ?? p.pts ?? 0;
       const avg = avgs[p.name] ?? null;
       let trend = null;
 
