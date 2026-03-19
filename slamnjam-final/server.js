@@ -252,14 +252,28 @@ async function fetchLiveScores() {
         }
       }
     }
-    // Fetch full box scores for live games only
+    // Fetch box scores for live games AND recently-finished games (within 30 mins)
+    // This auto-captures player points before ESPN drops the game from their feed
     const savedOverrides = readJSON(OVERRIDE_F, {});
+    const now = Date.now();
+    const CAPTURE_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
+
     const activeEvents = allEvents.filter(ev => {
       const s = ev.status?.type?.name || '';
-      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME';
+      if (s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME') return true;
+      // Also fetch recently-finished games not yet in overrides or hardcoded
+      if (s === 'STATUS_FINAL') {
+        const endTime = ev.status?.type?.detail || '';
+        // Check if any players from this game are already captured
+        const competitors = ev.competitions?.[0]?.competitors || [];
+        const teams = competitors.map(c => c.team?.shortDisplayName || c.team?.displayName || '');
+        // Always fetch final games — we'll skip already-captured players inside the loop
+        return true;
+      }
+      return false;
     });
     const freshMinutes = {}; // player -> minutes played this game
-    await Promise.all(activeEvents.slice(0, 10).map(async ev => {
+    await Promise.all(activeEvents.slice(0, 15).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
       const isFinal  = evStatus === 'STATUS_FINAL';
       try {
@@ -293,14 +307,20 @@ async function fetchLiveScores() {
               if (name) {
                 if (pts > 0) scores[name] = pts;
                 // Auto-save final game scores to overrides.json so they survive ESPN data expiry
+                // Only save if not already in hardcoded overrides (avoids doubling)
+                if (isFinal && pts > 0 && savedOverrides[name] === undefined && HARDCODED_OVERRIDES[name] === undefined) {
+                  savedOverrides[name] = pts;
+                }
                 // Use player's actual minutes if available, else use game clock
-                freshMinutes[name] = playerMins > 0 ? playerMins : minsElapsed;
+                freshMinutes[name] = playerMins > 0 ? playerMins : (isFinal ? 0 : minsElapsed);
               }
             }
           }
         }
       } catch(e) {}
     }));
+    // Persist any newly-captured final game scores to overrides.json
+    writeJSON(OVERRIDE_F, savedOverrides);
     // Update minutesCache with latest data
     Object.assign(minutesCache, freshMinutes);
 
