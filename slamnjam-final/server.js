@@ -671,7 +671,7 @@ const HARDCODED_AVERAGES = {
   "Cam'Ron Fletcher": 12.7,
   "John Blackwell": 13.4,
   "Anthony Dell'Orso": 11.8,
-  "Bruce Thornton": 19.8,
+  "Bruce Thornton": 20.2,
   "Mark Mitchell": 12.6,
   "Mikey Lewis": 14.2,
   "Trent Perry": 10.4,
