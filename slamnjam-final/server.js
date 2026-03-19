@@ -703,8 +703,8 @@ const TOURNAMENT_TEAM_IDS_JERSEY = {
 
 async function fetchJerseyNumbers() {
   const existing = readJSON(JERSEY_F, {});
-  // Only fetch if we have fewer than 50 jerseys cached
-  if (Object.keys(existing).length >= 50) {
+  // Only fetch if we have fewer than 200 jerseys cached
+  if (Object.keys(existing).length >= 200) {
     console.log(`[Jerseys] Using cached ${Object.keys(existing).length} jersey numbers`);
     return existing;
   }
