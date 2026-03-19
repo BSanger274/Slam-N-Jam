@@ -557,7 +557,7 @@ const HARDCODED_AVERAGES = {
   "Jeremy Fears": 12.8,
   "Jaxon Kohler": 12.4,
   "Coen Carr": 13.8,
-  "Jaron Pierre Jr.": 17.6,
+  "Jaron Pierre Jr.": 11.6,
   "MJ Collins": 14.2,
   "AK Okereke": 10.8,
   "David Punch": 9.6,
@@ -1095,11 +1095,12 @@ async function getMergedScores() {
 
   const merged = { ...live };
   for (const [name, basePts] of Object.entries(HARDCODED_OVERRIDES)) {
-    if (activePlayers.has(name)) {
-      // Active player (e.g. Miami OH): add First Four base + today's live pts
+    const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
+    if (playingNow) {
+      // Player is actively in a live game right now — add base + live pts
       merged[name] = (live[name] || 0) + basePts;
     } else {
-      // Eliminated player: hardcoded is their final total, ignore live feed
+      // Not currently playing (eliminated OR between games) — hardcoded is their total
       merged[name] = basePts;
     }
   }
