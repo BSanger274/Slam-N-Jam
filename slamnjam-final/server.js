@@ -542,7 +542,7 @@ const HARDCODED_AVERAGES = {
   "Jeremy Fears": 12.8,
   "Jaxon Kohler": 12.4,
   "Coen Carr": 13.8,
-  "Jaron Pierre Jr.": 11.6,
+  "Jaron Pierre Jr.": 17.6,
   "MJ Collins": 14.2,
   "AK Okereke": 10.8,
   "David Punch": 9.6,
