@@ -588,7 +588,7 @@ const HARDCODED_AVERAGES = {
   "Eric Dailey": 11.6,
   "Amani Lyles": 9.2,
   "Preston Edmead": 15.9,
-  "Hank Avery": 8.6,
+  "Hank Alvey": 8.6,
   "Aaron Nkrumah": 17.6,
   "Henri Veesaar": 10.8,
   "Corey Washington": 13.8,
@@ -703,8 +703,8 @@ const TOURNAMENT_TEAM_IDS_JERSEY = {
 
 async function fetchJerseyNumbers() {
   const existing = readJSON(JERSEY_F, {});
-  // Only fetch if we have fewer than 100 jerseys cached
-  if (Object.keys(existing).length >= 100) {
+  // Only fetch if we have fewer than 50 jerseys cached
+  if (Object.keys(existing).length >= 50) {
     console.log(`[Jerseys] Using cached ${Object.keys(existing).length} jersey numbers`);
     return existing;
   }
