@@ -651,7 +651,7 @@ const HARDCODED_AVERAGES = {
   "Tyshawn Archie": 14.3,
   "Shammah Scott": 9.8,
   "Travis Harper II": 17.3,
-  "Tyler Tanner": 10.8,
+  "Tyler Tanner": 19.1,
   "Carson Cooper": 11.2,
   "Sam Lewis": 9.6,
   "Dontae Horne": 20.2,
