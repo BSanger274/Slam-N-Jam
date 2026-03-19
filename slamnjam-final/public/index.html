@@ -2038,8 +2038,32 @@ async function openBoxScore(gameId, team1, team2) {
     if (!d.teams?.length) throw new Error('No box score data');
 
     // Build drafted player lookup: playerName -> managerName
+    // PLAYER_ALIASES maps ESPN display names -> our roster names for mismatches
+    const PLAYER_ALIASES = {
+      'Jaron Pierre Jr.': 'Jaron Pierre',
+      'Jaron Pierre Jr':  'Jaron Pierre',
+      'D.J. Wagner':      'D.J. Wagner',
+      'DJ Wagner':        'D.J. Wagner',
+      'J.P. Estrella':    'J.P. Estrella',
+      'JP Estrella':      'J.P. Estrella',
+      'B.J. Edwards':     'B.J. Edwards',
+      'BJ Edwards':       'B.J. Edwards',
+      'C.J. Cox':         'C.J. Cox',
+      'CJ Cox':           'C.J. Cox',
+      'John Mobley Jr':   'John Mobley Jr.',
+      'Travis Harper':    'Travis Harper II',
+      'Melvin Council':   'Melvin Council Jr.',
+      'Tyon Grant-Foster':'Tyon Grant-Foster',
+      'Tyron Grant-Foster':'Tyon Grant-Foster',
+    };
     const draftedMap = {};
-    TEAMS.forEach(t => t.players.forEach(p => { draftedMap[p.name] = t.name; }));
+    TEAMS.forEach(t => t.players.forEach(p => {
+      draftedMap[p.name] = t.name;
+      // Also index by any alias that maps TO this player name
+      Object.entries(PLAYER_ALIASES).forEach(([espnName, rosterName]) => {
+        if (rosterName === p.name) draftedMap[espnName] = t.name;
+      });
+    }));
 
     // Full box score section per team (with drafted rows highlighted)
     const fullBoxSection = (team) => {
