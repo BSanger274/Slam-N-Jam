@@ -640,7 +640,7 @@ const HARDCODED_AVERAGES = {
   "Bennett Stirtz": 11.8,
   "Tre White": 12.6,
   "J'Vonne Hadley": 11.8,
-  "Ethan Roberts": 11.6,
+  "Ethan Roberts": 16.9,
   "Luka Bogavac": 9.8,
   "Ryan Conwell": 18.7,
   "Tyler Nickels": 13.6,
