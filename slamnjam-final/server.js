@@ -542,7 +542,7 @@ const HARDCODED_AVERAGES = {
   "Jeremy Fears": 12.8,
   "Jaxon Kohler": 12.4,
   "Coen Carr": 13.8,
-  "Jaron Pierre Jr.": 17.6,
+  "Jaron Pierre Jr.": 11.6,
   "MJ Collins": 14.2,
   "AK Okereke": 10.8,
   "David Punch": 9.6,
@@ -963,7 +963,7 @@ function buildBlankBracket() {
       { id:'ff3', espnId:'401856435', region:'midwest', date:'Tue Mar 17', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:16,name:'UMBC',score:83,won:false}, t2:{seed:16,name:'Howard',score:86,won:true} },
       { id:'ff1', espnId:'401856434', region:'west',    date:'Tue Mar 17', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:11,name:'Texas',score:68,won:true}, t2:{seed:11,name:'NC State',score:66,won:false} },
       { id:'ff4', region:'south',   date:'Wed Mar 18', time:'6:40 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:16,name:'Prairie View A&M',score:null,won:true}, t2:{seed:16,name:'Lehigh',score:null,won:false} },
-      { id:'ff2', region:'midwest', date:'Wed Mar 18', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', t1:team(11,'Miami OH'),     t2:team(11,'SMU')         }
+      { id:'ff2', region:'midwest', date:'Wed Mar 18', time:'9:15 PM ET', tv:'truTV', location:'UD Arena, Dayton, OH', status:'STATUS_FINAL', t1:{seed:11,name:'Miami OH',score:89,won:true}, t2:{seed:11,name:'SMU',score:79,won:false} }
     ],
     east: {
       r64: [
@@ -1016,7 +1016,7 @@ function buildBlankBracket() {
         { id:'m2', date:'Thu Mar 19', time:'9:45 PM ET',  location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1:team(8,'Georgia'),    t2:team(9,'Saint Louis')      },
         { id:'m3', date:'Fri Mar 20', time:'12:40 PM ET', location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1:team(5,'Texas Tech'), t2:team(12,'Akron')           },
         { id:'m4', date:'Fri Mar 20', time:'3:15 PM ET',  location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1:team(4,'Alabama'),    t2:team(13,'Hofstra')         },
-        { id:'m5', date:'Fri Mar 20', time:'4:25 PM ET',  location:'Wells Fargo Center, Philadelphia, PA', tv:'TBS',   t1:team(6,'Tennessee'),  t2:team(11,'MIA/SMU (TBD)')   },
+        { id:'m5', date:'Fri Mar 20', time:'4:25 PM ET',  location:'Wells Fargo Center, Philadelphia, PA', tv:'TBS',   t1:team(6,'Tennessee'),  t2:team(11,'Miami OH')   },
         { id:'m6', date:'Fri Mar 20', time:'1:50 PM ET',  location:'Wells Fargo Center, Philadelphia, PA', tv:'TBS',   t1:team(3,'Virginia'),   t2:team(14,'Wright State')    },
         { id:'m7', date:'Fri Mar 20', time:'12:15 PM ET', location:'Enterprise Center, St. Louis, MO',     tv:'CBS',   t1:team(7,'Kentucky'),   t2:team(10,'Santa Clara')     },
         { id:'m8', date:'Fri Mar 20', time:'2:50 PM ET',  location:'Enterprise Center, St. Louis, MO',     tv:'CBS',   t1:team(2,'Iowa State'), t2:team(15,'Tennessee St')    }
