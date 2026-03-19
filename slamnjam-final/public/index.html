@@ -951,7 +951,7 @@ function viewTeam(name, from) {
     <div class="pc ${p.active?'':'elim'}">
       ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
       <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}"><span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
-      <div class="pc-s">${p.school}${p.seasonAvg ? ` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>` : ''}</div>
+      <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
       <div style="position:relative;margin-top:2px">
         <div class="pc-p">${p.pts}</div>
         ${p.round != null ? '<span style="position:absolute;bottom:2px;right:0;font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase">PICK #' + p.round + '</span>' : ''}
