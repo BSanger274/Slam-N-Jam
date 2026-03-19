@@ -1071,9 +1071,10 @@ function draftInfo(playerName) {
 }
 
 function getTrend(schoolName) {
+  const norm = normSchool(schoolName);
   for (const t of TEAMS) {
     for (const p of t.players) {
-      if (p.school === schoolName) return p.trend || null;
+      if (p.school === norm) return p.trend || null;
     }
   }
   return null;
@@ -2124,7 +2125,7 @@ async function openPreGameStats(team1, team2, gameId) {
       const draftedPlayers = [];
       TEAMS.forEach(t => {
         t.players.forEach(p => {
-          if (p.school === schoolName) {
+          if (p.school === normSchool(schoolName)) {
             draftedPlayers.push({ ...p, managerName: t.name });
           }
         });
@@ -2155,7 +2156,7 @@ async function openPreGameStats(team1, team2, gameId) {
       return `<div class="modal-team-section">
         <div class="modal-team-label" style="display:flex;align-items:center;justify-content:space-between">
           <span style="display:flex;align-items:center;gap:6px">
-            ${TEAM_LOGOS[schoolName] ? `<img src="${TEAM_LOGOS[schoolName]}" style="width:16px;height:16px;object-fit:contain" onerror="this.style.display='none'">` : ''}
+            ${TEAM_LOGOS[normSchool(schoolName)]||TEAM_LOGOS[schoolName] ? `<img src="${TEAM_LOGOS[normSchool(schoolName)]||TEAM_LOGOS[schoolName]}" style="width:16px;height:16px;object-fit:contain" onerror="this.style.display='none'">` : ''}
             ${schoolName}
           </span>
           <span style="font-size:10px;color:${colColor};letter-spacing:1px">${draftedPlayers.length} DRAFTED</span>
