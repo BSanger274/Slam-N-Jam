@@ -1060,7 +1060,7 @@ function buildBlankBracket() {
         { id:'w1', date:'Fri Mar 20', time:'1:35 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(1,'Arizona'),   t2:team(16,'LIU')            },
         { id:'w2', date:'Fri Mar 20', time:'4:10 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(8,'Villanova'), t2:team(9,'Utah State')      },
         { id:'w3', date:'Thu Mar 19', time:'1:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:5,name:'Wisconsin',score:82,won:false}, t2:{seed:12,name:'High Point',score:83,won:true} },
-        { id:'w4', date:'Thu Mar 19', time:'4:25 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(4,'Arkansas'),  t2:team(13,"Hawai'i")        },
+        { id:'w4', date:'Thu Mar 19', time:'4:25 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:4,name:'Arkansas',score:97,won:true}, t2:{seed:13,name:"Hawai'i",score:78,won:false} },
         { id:'w5', date:'Thu Mar 19', time:'9:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(6,'BYU'),       t2:team(11,'Texas')   },
         { id:'w6', date:'Thu Mar 19', time:'7:15 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(3,'Gonzaga'),   t2:team(14,'Kennesaw State') },
         { id:'w7', date:'Fri Mar 20', time:'6:50 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(7,'Miami FL'),  t2:team(10,'Missouri')       },
@@ -1121,6 +1121,14 @@ function buildBlankBracket() {
 const HARDCODED_OVERRIDES = {
   // First Four — Wed Mar 18
   // R64 Thu Mar 19 — Ohio State vs TCU
+  // R64 Thu Mar 19 — Arkansas vs Hawaii
+  "Trevon Brazile":            19,
+  "D.J. Wagner":                7,
+  "Billy Richmond III":        10,
+  "Malique Ewin":              16,
+  "Darius Acuff":              24,
+  "Meleek Thomas":             21,
+  "Nick Pringle":               0,
   // R64 Thu Mar 19 — Nebraska vs Troy
   // R64 Thu Mar 19 — Wisconsin vs High Point (upset!)
   "Austin Rapp":               12,
