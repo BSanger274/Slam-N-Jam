@@ -42,6 +42,7 @@ const OVERRIDE_F = path.join(DATA, 'overrides.json');
 const BRACKET_F  = path.join(DATA, 'bracket.json');
 const HISTORY_F  = path.join(DATA, 'history.json');
 const AVERAGES_F = path.join(__dirname, 'data', 'averages.json');
+const JERSEY_F   = path.join(DATA, 'jerseys.json');
 
 // ─── Admin auth ───────────────────────────────────────
 const ADMIN_PASS  = process.env.ADMIN_PASSWORD || 'slamnjam2026';
@@ -678,6 +679,64 @@ async function getSeasonAverages() {
   return avgCache;
 }
 
+
+// ════════════════════════════════════════════════════════
+//  JERSEY NUMBERS
+// ════════════════════════════════════════════════════════
+const TOURNAMENT_TEAM_IDS_JERSEY = {
+  150:'Duke',2509:'Purdue',2569:'St Johns',2305:'Kansas',97:'Louisville',
+  127:'Mich St',26:'UCLA',41:'UConn',12:'Arizona',222:'Villanova',
+  275:'Wisc',8:'Arkansas',252:'BYU',2250:'Gonzaga',2390:'Miami FL',
+  57:'Florida',228:'Clemson',238:'Vandy',158:'Nebraska',153:'UNC',
+  356:'Illinois',2608:'St Marys',248:'Houston',130:'Michigan',61:'Georgia',
+  2641:'Tx Tech',333:'Alabama',2633:'Tenn',258:'Virginia',96:'Kentucky',
+  251:'Texas',152:'NC St',47:'Howard',2294:'Iowa',2377:'McNeese St',
+  2653:'Troy',2670:'VCU',219:'Penn',245:'Texas A&M',328:'Utah St',
+  2729:'High Point',62:'Hawaii',2908:'Kennesaw St',142:'Missouri',
+  2006:'Akron',2206:'Hofstra',2750:'Wright St',2607:'Santa Clara',
+  2634:'Tenn St',231:'Furman',2561:'Siena',58:'So Florida',2116:'UCF',
+  2628:'TCU',2567:'SMU',193:'Miami OH',2504:'Prairie View A&M',2348:'Lehigh',
+  66:'Iowa St',194:'Ohio St',139:'St Louis',2856:'Cal Baptist',
+};
+
+async function fetchJerseyNumbers() {
+  const existing = readJSON(JERSEY_F, {});
+  // Only fetch if we have fewer than 100 jerseys cached
+  if (Object.keys(existing).length >= 100) {
+    console.log(`[Jerseys] Using cached ${Object.keys(existing).length} jersey numbers`);
+    return existing;
+  }
+  console.log('[Jerseys] Fetching jersey numbers from ESPN...');
+  const jerseys = { ...existing };
+  const teamIds = Object.keys(TOURNAMENT_TEAM_IDS_JERSEY).map(Number);
+  for (let i = 0; i < teamIds.length; i += 5) {
+    const batch = teamIds.slice(i, i + 5);
+    await Promise.all(batch.map(async teamId => {
+      try {
+        const data = await fetchURL(
+          `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/${teamId}/roster`
+        );
+        for (const athlete of (data.athletes || [])) {
+          const name = athlete.displayName || athlete.fullName;
+          const jersey = athlete.jersey || athlete.number;
+          if (name && jersey) jerseys[name] = String(jersey);
+        }
+      } catch(e) {}
+    }));
+  }
+  writeJSON(JERSEY_F, jerseys);
+  console.log(`[Jerseys] Saved ${Object.keys(jerseys).length} jersey numbers`);
+  return jerseys;
+}
+
+let jerseyCache = {};
+async function getJerseys() {
+  if (Object.keys(jerseyCache).length === 0) {
+    jerseyCache = await fetchJerseyNumbers();
+  }
+  return jerseyCache;
+}
+
 // ════════════════════════════════════════════════════════
 //  ESPN BRACKET CACHE
 //  FIX: Probes multiple tournament IDs — ESPN uses a different
@@ -1162,7 +1221,7 @@ app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
 app.get('/api/teams', async (req, res) => {
   const rosters = readJSON(ROSTER_F, { teams: [] });
-  const [scores, avgs] = await Promise.all([getMergedScores(), getSeasonAverages()]);
+  const [scores, avgs, jerseys] = await Promise.all([getMergedScores(), getSeasonAverages(), getJerseys()]);
   const liveHalf = liveHalfCache;
   const teams = (rosters.teams || []).map(team => {
     let total = 0;
@@ -1208,7 +1267,8 @@ app.get('/api/teams', async (req, res) => {
       // }
 
       total += pts;
-      return { ...p, pts, seasonAvg: avg, trend };
+      const jersey = jerseys[p.name] || null;
+      return { ...p, pts, seasonAvg: avg, trend, jersey };
     });
     return { ...team, players, totalPts: total };
   });
@@ -1458,6 +1518,7 @@ app.listen(PORT, async () => {
   console.log('📡 Warming ESPN cache...');
   await Promise.all([getLiveBracket(), getSeasonAverages()]);
   await getLiveScores();
+  fetchJerseyNumbers().then(j => { jerseyCache = j; }).catch(() => {});
   console.log('✅ Ready.\n');
   setInterval(getLiveScores,     SCORE_TTL);
   setInterval(getLiveBracket,    BRACKET_TTL);
