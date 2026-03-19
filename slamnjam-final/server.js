@@ -660,7 +660,7 @@ const HARDCODED_AVERAGES = {
   "Cole Bowser": 14.0,
   "Pryce Sandfort": 17.8,
   "Tyler Bilodeau": 11.6,
-  "John Mobley Jr.": 12.4,
+  "John Mobley Jr.": 15.7,
   "Joshua Dent": 10.8,
   "Shelton Henderson": 13.6,
   "Amare Bynum": 11.2,
