@@ -249,20 +249,11 @@ async function fetchLiveScores() {
         }
       }
     }
-    // Fetch full box scores for live AND newly-finished games
-    // Newly-final games get auto-saved to overrides.json so scores persist after ESPN drops them
+    // Fetch full box scores for live games only
     const savedOverrides = readJSON(OVERRIDE_F, {});
     const activeEvents = allEvents.filter(ev => {
       const s = ev.status?.type?.name || '';
-      if (s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME') return true;
-      // Also fetch final games whose players aren't yet in overrides
-      if (s === 'STATUS_FINAL') {
-        const teams = ev.competitions?.[0]?.competitors || [];
-        const playerNames = teams.flatMap(t => (t.roster || [])).map(a => a.athlete?.displayName).filter(Boolean);
-        // Fetch if any roster player not yet saved (roster may be empty here — fetch anyway if recent)
-        return true;
-      }
-      return false;
+      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME';
     });
     const freshMinutes = {}; // player -> minutes played this game
     await Promise.all(activeEvents.slice(0, 10).map(async ev => {
@@ -299,19 +290,14 @@ async function fetchLiveScores() {
               if (name) {
                 if (pts > 0) scores[name] = pts;
                 // Auto-save final game scores to overrides.json so they survive ESPN data expiry
-                if (isFinal && pts > 0 && !savedOverrides[name] && !HARDCODED_OVERRIDES[name]) {
-                  savedOverrides[name] = pts;
-                }
                 // Use player's actual minutes if available, else use game clock
-                freshMinutes[name] = playerMins > 0 ? playerMins : (isFinal ? 0 : minsElapsed);
+                freshMinutes[name] = playerMins > 0 ? playerMins : minsElapsed;
               }
             }
           }
         }
       } catch(e) {}
     }));
-    // Persist any newly-captured final game scores to overrides.json
-    writeJSON(OVERRIDE_F, savedOverrides);
     // Update minutesCache with latest data
     Object.assign(minutesCache, freshMinutes);
 
