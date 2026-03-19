@@ -2038,37 +2038,20 @@ async function openBoxScore(gameId, team1, team2) {
     if (!d.teams?.length) throw new Error('No box score data');
 
     // Build drafted player lookup: playerName -> managerName
-    // PLAYER_ALIASES maps ESPN display names -> our roster names for mismatches
-    const PLAYER_ALIASES = {
-      'Jaron Pierre Jr.': 'Jaron Pierre',
-      'Jaron Pierre Jr':  'Jaron Pierre',
-      'D.J. Wagner':      'D.J. Wagner',
-      'DJ Wagner':        'D.J. Wagner',
-      'J.P. Estrella':    'J.P. Estrella',
-      'JP Estrella':      'J.P. Estrella',
-      'B.J. Edwards':     'B.J. Edwards',
-      'BJ Edwards':       'B.J. Edwards',
-      'C.J. Cox':         'C.J. Cox',
-      'CJ Cox':           'C.J. Cox',
-      'John Mobley Jr':   'John Mobley Jr.',
-      'Travis Harper':    'Travis Harper II',
-      'Melvin Council':   'Melvin Council Jr.',
-      'Tyon Grant-Foster':'Tyon Grant-Foster',
-      'Tyron Grant-Foster':'Tyon Grant-Foster',
-    };
+    // normN strips Jr/Sr/II/III/periods for fuzzy matching against ESPN names
+    const normN = n => (n||'').replace(/\s+(jr\.?|sr\.?|ii|iii|iv)$/i,'').replace(/\./g,'').replace(/['\u2019]/g,"'").replace(/\s+/g,' ').trim().toLowerCase();
     const draftedMap = {};
+    const draftedNormMap = {};
     TEAMS.forEach(t => t.players.forEach(p => {
       draftedMap[p.name] = t.name;
-      // Also index by any alias that maps TO this player name
-      Object.entries(PLAYER_ALIASES).forEach(([espnName, rosterName]) => {
-        if (rosterName === p.name) draftedMap[espnName] = t.name;
-      });
+      draftedNormMap[normN(p.name)] = t.name;
     }));
+    const getDraftedMgr = name => draftedMap[name] || draftedNormMap[normN(name)] || null;
 
     // Full box score section per team (with drafted rows highlighted)
     const fullBoxSection = (team) => {
       const rows = team.players.map(p => {
-        const mgr = draftedMap[p.name];
+        const mgr = getDraftedMgr(p.name);
         const isDrafted = !!mgr;
         const rowStyle = isDrafted ? 'background:rgba(255,107,0,0.07)' : '';
         if (p.dnp) return `<tr class="dnp"><td colspan="11" style="text-align:left;padding:5px 8px">${p.name} — DNP</td></tr>`;
