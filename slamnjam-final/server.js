@@ -564,10 +564,10 @@ const HARDCODED_AVERAGES = {
   "MJ Collins": 14.2,
   "AK Okereke": 10.8,
   "David Punch": 9.6,
-  "Rashaun Agee": 12.4,
+  "Rashaun Agee": 14.7,
   "Davis Fogle": 11.2,
   "Thomas Dowd": 10.6,
-  "Marcus Hill": 9.8,
+  "Marcus Hill": 10.8,
   "Joseph Omojafo": 12.6,
   "Duke Miles": 13.4,
   "Wes Enis": 12.6,
@@ -691,7 +691,7 @@ const HARDCODED_AVERAGES = {
   "Xavier Edmonds": 9.8,
   "Duke Brennan": 8.6,
   "Derek Dixon": 11.2,
-  "Rylan Griffen": 10.4,
+  "Rylan Griffen": 11.6,
   "Dre Bullock": 13.5
 };
 
