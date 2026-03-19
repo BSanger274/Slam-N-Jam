@@ -1075,7 +1075,7 @@ function buildBlankBracket() {
         { id:'s1', date:'Fri Mar 20', time:'9:25 PM ET',  location:'Amalie Arena, Tampa, FL',                    tv:'TNT',   t1:team(1,'Florida'),     t2:team(16,'Prairie View A&M') },
         { id:'s2', date:'Fri Mar 20', time:'6:50 PM ET',  location:'Amalie Arena, Tampa, FL',                    tv:'TNT',   t1:team(8,'Clemson'),     t2:team(9,'Iowa')           },
         { id:'s3', date:'Thu Mar 19', time:'9:20 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1:team(5,'Vanderbilt'),  t2:team(12,'McNeese')       },
-        { id:'s4', date:'Thu Mar 19', time:'6:45 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1:team(4,'Nebraska'),    t2:team(13,'Troy')          },
+        { id:'s4', date:'Thu Mar 19', time:'6:45 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', status:'STATUS_FINAL', t1:{seed:4,name:'Nebraska',score:76,won:true}, t2:{seed:13,name:'Troy',score:47,won:false} },
         { id:'s5', date:'Thu Mar 19', time:'12:10 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'TNT',   t1:team(6,'N. Carolina'), t2:team(11,'VCU')           },
         { id:'s6', date:'Thu Mar 19', time:'2:45 PM ET',  location:'Bon Secours Wellness Arena, Greenville, SC', tv:'TNT',   t1:team(3,'Illinois'),    t2:team(14,'Penn')          },
         { id:'s7', date:'Thu Mar 19', time:'7:35 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1:team(7,"Saint Mary's"),t2:team(10,'Texas A&M')     },
@@ -1121,6 +1121,9 @@ function buildBlankBracket() {
 const HARDCODED_OVERRIDES = {
   // First Four — Wed Mar 18
   // R64 Thu Mar 19 — Ohio State vs TCU
+  // R64 Thu Mar 19 — Nebraska vs Troy
+  "Thomas Dowd":               4,
+  "Victor Valdes":             14,
   "Devin Royal":               14,
   "Amare Bynum":               12,
   "John Mobley Jr.":           15,
