@@ -158,6 +158,7 @@ async function fetchLiveScores() {
             const isActive = status === 'STATUS_IN_PROGRESS' || status === 'STATUS_FINAL';
             if (isActive && sc1 !== null) {
               for (const ff of (bracketCache._firstFour || [])) {
+                if (ff.status === 'STATUS_FINAL') continue;
                 const n1 = (ff.t1?.name||'').toLowerCase(), n2 = (ff.t2?.name||'').toLowerCase();
                 const e1 = name1.toLowerCase(), e2 = name2.toLowerCase();
                 if ((n1.includes(e1)||e1.includes(n1)) && (n2.includes(e2)||e2.includes(n2))) {
@@ -174,6 +175,8 @@ async function fetchLiveScores() {
               }
               for (const region of ['east','west','south','midwest']) {
                 for (const m of (bracketCache[region]?.r64 || [])) {
+                  // Never overwrite a matchup already marked STATUS_FINAL in seed bracket
+                  if (m.status === 'STATUS_FINAL') continue;
                   const n1 = (m.t1?.name||'').toLowerCase(), n2 = (m.t2?.name||'').toLowerCase();
                   const e1 = name1.toLowerCase(), e2 = name2.toLowerCase();
                   if ((n1.includes(e1)||e1.includes(n1)) && (n2.includes(e2)||e2.includes(n2))) {
@@ -929,6 +932,21 @@ async function getLiveBracket() {
     // Always start from seed so bracket is never empty.
     // Then overlay ESPN data on top where it exists.
     const merged = seed;
+
+    // Preserve any STATUS_FINAL results from previous cache so they never flicker
+    if (bracketCache) {
+      for (const region of ['east','west','south','midwest']) {
+        for (const round of ['firstfour','r64','r32','r16','r8']) {
+          for (let i = 0; i < (bracketCache[region]?.[round] || []).length; i++) {
+            const prev = bracketCache[region][round][i];
+            const curr = merged[region]?.[round]?.[i];
+            if (prev?.status === 'STATUS_FINAL' && curr) {
+              merged[region][round][i] = prev;
+            }
+          }
+        }
+      }
+    }
     if (fresh) {
       for (const region of ['east','west','south','midwest']) {
         if (fresh[region] && Object.keys(fresh[region]).length > 0) {
@@ -942,21 +960,39 @@ async function getLiveBracket() {
       if (fresh.final4?.champion && fresh.final4.champion !== 'TBD') merged.final4.champion = fresh.final4.champion;
     }
 
-    // Auto-advance R64 winners into R32 slots
-    // R64 games are paired: [0,1] -> r32[0], [2,3] -> r32[1], [4,5] -> r32[2], [6,7] -> r32[3]
-    for (const region of ['east','west','south','midwest']) {
-      const r64 = merged[region]?.r64 || [];
-      const r32 = merged[region]?.r32 || [];
-      for (let i = 0; i < r64.length; i += 2) {
-        const g1 = r64[i], g2 = r64[i+1];
-        const slot = r32[i/2];
+    // Auto-advance winners through all rounds within each region
+    // Each pair of games feeds into the next round: [0,1]->slot[0], [2,3]->slot[1] etc.
+    const advanceRound = (prevRound, nextRound) => {
+      for (let i = 0; i < prevRound.length; i += 2) {
+        const g1   = prevRound[i], g2 = prevRound[i+1];
+        const slot = nextRound[i/2];
         if (!slot) continue;
-        // Get winner of each game (won:true) or leave TBD
-        const w1 = g1 ? (g1.t1?.won ? g1.t1 : g1.t2?.won ? g1.t2 : null) : null;
-        const w2 = g2 ? (g2.t1?.won ? g2.t1 : g2.t2?.won ? g2.t2 : null) : null;
+        const winner = (g) => g ? (g.t1?.won ? g.t1 : g.t2?.won ? g.t2 : null) : null;
+        const w1 = winner(g1), w2 = winner(g2);
         if (w1) slot.t1 = { seed: w1.seed, name: w1.name, score: null, won: null };
         if (w2) slot.t2 = { seed: w2.seed, name: w2.name, score: null, won: null };
       }
+    };
+
+    for (const region of ['east','west','south','midwest']) {
+      const r = merged[region];
+      if (!r) continue;
+      advanceRound(r.r64  || [], r.r32  || []);  // R64    -> R32
+      advanceRound(r.r32  || [], r.r16  || []);  // R32    -> Sweet 16
+      advanceRound(r.r16  || [], r.r8   || []);  // Sweet 16 -> Elite 8
+    }
+
+    // Elite 8 winners -> Final Four
+    // Order: east[0], west[0], south[0], midwest[0] -> sf[0].t1, sf[0].t2, sf[1].t1, sf[1].t2
+    const e8Winners = ['east','west','south','midwest'].map(region => {
+      const g = (merged[region]?.r8 || [])[0];
+      return g ? (g.t1?.won ? g.t1 : g.t2?.won ? g.t2 : null) : null;
+    });
+    if (merged.final4?.sf?.length >= 2) {
+      if (e8Winners[0]) merged.final4.sf[0].t1 = { seed: e8Winners[0].seed, name: e8Winners[0].name, score: null, won: null };
+      if (e8Winners[1]) merged.final4.sf[0].t2 = { seed: e8Winners[1].seed, name: e8Winners[1].name, score: null, won: null };
+      if (e8Winners[2]) merged.final4.sf[1].t1 = { seed: e8Winners[2].seed, name: e8Winners[2].name, score: null, won: null };
+      if (e8Winners[3]) merged.final4.sf[1].t2 = { seed: e8Winners[3].seed, name: e8Winners[3].name, score: null, won: null };
     }
 
     const saved = readJSON(BRACKET_F, null);
@@ -1007,7 +1043,7 @@ function buildBlankBracket() {
     east: {
       r64: [
         { id:'e1', date:'Thu Mar 19', time:'2:50 PM ET',  location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', t1:team(1,'Duke'),        t2:team(16,'Siena')         },
-        { id:'e2', date:'Thu Mar 19', time:'12:15 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', t1:team(8,'Ohio State'),  t2:team(9,'TCU')            },
+        { id:'e2', date:'Thu Mar 19', time:'12:15 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', status:'STATUS_FINAL', t1:{seed:8,name:'Ohio State',score:64,won:false}, t2:{seed:9,name:'TCU',score:66,won:true} },
         { id:'e3', date:'Fri Mar 20', time:'7:10 PM ET',  location:'Viejas Arena, San Diego, CA',                tv:'CBS', t1:team(5,"St. John's"), t2:team(12,'Northern Iowa') },
         { id:'e4', date:'Fri Mar 20', time:'9:45 PM ET',  location:'Viejas Arena, San Diego, CA',                tv:'CBS', t1:team(4,'Kansas'),     t2:team(13,'CA Baptist')    },
         { id:'e5', date:'Thu Mar 19', time:'1:30 PM ET',  location:'KeyBank Center, Buffalo, NY',                tv:'TNT', t1:team(6,'Louisville'), t2:team(11,'South Florida') },
