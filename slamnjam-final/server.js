@@ -1069,6 +1069,7 @@ function buildBlankBracket() {
 const HARDCODED_OVERRIDES = {
   // First Four — Wed Mar 18
   "Dontae Horne":       25,
+  "Tai'Reon Joseph":      5,
   "Nasir Whitlock":      5,
   "Hank Alvey":         23,
   "Jaron Pierre Jr.":   18,
@@ -1085,12 +1086,22 @@ const HARDCODED_OVERRIDES = {
 async function getMergedScores() {
   const { scores: live } = await getLiveScores();
   const fileOverrides = readJSON(OVERRIDE_F, {});
-  // Merge: start with live ESPN scores, then add hardcoded First Four
-  // base points ON TOP (accumulating), then apply admin overrides last.
+  const rosters = readJSON(ROSTER_F, { teams: [] });
+
+  // Build set of active player names (not eliminated)
+  const activePlayers = new Set(
+    (rosters.teams || []).flatMap(t => t.players.filter(p => p.active !== false).map(p => p.name))
+  );
+
   const merged = { ...live };
   for (const [name, basePts] of Object.entries(HARDCODED_OVERRIDES)) {
-    // Add hardcoded base to any live points earned today
-    merged[name] = (live[name] || 0) + basePts;
+    if (activePlayers.has(name)) {
+      // Active player (e.g. Miami OH): add First Four base + today's live pts
+      merged[name] = (live[name] || 0) + basePts;
+    } else {
+      // Eliminated player: hardcoded is their final total, ignore live feed
+      merged[name] = basePts;
+    }
   }
   // Admin file overrides always win (manual correction)
   for (const [name, pts] of Object.entries(fileOverrides)) {
