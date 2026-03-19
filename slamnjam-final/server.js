@@ -249,12 +249,20 @@ async function fetchLiveScores() {
         }
       }
     }
-    // Fetch full box scores for active/final games — gets ALL players not just leaders
+    // Fetch full box scores for live AND newly-finished games
+    // Newly-final games get auto-saved to overrides.json so scores persist after ESPN drops them
+    const savedOverrides = readJSON(OVERRIDE_F, {});
     const activeEvents = allEvents.filter(ev => {
       const s = ev.status?.type?.name || '';
-      // Only fetch live box scores — NOT completed games
-      // Completed game scores come from overrides or the leaders feed
-      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME';
+      if (s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME') return true;
+      // Also fetch final games whose players aren't yet in overrides
+      if (s === 'STATUS_FINAL') {
+        const teams = ev.competitions?.[0]?.competitors || [];
+        const playerNames = teams.flatMap(t => (t.roster || [])).map(a => a.athlete?.displayName).filter(Boolean);
+        // Fetch if any roster player not yet saved (roster may be empty here — fetch anyway if recent)
+        return true;
+      }
+      return false;
     });
     const freshMinutes = {}; // player -> minutes played this game
     await Promise.all(activeEvents.slice(0, 10).map(async ev => {
@@ -290,14 +298,20 @@ async function fetchLiveScores() {
                 : parseFloat(minRaw) || 0;
               if (name) {
                 if (pts > 0) scores[name] = pts;
+                // Auto-save final game scores to overrides.json so they survive ESPN data expiry
+                if (isFinal && pts > 0 && !savedOverrides[name] && !HARDCODED_OVERRIDES[name]) {
+                  savedOverrides[name] = pts;
+                }
                 // Use player's actual minutes if available, else use game clock
-                freshMinutes[name] = playerMins > 0 ? playerMins : minsElapsed;
+                freshMinutes[name] = playerMins > 0 ? playerMins : (isFinal ? 0 : minsElapsed);
               }
             }
           }
         }
       } catch(e) {}
     }));
+    // Persist any newly-captured final game scores to overrides.json
+    writeJSON(OVERRIDE_F, savedOverrides);
     // Update minutesCache with latest data
     Object.assign(minutesCache, freshMinutes);
 
@@ -432,12 +446,12 @@ async function fetchSeasonAverages() {
 // Hardcoded season averages — fallback if file not found
 const HARDCODED_AVERAGES = {
   "Cameron Boozer": 22.5,
-  "Isaiah Evans": 14.9,
+  "Isaiah Evans": 14.7,
   "Patrick Ngongba": 10.7,
-  "Cayden Boozer": 7.1,
-  "Dame Sarr": 6.3,
-  "Nikolas Khamenia": 5.8,
-  "Maliq Brown": 4.8,
+  "Cayden Boozer": 9.0,
+  "Dame Sarr": 8.5,
+  "Nikolas Khamenia": 7.3,
+  "Maliq Brown": 7.0,
   "Mikel Brown": 18.2,
   "Caleb Foster": 8.5,
   "Brayden Burries": 16.0,
@@ -448,9 +462,9 @@ const HARDCODED_AVERAGES = {
   "Ivan Kharchenkov": 8.0,
   "Dwayne Aristode": 5.0,
   "Yaxel Lendeberg": 14.7,
-  "Morez Johnson": 13.1,
-  "Aday Mara": 11.6,
-  "Elliot Cadeau": 10.2,
+  "Morez Johnson": 13.7,
+  "Aday Mara": 11.3,
+  "Elliot Cadeau": 9.9,
   "Nimari Burnett": 9.0,
   "Roddy Gale": 7.0,
   "Will Tschetter": 5.0,
@@ -508,12 +522,12 @@ const HARDCODED_AVERAGES = {
   "Adam Miller": 10.0,
   "Braden Huff": 9.0,
   "Mario Saint-Supery": 8.0,
-  "Darius Acuff": 22.9,
-  "Trevon Brazile": 13.2,
+  "Darius Acuff": 15.0,
+  "Trevon Brazile": 13.0,
   "D.J. Wagner": 12.0,
-  "Meleek Thomas": 15.4,
-  "Billy Richmond III": 11.0,
-  "Malique Ewin": 9.6,
+  "Meleek Thomas": 11.0,
+  "Billy Richmond III": 8.0,
+  "Malique Ewin": 7.0,
   "Nick Pringle": 6.0,
   "Otega Oweh": 15.0,
   "Mouhamed Dioubate": 10.0,
@@ -526,14 +540,14 @@ const HARDCODED_AVERAGES = {
   "Bryce Hopkins": 8.0,
   "Joson Sanon": 6.0,
   "Thijs De Ridder": 14.2,
-  "Seth Trimble": 14.0,
+  "Seth Trimble": 11.8,
   "Jacari White": 10.4,
-  "Devin McGlockton": 9.6,
+  "Devin McGlockton": 11.6,
   "Ugonna Onyenso": 9.8,
-  "Braeden Carrington": 8.4,
+  "Braeden Carrington": 12.4,
   "Divine Ugochukwu": 11.2,
   "Dallin Hall": 13.6,
-  "Jamarques Lawrence": 9.7,
+  "Jamarques Lawrence": 10.8,
   "Michael Cooper": 13.4,
   "Tramon Mark": 13.5,
   "Dailyn Swain": 17.8,
@@ -554,20 +568,20 @@ const HARDCODED_AVERAGES = {
   "Nate Ament": 11.4,
   "J.P. Estrella": 12.4,
   "Darryn Peterson": 15.2,
-  "Jeremy Fears": 15.7,
-  "Jaxon Kohler": 12.7,
-  "Coen Carr": 11.6,
+  "Jeremy Fears": 12.8,
+  "Jaxon Kohler": 12.4,
+  "Coen Carr": 13.8,
   "Jaron Pierre Jr.": 11.6,
   "MJ Collins": 14.2,
-  "AK Okereke": 9.7,
-  "David Punch": 14.3,
+  "AK Okereke": 10.8,
+  "David Punch": 9.6,
   "Rashaun Agee": 12.4,
   "Davis Fogle": 11.2,
-  "Thomas Dowd": 14.8,
+  "Thomas Dowd": 10.6,
   "Marcus Hill": 9.8,
-  "Joseph Omojafo": 11.5,
-  "Duke Miles": 16.5,
-  "Wes Enis": 16.8,
+  "Joseph Omojafo": 12.6,
+  "Duke Miles": 13.4,
+  "Wes Enis": 12.6,
   "Paulius Muraukas": 14.2,
   "Simeon Cottle": 20.2,
   "Jaylen Petty": 13.6,
@@ -579,29 +593,29 @@ const HARDCODED_AVERAGES = {
   "Flory Bidunga": 12.8,
   "Skyy Clark": 13.6,
   "Acaden Lewis": 11.4,
-  "Braden Frager": 11.6,
+  "Braden Frager": 7.8,
   "Mason Falslev": 10.2,
   "Tavion Banks": 8.4,
   "Malik Thomas": 11.6,
   "Tavari Johnson": 12.6,
-  "Austin Rapp": 9.6,
+  "Austin Rapp": 9.2,
   "Bryson Tiller": 8.8,
   "Isaiah Brown": 12.4,
   "Xavier Booker": 10.2,
   "Chance Mallory": 8.6,
   "Boopie Miller": 13.8,
   "Ace Buckner": 11.4,
-  "Kur Teng": 7.7,
-  "Sam Hoiberg": 9.6,
+  "Kur Teng": 8.8,
+  "Sam Hoiberg": 10.4,
   "Cedric Taylor": 12.2,
   "Donovan Atwell": 10.8,
   "Donovan Dent": 12.4,
-  "Nolan Winter": 13.3,
+  "Nolan Winter": 9.6,
   "Jayden Stone": 11.2,
-  "Victor Valdes": 14.8,
+  "Victor Valdes": 8.6,
   "Alex Wilkins": 17.7,
   "Eian Elmer": 12.6,
-  "Micah Robinson": 10.5,
+  "Micah Robinson": 9.4,
   "Tre Donaldson": 12.4,
   "Dominique Daniels": 23.2,
   "Devin Royal": 13.6,
@@ -610,8 +624,8 @@ const HARDCODED_AVERAGES = {
   "Tyshawn Archie": 14.3,
   "Shammah Scott": 9.8,
   "Travis Harper II": 17.3,
-  "Tyler Tanner": 19.1,
-  "Carson Cooper": 10.8,
+  "Tyler Tanner": 10.8,
+  "Carson Cooper": 11.2,
   "Sam Lewis": 9.6,
   "Dontae Horne": 20.2,
   "Eric Dailey": 11.6,
@@ -620,14 +634,14 @@ const HARDCODED_AVERAGES = {
   "Hank Alvey": 8.6,
   "Tai Reon Joseph": 12.1,
   "Yexel Lendeberg": 8.2,
-  "Jordan Scott": 5.9,
-  "Jalen Washington": 9.1,
+  "Jordan Scott": 7.5,
+  "Jalen Washington": 6.8,
   "Allen Graves": 5.4,
   "Tru Washington": 8.1,
-  "Izaiyah Nelson": 15.7,
+  "Izaiyah Nelson": 7.2,
   "Blake Buchanan": 9.8,
   "Aaron Nkrumah": 17.6,
-  "Henri Veesaar": 16.7,
+  "Henri Veesaar": 10.8,
   "Corey Washington": 13.8,
   "Christin Hammond": 14.6,
   "Themus Fulks": 10.4,
@@ -640,54 +654,54 @@ const HARDCODED_AVERAGES = {
   "Ethan Roberts": 11.6,
   "Luka Bogavac": 9.8,
   "Ryan Conwell": 18.7,
-  "Tyler Nickels": 13.5,
+  "Tyler Nickels": 13.6,
   "LeJuan Watts": 14.8,
-  "Isaac McKneely": 10.6,
+  "Isaac McKneely": 13.4,
   "Jordan Burks": 10.8,
   "Tai Reon Joseph": 12.1,
   "Elijah Mahi": 12.6,
   "Gavin Doty": 17.9,
-  "Nick Boyd": 20.6,
+  "Nick Boyd": 10.8,
   "Melvin Council Jr.": 13.2,
-  "Terrence Hill": 14.4,
+  "Terrence Hill": 14.6,
   "B.J. Edwards": 12.4,
   "Tyler Perkins": 11.8,
   "Riley Kugel": 10.6,
-  "Lazar Djokovic": 13.5,
+  "Lazar Djokovic": 13.4,
   "TJ Power": 12.8,
-  "Jadrian Tracey": 9.9,
+  "Jadrian Tracey": 11.4,
   "Jayden Pierre": 10.5,
   "Cole Bowser": 14.0,
-  "Pryce Sandfort": 17.8,
+  "Pryce Sandfort": 13.2,
   "Tyler Bilodeau": 11.6,
-  "John Mobley Jr.": 15.7,
+  "John Mobley Jr.": 12.4,
   "Joshua Dent": 10.8,
   "Shelton Henderson": 13.6,
-  "Amare Bynum": 9.7,
-  "Joseph Pinion": 14.2,
+  "Amare Bynum": 11.2,
+  "Joseph Pinion": 10.6,
   "Christoph Tilly": 9.8,
   "Brant Byers": 14.2,
   "Bryce Lindsay": 10.2,
   "Cam'Ron Fletcher": 12.7,
-  "John Blackwell": 19.0,
+  "John Blackwell": 13.4,
   "Anthony Dell'Orso": 11.8,
-  "Bruce Thornton": 20.2,
+  "Bruce Thornton": 19.8,
   "Mark Mitchell": 12.6,
   "Mikey Lewis": 14.2,
   "Trent Perry": 10.4,
   "Robbie Avila": 16.4,
   "Peter Suder": 14.6,
-  "Jarin Stevenson": 8.0,
+  "Jarin Stevenson": 12.6,
   "Dylan Darling": 11.4,
   "Liutauras Lelevicius": 8.4,
   "Javohn Garcia": 12.0,
   "Christian Anderson": 14.6,
-  "Trey McKenney": 9.6,
+  "Trey McKenney": 10.8,
   "Nasir Whitlock": 21.0,
-  "Rienk Mast": 13.5,
-  "Xavier Edmonds": 14.6,
+  "Rienk Mast": 10.6,
+  "Xavier Edmonds": 9.8,
   "Duke Brennan": 8.6,
-  "Derek Dixon": 6.4,
+  "Derek Dixon": 11.2,
   "Rylan Griffen": 10.4,
   "Dre Bullock": 13.5
 };
@@ -1067,6 +1081,16 @@ function buildBlankBracket() {
 // Admin UI overrides in overrides.json take highest priority.
 const HARDCODED_OVERRIDES = {
   // First Four — Wed Mar 18
+  // R64 Thu Mar 19 — Ohio State vs TCU
+  "Devin Royal":               14,
+  "Amare Bynum":               12,
+  "John Mobley Jr.":           15,
+  "Christoph Tilly":            8,
+  "Micah Robinson":            18,
+  "Xavier Edmonds":            16,
+  "Liutauras Lelevicius":       4,
+  "David Punch":               16,
+  "Jayden Pierre":              4,
   "Dontae Horne":       25,
   "Tai Reon Joseph":      5,
   "Nasir Whitlock":      5,
