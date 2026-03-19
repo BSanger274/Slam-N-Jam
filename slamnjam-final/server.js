@@ -78,6 +78,21 @@ function normalizeName(name) {
     .toLowerCase();
 }
 
+// ─── School name normalization (ESPN bracket -> roster) ─
+const SCHOOL_NAME_MAP_SRV = {
+  'Ohio State':'Ohio St', 'South Florida':'So Florida', 'Michigan State':'Mich St',
+  'Michigan St':'Mich St', 'Texas Tech':'Tx Tech', 'Tennessee':'Tenn',
+  'Tennessee State':'Tenn St', 'Tennessee St':'Tenn St', 'Connecticut':'UConn',
+  'North Carolina':'UNC', 'N. Carolina':'UNC', 'NC State':'NC St',
+  'Virginia Commonwealth':'VCU', 'Saint Louis':'St Louis', "Saint Mary's":'St Marys',
+  'Prairie View':'Prairie View A&M', 'CA Baptist':'Cal Baptist',
+  'California Baptist':'Cal Baptist', 'Vanderbilt':'Vandy', 'Wisconsin':'Wisc',
+  'Miami':'Miami FL', 'Miami (OH)':'Miami OH', 'Iowa State':'Iowa St',
+  'McNeese':'McNeese St', 'Kennesaw State':'Kennesaw St', 'Utah State':'Utah St',
+  'Wright State':'Wright St', "St. John's":'St Johns',
+};
+function normSchool(name) { return SCHOOL_NAME_MAP_SRV[name] || name; }
+
 // ─── HTTP helper ──────────────────────────────────────
 function fetchURL(url) {
   return new Promise((resolve, reject) => {
@@ -1237,8 +1252,25 @@ app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
 app.get('/api/teams', async (req, res) => {
   const rosters = readJSON(ROSTER_F, { teams: [] });
-  const [scores, avgs, jerseys] = await Promise.all([getMergedScores(), getSeasonAverages(), getJerseys()]);
+  const [scores, avgs, jerseys, bracket] = await Promise.all([getMergedScores(), getSeasonAverages(), getJerseys(), getLiveBracket()]);
   const liveHalf = liveHalfCache;
+
+  // Build set of eliminated school names from bracket (won: false)
+  const eliminatedSchools = new Set();
+  if (bracket) {
+    const allRegions = [bracket.east, bracket.west, bracket.south, bracket.midwest];
+    const allRounds = ['firstfour', 'r64', 'r32', 'sweet16', 'elite8'];
+    for (const region of allRegions) {
+      if (!region) continue;
+      for (const round of allRounds) {
+        for (const m of (region[round] || [])) {
+          if (m.t1?.won === false && m.t1?.name && m.t1.name !== 'TBD') eliminatedSchools.add(normSchool(m.t1.name));
+          if (m.t2?.won === false && m.t2?.name && m.t2.name !== 'TBD') eliminatedSchools.add(normSchool(m.t2.name));
+        }
+      }
+    }
+  }
+
   const teams = (rosters.teams || []).map(team => {
     let total = 0;
     const players = (team.players || []).map(p => {
@@ -1288,7 +1320,8 @@ app.get('/api/teams', async (req, res) => {
 
       total += pts;
       const jersey = fuzzyLookup(jerseys) || null;
-      return { ...p, pts, seasonAvg: avg, trend, jersey };
+      const active = eliminatedSchools.has(normSchool(p.school)) ? false : (p.active !== false);
+      return { ...p, pts, seasonAvg: avg, trend, jersey, active };
     });
     return { ...team, players, totalPts: total };
   });
