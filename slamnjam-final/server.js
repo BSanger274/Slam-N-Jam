@@ -432,12 +432,12 @@ async function fetchSeasonAverages() {
 // Hardcoded season averages — fallback if file not found
 const HARDCODED_AVERAGES = {
   "Cameron Boozer": 22.5,
-  "Isaiah Evans": 14.7,
+  "Isaiah Evans": 14.9,
   "Patrick Ngongba": 10.7,
-  "Cayden Boozer": 9.0,
-  "Dame Sarr": 8.5,
-  "Nikolas Khamenia": 7.3,
-  "Maliq Brown": 7.0,
+  "Cayden Boozer": 7.1,
+  "Dame Sarr": 6.3,
+  "Nikolas Khamenia": 5.8,
+  "Maliq Brown": 4.8,
   "Mikel Brown": 18.2,
   "Caleb Foster": 8.5,
   "Brayden Burries": 16.0,
