@@ -600,7 +600,7 @@ const HARDCODED_AVERAGES = {
   "Jayden Stone": 11.2,
   "Victor Valdes": 8.6,
   "Alex Wilkins": 17.7,
-  "Eian Elmer": 12.6,
+  "Eian Elmer": 12.9,
   "Micah Robinson": 9.4,
   "Tre Donaldson": 12.4,
   "Dominique Daniels": 23.2,
