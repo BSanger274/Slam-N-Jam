@@ -1076,17 +1076,27 @@ const HARDCODED_OVERRIDES = {
   "Corey Washington":   13,
   "Samet Yigitoglu":     8,
   "B.J. Edwards":        0,
-  "Eian Elmer":         14,
-  "Brant Byers":        12,
-  "Peter Suder":         3,
+  "Eian Elmer":         23,
+  "Brant Byers":        19,
+  "Peter Suder":         7,
   "Dailyn Swain":       13,
 };
 
 async function getMergedScores() {
   const { scores: live } = await getLiveScores();
   const fileOverrides = readJSON(OVERRIDE_F, {});
-  // Priority: admin file overrides > hardcoded > live ESPN
-  return { ...live, ...HARDCODED_OVERRIDES, ...fileOverrides };
+  // Merge: start with live ESPN scores, then add hardcoded First Four
+  // base points ON TOP (accumulating), then apply admin overrides last.
+  const merged = { ...live };
+  for (const [name, basePts] of Object.entries(HARDCODED_OVERRIDES)) {
+    // Add hardcoded base to any live points earned today
+    merged[name] = (live[name] || 0) + basePts;
+  }
+  // Admin file overrides always win (manual correction)
+  for (const [name, pts] of Object.entries(fileOverrides)) {
+    merged[name] = pts;
+  }
+  return merged;
 }
 
 // ════════════════════════════════════════════════════════
@@ -1437,7 +1447,7 @@ app.get('/api/bracket', async (req, res) => {
 app.get('/api/scores', async (req, res) => {
   const { scores: live } = await getLiveScores();
   const fileOverrides = readJSON(OVERRIDE_F, {});
-  const merged = { ...live, ...HARDCODED_OVERRIDES, ...fileOverrides };
+  const merged = await getMergedScores();
   res.json({ live, overrides: fileOverrides, merged, liveCount: Object.keys(live).length });
 });
 
@@ -1545,7 +1555,12 @@ app.post('/api/admin/archive-season', requireAdmin, (req, res) => {
   try {
     const year      = new Date().getFullYear();
     const overrides = readJSON(OVERRIDE_F, {});
-    const merged    = { ...scoreCache, ...HARDCODED_OVERRIDES, ...overrides };
+    // For archive: accumulate hardcoded base + final scores
+    const merged = { ...scoreCache };
+    for (const [name, basePts] of Object.entries(HARDCODED_OVERRIDES)) {
+      merged[name] = (scoreCache[name] || 0) + basePts;
+    }
+    for (const [name, pts] of Object.entries(overrides)) { merged[name] = pts; }
     const roster    = readJSON(ROSTER_F, { teams: [] });
     const teams     = roster.teams || [];
     if (!teams.length) return res.json({ ok:false, error:'No roster data found — upload roster first' });
