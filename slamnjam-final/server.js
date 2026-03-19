@@ -642,7 +642,7 @@ const HARDCODED_AVERAGES = {
   "Ryan Conwell": 18.7,
   "Tyler Nickels": 13.6,
   "LeJuan Watts": 14.8,
-  "Isaac McKneely": 13.4,
+  "Isaac McKneely": 10.6,
   "Jordan Burks": 10.8,
   "Tai Reon Joseph": 12.1,
   "Elijah Mahi": 12.6,
