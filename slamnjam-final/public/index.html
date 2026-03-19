@@ -341,7 +341,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
 /* ── RESPONSIVE ── */
 @media(max-width:900px){.g2{grid-template-columns:1fr}.sbs{grid-template-columns:1fr 1fr}.banner{flex-direction:column}}
 @media(max-width:600px){.sbs{grid-template-columns:1fr}.bstats{justify-content:center}.hinner{flex-wrap:wrap;height:auto;padding:10px}}
-@media(max-width:600px){.modal-overlay{padding:16px;align-items:center;justify-content:center}.modal-box{width:100%;max-width:100%;max-height:80vh;border-radius:14px;display:flex;flex-direction:column;overflow:hidden}.modal-hd{padding:12px 14px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}.modal-title{font-size:13px;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 44px)}.modal-close{flex-shrink:0;width:32px;height:32px;border-radius:8px;font-size:16px;touch-action:manipulation;background:var(--surface);border:1px solid var(--border);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}.modal-score-row{flex-shrink:0;padding:10px 14px;border-bottom:1px solid var(--border)}.modal-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 10px}.bs-tbl{font-size:11px}.bs-tbl th,.bs-tbl td{padding:5px 4px}.bs-col-hide{display:none}}
+@media(max-width:600px){.modal-overlay{padding:8px;padding-top:70px;align-items:flex-start;justify-content:center}.modal-box{width:100%;max-width:100%;max-height:calc(100vh - 86px);border-radius:14px;display:flex;flex-direction:column;overflow:hidden}.modal-hd{padding:10px 12px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}.modal-title{font-size:13px;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 44px)}.modal-close{flex-shrink:0;width:32px;height:32px;border-radius:8px;font-size:16px;touch-action:manipulation;background:var(--surface);border:1px solid var(--border);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}.modal-score-row{flex-shrink:0;padding:8px 12px;border-bottom:1px solid var(--border)}.modal-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 10px}.bs-tbl{font-size:11px}.bs-tbl th,.bs-tbl td{padding:4px 4px}.bs-col-hide{display:none}.modal-team-score{font-size:32px}.modal-team-name{font-size:12px}}
 
   /* ── LIVE TICKER ── */
   .ticker-bar{position:fixed;bottom:0;left:0;right:0;z-index:998;height:34px;background:#0a0c12;border-top:1px solid rgba(255,184,0,.25);display:flex;align-items:stretch;overflow:hidden}
@@ -2085,11 +2085,49 @@ async function openBoxScore(gameId, team1, team2) {
     body.innerHTML = d.teams.map(team => fullBoxSection(team)).join('');
 
   } catch(e) {
-    body.innerHTML = `<div class="modal-error">
-      <div style="font-size:24px;margin-bottom:10px">📋</div>
-      <div>Box score not available</div>
-      <div style="font-size:11px;margin-top:6px;color:var(--muted)">ESPN may not have data for this game yet</div>
-    </div>`;
+    // ESPN box score unavailable — fall back to showing drafted players with saved points
+    try {
+      const [scoresRes] = await Promise.all([
+        fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{}}))
+      ]);
+      const savedScores = scoresRes.merged || {};
+      const draftedMap = {};
+      const normN = n => (n||'').replace(/\s+(jr\.?|sr\.?|ii|iii|iv)$/i,'').replace(/\./g,'').replace(/['’]/g,"'").replace(/\s+/g,' ').trim().toLowerCase();
+      const draftedNormMap = {};
+      TEAMS.forEach(t => t.players.forEach(p => {
+        draftedMap[p.name] = t.name;
+        draftedNormMap[normN(p.name)] = { mgr: t.name, pts: savedScores[p.name] ?? 0 };
+      }));
+      const teamSection = (schoolName) => {
+        const drafted = TEAMS.flatMap(t => t.players
+          .filter(p => p.school === normSchool(schoolName))
+          .map(p => ({ ...p, mgr: t.name, pts: savedScores[p.name] ?? p.pts ?? 0 }))
+        ).sort((a,b) => b.pts - a.pts);
+        if (!drafted.length) return '';
+        return `<div class="modal-team-section">
+          <div class="modal-team-label" style="display:flex;align-items:center;justify-content:space-between">
+            <span>${schoolName}</span>
+            <span style="font-size:10px;color:var(--orange);letter-spacing:1px">${drafted.length} DRAFTED</span>
+          </div>
+          <table class="bs-tbl">
+            <thead><tr><th style="text-align:left">Player</th><th style="text-align:left;color:var(--muted)">Manager</th><th style="text-align:right;color:var(--orange)">PTS</th></tr></thead>
+            <tbody>${drafted.map(p => `<tr>
+              <td style="text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px">${p.name}</td>
+              <td style="text-align:left;font-size:12px;color:var(--muted)">${p.mgr}</td>
+              <td style="text-align:right;color:var(--orange);font-family:'Bebas Neue',sans-serif;font-size:20px">${p.pts}</td>
+            </tr>`).join('')}</tbody>
+          </table>
+        </div>`;
+      };
+      body.innerHTML = teamSection(team1) + teamSection(team2) ||
+        `<div class="modal-error"><div style="font-size:24px;margin-bottom:10px">📋</div><div>No data available</div></div>`;
+    } catch(e2) {
+      body.innerHTML = `<div class="modal-error">
+        <div style="font-size:24px;margin-bottom:10px">📋</div>
+        <div>Box score not available</div>
+        <div style="font-size:11px;margin-top:6px;color:var(--muted)">ESPN may not have data for this game</div>
+      </div>`;
+    }
   }
 }
 
