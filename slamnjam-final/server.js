@@ -567,7 +567,7 @@ const HARDCODED_AVERAGES = {
   "Marcus Hill": 9.8,
   "Joseph Omojafo": 12.6,
   "Duke Miles": 13.4,
-  "Wes Enis": 12.6,
+  "Wes Enis": 16.8,
   "Paulius Muraukas": 14.2,
   "Simeon Cottle": 20.2,
   "Jaylen Petty": 13.6,
