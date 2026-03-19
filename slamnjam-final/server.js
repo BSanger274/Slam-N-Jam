@@ -252,8 +252,47 @@ async function fetchLiveScores() {
         }
       }
     }
-    // Fetch full box scores for live games only
+    // Auto-persist scores for completed games before ESPN drops them
+    // This runs on every poll — saves STATUS_FINAL player scores to overrides.json
+    // Skips players already in HARDCODED_OVERRIDES to prevent doubling
     const savedOverrides = readJSON(OVERRIDE_F, {});
+    let overridesChanged = false;
+    for (const event of allEvents) {
+      if (event.status?.type?.name !== 'STATUS_FINAL') continue;
+      for (const comp of (event.competitions || [])) {
+        for (const team of (comp.competitors || [])) {
+          // Try statistics first
+          for (const statGroup of (team.statistics || [])) {
+            if (statGroup.name === 'scoring' || statGroup.abbreviation === 'PTS') {
+              for (const athlete of (statGroup.athletes || [])) {
+                const name = athlete.athlete?.displayName;
+                const pts  = parseFloat(athlete.value) || 0;
+                if (name && pts > 0 && HARDCODED_OVERRIDES[name] === undefined && savedOverrides[name] === undefined) {
+                  savedOverrides[name] = pts;
+                  overridesChanged = true;
+                }
+              }
+            }
+          }
+          // Fall back to leaders
+          for (const leader of (team.leaders || [])) {
+            if (leader.name === 'points') {
+              for (const l of (leader.leaders || [])) {
+                const name = l.athlete?.displayName;
+                const pts  = parseFloat(l.value) || 0;
+                if (name && pts > 0 && HARDCODED_OVERRIDES[name] === undefined && savedOverrides[name] === undefined) {
+                  savedOverrides[name] = pts;
+                  overridesChanged = true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    if (overridesChanged) writeJSON(OVERRIDE_F, savedOverrides);
+
+    // Fetch full box scores for live games only
     const activeEvents = allEvents.filter(ev => {
       const s = ev.status?.type?.name || '';
       return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME';
@@ -1183,9 +1222,17 @@ async function getMergedScores() {
       merged[name] = basePts;
     }
   }
-  // Admin file overrides always win (manual correction)
+  // File overrides: auto-saved completed game scores + admin manual corrections
+  // For active players with a hardcoded base (e.g. Miami OH), add today's saved pts on top
   for (const [name, pts] of Object.entries(fileOverrides)) {
-    merged[name] = pts;
+    const hardcodedBase = HARDCODED_OVERRIDES[name];
+    const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
+    if (hardcodedBase !== undefined && !playingNow) {
+      // Has a hardcoded base and not live — hardcoded wins, ignore file override
+      // (prevents doubling if auto-save ran during a previous game)
+    } else {
+      merged[name] = pts;
+    }
   }
   return merged;
 }
