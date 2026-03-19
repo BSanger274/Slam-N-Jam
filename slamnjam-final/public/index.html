@@ -876,7 +876,7 @@ function trendIcon(trend) {
 }
 
 function renderTopScorers(allP) {
-  const top = allP.filter(p=>p.pts>0).sort((a,b)=>b.pts-a.pts).slice(0,8);
+  const top = allP.filter(p=>p.pts>0).sort((a,b)=>b.pts-a.pts).slice(0,15);
   document.getElementById('top-scorers').innerHTML = top.length
     ? top.map((p,i)=>{
         const logoUrl = TEAM_LOGOS[p.school] || '';
