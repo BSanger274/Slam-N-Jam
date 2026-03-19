@@ -624,7 +624,7 @@ const HARDCODED_AVERAGES = {
   "Jalen Washington": 6.8,
   "Allen Graves": 5.4,
   "Tru Washington": 8.1,
-  "Izaiyah Nelson": 7.2,
+  "Izaiyah Nelson": 15.7,
   "Blake Buchanan": 9.8,
   "Aaron Nkrumah": 17.6,
   "Henri Veesaar": 10.8,
