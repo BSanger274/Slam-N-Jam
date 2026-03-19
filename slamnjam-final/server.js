@@ -1062,10 +1062,31 @@ function buildBlankBracket() {
 // ════════════════════════════════════════════════════════
 //  MERGED SCORES
 // ════════════════════════════════════════════════════════
+// ─── Hardcoded score overrides ───────────────────────
+// These survive Render redeploys (disk wipes on restart).
+// Add any completed-game scores here that must persist.
+// Admin UI overrides in overrides.json take highest priority.
+const HARDCODED_OVERRIDES = {
+  // First Four — Wed Mar 18
+  "Dontae Horne":       25,
+  "Nasir Whitlock":      5,
+  "Hank Alvey":         23,
+  "Jaron Pierre Jr.":   18,
+  "Boopie Miller":      15,
+  "Corey Washington":   13,
+  "Samet Yigitoglu":     8,
+  "B.J. Edwards":        0,
+  "Eian Elmer":         14,
+  "Brant Byers":        12,
+  "Peter Suder":         3,
+  "Dailyn Swain":       13,
+};
+
 async function getMergedScores() {
   const { scores: live } = await getLiveScores();
-  const overrides = readJSON(OVERRIDE_F, {});
-  return { ...live, ...overrides };
+  const fileOverrides = readJSON(OVERRIDE_F, {});
+  // Priority: admin file overrides > hardcoded > live ESPN
+  return { ...live, ...HARDCODED_OVERRIDES, ...fileOverrides };
 }
 
 // ════════════════════════════════════════════════════════
@@ -1415,8 +1436,9 @@ app.get('/api/bracket', async (req, res) => {
 
 app.get('/api/scores', async (req, res) => {
   const { scores: live } = await getLiveScores();
-  const overrides = readJSON(OVERRIDE_F, {});
-  res.json({ live, overrides, merged: { ...live, ...overrides }, liveCount: Object.keys(live).length });
+  const fileOverrides = readJSON(OVERRIDE_F, {});
+  const merged = { ...live, ...HARDCODED_OVERRIDES, ...fileOverrides };
+  res.json({ live, overrides: fileOverrides, merged, liveCount: Object.keys(live).length });
 });
 
 // History — always returns data even after restarts
@@ -1523,7 +1545,7 @@ app.post('/api/admin/archive-season', requireAdmin, (req, res) => {
   try {
     const year      = new Date().getFullYear();
     const overrides = readJSON(OVERRIDE_F, {});
-    const merged    = { ...scoreCache, ...overrides };
+    const merged    = { ...scoreCache, ...HARDCODED_OVERRIDES, ...overrides };
     const roster    = readJSON(ROSTER_F, { teams: [] });
     const teams     = roster.teams || [];
     if (!teams.length) return res.json({ ok:false, error:'No roster data found — upload roster first' });
