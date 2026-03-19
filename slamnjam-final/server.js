@@ -64,6 +64,20 @@ function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
+// ─── Player name normalization ───────────────────────
+// Strips Jr./Sr./II/III/IV suffixes and normalizes punctuation
+// so ESPN names like "John Mobley Jr." match roster "John Mobley Jr."
+// and vice versa when one side is missing the suffix
+function normalizeName(name) {
+  return (name || '')
+    .replace(/\s+(jr\.?|sr\.?|ii|iii|iv)$/i, '')  // strip suffix
+    .replace(/\./g, '')                              // strip periods
+    .replace(/'/g, "'")                              // normalize apostrophes
+    .replace(/\s+/g, ' ')                            // collapse spaces
+    .trim()
+    .toLowerCase();
+}
+
 // ─── HTTP helper ──────────────────────────────────────
 function fetchURL(url) {
   return new Promise((resolve, reject) => {
@@ -1228,27 +1242,19 @@ app.get('/api/teams', async (req, res) => {
   const teams = (rosters.teams || []).map(team => {
     let total = 0;
     const players = (team.players || []).map(p => {
-      const SERVER_ALIASES = {
-        'DJ Wagner':        'D.J. Wagner',
-        'JP Estrella':      'J.P. Estrella',
-        'BJ Edwards':       'B.J. Edwards',
-        'CJ Cox':           'C.J. Cox',
-        'John Mobley Jr':   'John Mobley Jr.',
-        'Travis Harper':    'Travis Harper II',
-        'Melvin Council':   'Melvin Council Jr.',
-        'Tyron Grant-Foster':'Tyon Grant-Foster',
-      };
-      // Check both direct name and any ESPN alias that maps to this player
-      const aliasedName = Object.entries(SERVER_ALIASES).find(([,v]) => v === p.name)?.[0];
-      const pts = scores[p.name] ?? (aliasedName ? scores[aliasedName] : undefined) ?? p.pts ?? 0;
-      const avg = avgs[p.name] ?? null;
+      // Fuzzy name match: try exact first, then normalized (strips Jr/Sr/II/periods)
+      const normP = normalizeName(p.name);
+      const fuzzyLookup = (obj) => obj[p.name] !== undefined ? obj[p.name]
+        : Object.entries(obj).find(([k]) => normalizeName(k) === normP)?.[1];
+      const pts      = fuzzyLookup(scores) ?? p.pts ?? 0;
+      const avg      = fuzzyLookup(avgs) ?? null;
       let trend = null;
 
       // ── OPTION 1 (ACTIVE): Pace-adjusted trend — mimics DraftKings style ──
       // Uses player's actual minutes played to project final score
       // No animation until 8+ minutes played to avoid noise at game start
       const GAME_MINUTES = 40;
-      const minsPlayed = minutesCache[p.name] || 0;
+      const minsPlayed = fuzzyLookup(minutesCache) || 0;
 
       if (avg && avg > 0 && pts > 0 && minsPlayed >= 8) {
         // Project what player will score by end of game at current pace
@@ -1281,7 +1287,7 @@ app.get('/api/teams', async (req, res) => {
       // }
 
       total += pts;
-      const jersey = jerseys[p.name] || null;
+      const jersey = fuzzyLookup(jerseys) || null;
       return { ...p, pts, seasonAvg: avg, trend, jersey };
     });
     return { ...team, players, totalPts: total };
