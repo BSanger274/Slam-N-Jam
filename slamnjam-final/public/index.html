@@ -86,8 +86,8 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .rnk.r1{color:var(--gold)}.rnk.r2{color:#bbb}.rnk.r3{color:#cd7f32}
 .tn{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:color .2s}
 .tn:hover{color:var(--orange)}
-.pts{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--orange)}
-.chip{display:inline-flex;align-items:center;background:rgba(0,230,118,.1);color:var(--green);padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700}
+.pts{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--orange)}
+.chip{display:inline-flex;align-items:center;background:rgba(0,230,118,.1);color:var(--green);padding:2px 9px;border-radius:10px;font-size:13px;font-weight:700}
 .chip.out{background:rgba(255,61,90,.1);color:var(--red)}
 
 /* ── PROGRESS ── */
@@ -2763,23 +2763,16 @@ function refreshTicker() {
   const html = allItems.join('') + spacer;
   track.innerHTML = html + html;
 
-  // Measure after paint — use offsetWidth of inner content for absolute-positioned track
-  setTimeout(() => {
-    // Force reflow by reading offsetWidth
-    const items = track.querySelectorAll('.tick-item, .tick-sep');
-    let w = 0;
-    items.forEach(el => w += el.getBoundingClientRect().width);
-    // Half-width is the width of one copy of the content
-    tickerHalfWidth = w > 0 ? w : track.scrollWidth / 2;
+  // Measure track width — temporarily make it position:static to get real width
+  // then switch back to absolute for animation
+  track.style.position = 'static';
+  track.style.whiteSpace = 'nowrap';
+  requestAnimationFrame(() => {
+    const fullWidth = track.offsetWidth;
+    track.style.position = 'absolute';
+    tickerHalfWidth = fullWidth / 2;
     if (tickerPos >= tickerHalfWidth) tickerPos = 0;
-    if (tickerHalfWidth === 0) {
-      // Last resort fallback — retry after 500ms
-      setTimeout(() => {
-        tickerHalfWidth = track.scrollWidth / 2;
-        if (tickerPos >= tickerHalfWidth) tickerPos = 0;
-      }, 500);
-    }
-  }, 100);
+  });
 
   if (dot) dot.style.background = liveItems.length ? '#00e676' : '#ffb800';
 }
