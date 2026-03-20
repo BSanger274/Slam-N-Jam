@@ -1118,6 +1118,15 @@ const HARDCODED_OVERRIDES = {
   "Corey Washington":   13,   // SMU
   "Samet Yigitoglu":     8,   // SMU
   "B.J. Edwards":        0,   // SMU
+  // ── R64 Thu Mar 19 — Duke 71, Siena 65 ──
+  "Cameron Boozer":    22,   // Duke
+  "Cayden Boozer":     19,   // Duke
+  "Isaiah Evans":      16,   // Duke
+  "Nikolas Khamenia":   9,   // Duke
+  "Dame Sarr":          9,   // Duke
+  "Caleb Foster":       0,   // Duke (DNP - foot injury)
+  "Patrick Ngongba":    0,   // Duke (DNP - foot injury)
+  "Gavin Doty":        21,   // Siena (eliminated)
   // ── R64 Thu Mar 19 — TCU 66, Ohio St 64 ──
   "Devin Royal":        14,
   "Amare Bynum":        12,
