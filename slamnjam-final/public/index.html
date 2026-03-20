@@ -2743,10 +2743,12 @@ function refreshTicker() {
   }
 
   const MONTH_ORDER = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
-  // Returns a JS timestamp. Games with no date sort last (Infinity).
+  // Handles both "Thu Mar 20" (ESPN with day-of-week) and "Mar 20" (no prefix) formats.
   function matchupTimestamp(m) {
     const dp = (m.date||'').split(' ');
-    const mo = MONTH_ORDER[dp[1]]||0, dy = parseInt(dp[2])||0;
+    // If dp[0] is a month name → "Mar 20" format; else → "Thu Mar 20" format
+    const mo = MONTH_ORDER[dp[0]] || MONTH_ORDER[dp[1]] || 0;
+    const dy = MONTH_ORDER[dp[0]] ? (parseInt(dp[1])||0) : (parseInt(dp[2])||0);
     if (!mo || !dy) return Infinity;
     const tp = (m.time||'').replace(' ET','').trim().split(' ');
     const hm = (tp[0]||'0:0').split(':');
