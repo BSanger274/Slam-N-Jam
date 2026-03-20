@@ -1124,8 +1124,6 @@ const HARDCODED_OVERRIDES = {
   "Isaiah Evans":      16,   // Duke
   "Nikolas Khamenia":   9,   // Duke
   "Dame Sarr":          9,   // Duke
-  "Caleb Foster":       0,   // Duke (DNP - foot injury)
-  "Patrick Ngongba":    0,   // Duke (DNP - foot injury)
   "Gavin Doty":        21,   // Siena (eliminated)
   // ── R64 Thu Mar 19 — TCU 66, Ohio St 64 ──
   "Devin Royal":        14,
@@ -1156,6 +1154,12 @@ const HARDCODED_OVERRIDES = {
   "Meleek Thomas":      21,
   "Nick Pringle":        0,
   // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
+  "David Mirkovic":     29,   // Illinois
+  "Keaton Wagler":      18,   // Illinois
+  "Kylan Boswell":      13,   // Illinois
+  "Tomislav Ivisic":    12,   // Illinois
+  "Andrej Stojakovic":   9,   // Illinois
+  "Zvonimir Ivisic":     6,   // Illinois
   "TJ Power":            6,   // Penn (eliminated)
   // ── R64 Thu Mar 19 — VCU 82, UNC 78 ──
   "Terrence Hill Jr.":  34,   // VCU
@@ -1200,7 +1204,10 @@ const HARDCODED_OVERRIDES = {
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
   "Graham Ike":         19,   // Gonzaga
   "Davis Fogle":        17,   // Gonzaga
-  "Braden Huff":         0,   // Gonzaga (DNP — knee injury)
+  "Tyon Grant-Foster":   9,   // Gonzaga
+  "Mario Saint-Supery":  7,   // Gonzaga
+  "Adam Miller":         2,   // Gonzaga
+  // Cottle (Kennesaw, eliminated) omitted — DNP
   // ── Texas (won FF + R64, plays R32 Sat) ──
   "Dailyn Swain":       27,   // 13 FF + 14 R64
   "Tramon Mark":        36,   // 17 FF + 19 R64
