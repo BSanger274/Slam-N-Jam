@@ -1148,12 +1148,11 @@ const HARDCODED_OVERRIDES = {
   "Nick Pringle":        0,
   // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
   "TJ Power":            6,   // Penn (eliminated)
-  "Adam Miller":         0,   // Illinois
-  "RJ Godfrey":          0,   // Illinois
-  "Aaron Nkrumah":       0,   // Illinois
-  "Paul McNeil Jr.":     0,   // Illinois
-  "Sam Lewis":           0,   // Illinois
-  "Ace Buckner":         0,   // Illinois
+  "Adam Miller":         0,   // Illinois (bench, 0 pts vs Penn)
+  "Sam Lewis":           0,   // Illinois (bench, 0 pts vs Penn)
+  // ── R64 Thu Mar 19 — BYU 71, Texas 79 ──
+  "AJ Dybantsa":        35,   // BYU (eliminated)
+  "Robert Wright III":  14,   // BYU (eliminated)
   // ── R64 Thu Mar 19 — VCU 82, UNC 78 ──
   "Terrence Hill Jr.":  34,   // VCU
   "Lazar Djokovic":     15,   // VCU
@@ -1174,8 +1173,8 @@ const HARDCODED_OVERRIDES = {
   "Mikey Lewis":         5,
   "Joseph Pinion":      27,   // So Florida (eliminated)
   // ── R64 Thu Mar 19 — Vanderbilt 78, McNeese 68 ──
-  "Donovan Dent":        0,   // Vanderbilt
-  "Chance Mallory":      0,   // Vanderbilt
+  // (no drafted Vanderbilt or McNeese players in this game)
+  // note: Donovan Dent=UCLA, Chance Mallory=Virginia — both play Fri
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
   "Jeremiah Wilkinson":  30,   // Georgia (eliminated)
   "Blue Cain":            6,   // Georgia (eliminated)
@@ -1188,6 +1187,8 @@ const HARDCODED_OVERRIDES = {
   "Graham Ike":         19,   // Gonzaga
   "Davis Fogle":        17,   // Gonzaga
   "Braden Huff":         0,   // Gonzaga (DNP — knee injury)
+  // ── R64 Thu Mar 19 — Texas A&M 63, Saint Mary's 50 ──
+  "Rylan Griffen":      10,   // Texas A&M (est.)
   // ── Texas (won FF + R64, plays R32 Sat) ──
   "Dailyn Swain":       27,   // 13 FF + 14 R64
   "Tramon Mark":        36,   // 17 FF + 19 R64
