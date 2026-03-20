@@ -1147,18 +1147,47 @@ const HARDCODED_OVERRIDES = {
   "Meleek Thomas":      21,
   "Nick Pringle":        0,
   // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
+  "TJ Power":            6,   // Penn (eliminated)
+  "Adam Miller":         0,   // Illinois
+  "RJ Godfrey":          0,   // Illinois
+  "Aaron Nkrumah":       0,   // Illinois
+  "Paul McNeil Jr.":     0,   // Illinois
+  "Sam Lewis":           0,   // Illinois
+  "Ace Buckner":         0,   // Illinois
   // ── R64 Thu Mar 19 — VCU 82, UNC 78 ──
+  "Terrence Hill Jr.":  34,   // VCU
+  "Lazar Djokovic":     15,   // VCU
+  "Henri Veesaar":      26,   // UNC (eliminated)
+  "Seth Trimble":       15,   // UNC (eliminated)
+  "Derek Dixon":        11,   // UNC (eliminated)
+  "Jarin Stevenson":    11,   // UNC (eliminated)
+  "Luka Bogavac":        8,   // UNC (eliminated)
   // ── R64 Thu Mar 19 — Michigan St 92, N. Dakota St 67 ──
+  "Carson Cooper":      20,   // Michigan St
+  "Coen Carr":          17,   // Michigan St
+  "Jaxon Kohler":       12,   // Michigan St
+  "Jeremy Fears Jr.":    7,   // Michigan St
   // ── R64 Thu Mar 19 — Louisville 83, So Florida 79 ──
   "Tyler Nickel":       12,
   "Paulius Murauskas":   4,
   "Joshua Dent":        18,
   "Mikey Lewis":         5,
+  "Joseph Pinion":      27,   // So Florida (eliminated)
   // ── R64 Thu Mar 19 — Vanderbilt 78, McNeese 68 ──
+  "Donovan Dent":        0,   // Vanderbilt
+  "Chance Mallory":      0,   // Vanderbilt
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
+  "Jeremiah Wilkinson":  30,   // Georgia (eliminated)
+  "Blue Cain":            6,   // Georgia (eliminated)
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
+  "Trey McKenney":      10,   // Michigan
+  "Elliot Cadeau":       9,   // Michigan
   // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
+  // (no drafted players from this game)
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
+  "Graham Ike":         19,   // Gonzaga
+  "Davis Fogle":        17,   // Gonzaga
+  "Braden Huff":         0,   // Gonzaga (DNP — knee injury)
   // ── Texas (won FF + R64, plays R32 Sat) ──
   "Dailyn Swain":       27,   // 13 FF + 14 R64
   "Tramon Mark":        36,   // 17 FF + 19 R64
