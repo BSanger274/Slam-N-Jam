@@ -1156,6 +1156,7 @@ const HARDCODED_OVERRIDES = {
   "Mikey Lewis":         5,
   // ── R64 Thu Mar 19 — Vanderbilt 78, McNeese 68 ──
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
+  "Blue Cain":            6,   // Georgia
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
   // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
