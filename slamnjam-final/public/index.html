@@ -120,7 +120,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .back:hover{border-color:var(--orange);color:var(--orange)}
 .rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
 .pc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;transition:border-color .2s;position:relative}
-.pc:not(.elim):hover{border-color:var(--orange)}
+.pc:not(.elim):hover{border-color:var(--orange)}.pc.live{border-left:3px solid var(--green)!important}.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:live-pulse 1.4s ease-in-out infinite;display:inline-block;margin-right:3px}@keyframes live-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
 .pc.elim{opacity:.4}
 .pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;gap:3px;min-width:0}.pc-name{white-space:nowrap}
 .pc-s{font-size:11px;color:var(--muted);margin-top:2px}
@@ -949,9 +949,9 @@ function viewTeam(name, from) {
     <div style="text-align:right"><div class="dp">${t.totalPts}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px">Total Points</div></div>`;
   document.getElementById('d-alive').textContent = `${alive} active`;
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
-    <div class="pc ${p.active?'':'elim'}">
+    <div class="pc ${p.active?'':'elim'}${p.isLive?' live':''}">
       ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
-      <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}"><span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
+      <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
       <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
       <div style="position:relative;margin-top:2px">
         <div class="pc-p">${p.pts}</div>
