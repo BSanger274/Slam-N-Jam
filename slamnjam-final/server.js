@@ -1110,13 +1110,18 @@ function buildBlankBracket() {
 // Their First Four pts are a BASE that accumulates with future live game pts
 // ALL other completed game scores go to overrides.json via auto-save
 const HARDCODED_OVERRIDES = {
-  // First Four survivors still playing — base pts that accumulate going forward
-  "Dontae Horne":       25,   // Prairie View A&M — plays R64
-  "Tai Reon Joseph":     5,   // Prairie View A&M — plays R64
-  "Eian Elmer":         23,   // Miami OH — plays R64
-  "Brant Byers":        19,   // Miami OH — plays R64
-  "Peter Suder":         7,   // Miami OH — plays R64
-  "Dailyn Swain":       27,   // Texas — played First Four + R64, plays R32
+  // ── Prairie View A&M (won First Four, plays R64 Fri) ──
+  "Dontae Horne":       25,   // FF only so far
+  "Tai Reon Joseph":     5,   // FF only so far
+  // ── Miami OH (won First Four, plays R64 Fri) ──
+  "Eian Elmer":         23,   // FF only so far
+  "Brant Byers":        19,   // FF only so far
+  "Peter Suder":         7,   // FF only so far
+  // ── Texas (won First Four + R64 vs BYU, plays R32) ──
+  "Dailyn Swain":       27,   // 13 FF + 14 R64
+  "Tramon Mark":        36,   // 17 FF + 19 R64
+  "Jordan Pope":        16,   //  5 FF + 11 R64
+  "Matas Vokietaitis":  38,   // 15 FF + 23 R64
 };
 
 async function getMergedScores() {
