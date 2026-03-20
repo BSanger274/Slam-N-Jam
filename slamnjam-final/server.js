@@ -1038,7 +1038,7 @@ function buildBlankBracket() {
         { id:'w2', date:'Fri Mar 20', time:'4:10 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(8,'Villanova'), t2:team(9,'Utah State')      },
         { id:'w3', date:'Thu Mar 19', time:'1:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:5,name:'Wisconsin',score:82,won:false}, t2:{seed:12,name:'High Point',score:83,won:true} },
         { id:'w4', date:'Thu Mar 19', time:'4:25 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:4,name:'Arkansas',score:97,won:true}, t2:{seed:13,name:"Hawai'i",score:78,won:false} },
-        { id:'w5', date:'Thu Mar 19', time:'9:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(6,'BYU'),       t2:team(11,'Texas')   },
+        { id:'w5', date:'Thu Mar 19', time:'9:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:6,name:'BYU',score:71,won:false}, t2:{seed:11,name:'Texas',score:79,won:true} },
         { id:'w6', date:'Thu Mar 19', time:'7:15 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(3,'Gonzaga'),   t2:team(14,'Kennesaw State') },
         { id:'w7', date:'Fri Mar 20', time:'6:50 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(7,'Miami FL'),  t2:team(10,'Missouri')       },
         { id:'w8', date:'Fri Mar 20', time:'9:25 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(2,'Purdue'),    t2:team(15,'Queens')         }
@@ -1377,7 +1377,7 @@ app.get('/api/teams', async (req, res) => {
       // Games played based on how deep in the bracket the player's school has gone
       // First Four teams get 1 game before R64, everyone else starts at R64
       const firstFourSchools = new Set(['Prairie View A&M','Miami OH','Texas','Howard']);
-      const roundGames = { firstfour:0, r64:1, r32:2, r16:3, r8:4, r4:5, rfinal:6 };
+      const roundGames = { r64:1, r32:2, r16:3, r8:4, r4:5, rfinal:6 };
       let gamesPlayed = 0;
       if (bracket) {
         for (const region of ['east','west','south','midwest']) {
@@ -1393,15 +1393,17 @@ app.get('/api/teams', async (req, res) => {
             }
           }
         }
-        // Add First Four game if applicable
+        // Add 1 extra game for First Four teams
+        let playedFirstFour = false;
         for (const ff of (bracket._firstFour || [])) {
           const schoolNorm = normSchool(p.school).toLowerCase();
           const t1 = (ff.t1?.name||'').toLowerCase();
           const t2 = (ff.t2?.name||'').toLowerCase();
           if ((t1.includes(schoolNorm)||schoolNorm.includes(t1)||t2.includes(schoolNorm)||schoolNorm.includes(t2)) && ff.status === 'STATUS_FINAL') {
-            gamesPlayed = Math.max(gamesPlayed, gamesPlayed + 1);
+            playedFirstFour = true;
           }
         }
+        if (playedFirstFour) gamesPlayed += 1;
       }
       // Fallback: at least 1 game if they have any pts
       if (gamesPlayed === 0 && pts > 0) gamesPlayed = 1;
