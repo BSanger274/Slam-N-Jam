@@ -440,7 +440,7 @@ const HARDCODED_AVERAGES = {
   "Aday Mara": 11.3,
   "Elliot Cadeau": 9.9,
   "Nimari Burnett": 9.0,
-  "Roddy Gale": 7.0,
+  "Roddy Gayle Jr.": 7.0,
   "Will Tschetter": 5.0,
   "Thomas Haugh": 17.1,
   "Thomas Haugh": 17.1,
@@ -608,7 +608,7 @@ const HARDCODED_AVERAGES = {
   "Hank Alvey": 15.2,
   "Malachi Moreno": 8.0,
   "Tai Reon Joseph": 17.8,
-  "Yexel Lendeberg": 8.2,
+  "Yaxel Lendeborg": 8.2,
   "Jordan Scott": 7.5,
   "Jalen Washington": 6.8,
   "Allen Graves": 5.4,
@@ -1144,12 +1144,16 @@ const HARDCODED_OVERRIDES = {
   "Sam Hoiberg":         4,   // Nebraska
   "Victor Valdes":      14,   // Troy (eliminated)
   // ── R64 Thu Mar 19 — Wisconsin 82, High Point 83 ──
+  "Rob Martin":         23,   // High Point
+  "Cam'Ron Fletcher":   14,   // High Point
+  "Terry Anderson":     15,   // High Point
   "Austin Rapp":        12,
   "Braeden Carrington":  5,
   "Nolan Winter":        8,
   "John Blackwell":     22,
   "Nick Boyd":          27,
   // ── R64 Thu Mar 19 — Arkansas 97, Hawaii 78 ──
+  "Dre Bullock":        21,   // Hawaii (eliminated)
   "Trevon Brazile":     19,
   "D.J. Wagner":         7,
   "Billy Richmond III": 10,
@@ -1176,7 +1180,9 @@ const HARDCODED_OVERRIDES = {
   "Carson Cooper":      20,   // Michigan St
   "Coen Carr":          17,   // Michigan St
   "Jaxon Kohler":       12,   // Michigan St
-  "Jeremy Fears Jr.":    7,   // Michigan St
+  "Jeremy Fears":        7,   // Michigan St
+  "Jordan Scott":        6,   // Michigan St
+  "Kur Teng":            3,   // Michigan St
   // ── R64 Thu Mar 19 — Louisville 83, So Florida 79 ──
   "Isaac McKneely":     23,   // Louisville
   "Ryan Conwell":       18,   // Louisville
@@ -1198,18 +1204,27 @@ const HARDCODED_OVERRIDES = {
   "Tyshawn Archie":     13,   // McNeese (eliminated)
   "Javohn Garcia":      10,   // McNeese (eliminated)
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
+  "Robbie Avila":       12,   // Saint Louis
   "Jeremiah Wilkinson":  30,   // Georgia (eliminated)
   "Blue Cain":            6,   // Georgia (eliminated)
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
+  "Morez Johnson":      21,   // Michigan
+  "Aday Mara":          19,   // Michigan
+  "Nimari Burnett":     15,   // Michigan
   "Trey McKenney":      10,   // Michigan
-  "Elliot Cadeau":       9,   // Michigan
+  "Will Tschetter":      6,   // Michigan
+  "Elliot Cadeau":       5,   // Michigan
+  "Yaxel Lendeborg":     9,   // Michigan
+  "Roddy Gayle Jr.":    14,   // Michigan
+  "Cedric Taylor":      19,   // Howard (eliminated)
   // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
   "Kingston Flemings":  18,   // Houston
   "Emanuel Sharp":      16,   // Houston
   "Joseph Tugler":      13,   // Houston
   "Milos Uzan":         12,   // Houston
   "Chris Cenac":         7,   // Houston
-  // Harwell + McCarty omitted — 0/low pts Thu, auto-save handles future games
+  "Chase McCarty":       2,   // Houston
+  // Harwell omitted — 0 pts, active, auto-save handles future — 0/low pts Thu, auto-save handles future games
   // ── R64 Thu Mar 19 — Texas A&M 63, Saint Marys 50 ──
   "Rylan Griffen":       4,   // Texas A&M
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
