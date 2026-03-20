@@ -1207,6 +1207,7 @@ const HARDCODED_OVERRIDES = {
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
   "Robbie Avila":       12,   // Saint Louis
   "Jeremiah Wilkinson":  30,   // Georgia (eliminated)
+  "Marcus Millender":    13,   // Georgia (eliminated)
   "Blue Cain":            6,   // Georgia (eliminated)
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
   "Morez Johnson":      21,   // Michigan
@@ -1239,6 +1240,7 @@ const HARDCODED_OVERRIDES = {
   // ── R64 Thu Mar 19 — Texas 79, BYU 71 ──
   "AJ Dybantsa":        35,   // BYU (eliminated)
   "Robert Wright III":  14,   // BYU (eliminated)
+  "Kennard Davis":        9,   // BYU (eliminated)
   // ── Texas (won FF + R64, plays R32 Sat) ──
   "Dailyn Swain":       27,   // 13 FF + 14 R64
   "Tramon Mark":        36,   // 17 FF + 19 R64
