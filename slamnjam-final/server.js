@@ -1460,7 +1460,8 @@ app.get('/api/teams', async (req, res) => {
       total += pts;
       const jersey = fuzzyLookup(jerseys) || null;
       const active = eliminatedSchools.has(normSchool(p.school)) ? false : (p.active !== false);
-      return { ...p, pts, seasonAvg: avg, trend, jersey, active };
+      const isLive = p.active !== false && (minutesCache[p.name] > 0 || Object.entries(minutesCache).some(([k,v]) => v > 0 && normalizeName(k) === normP));
+      return { ...p, pts, seasonAvg: avg, trend, jersey, active, isLive };
     });
     return { ...team, players, totalPts: total };
   });
