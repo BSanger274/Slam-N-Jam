@@ -305,7 +305,14 @@ async function fetchLiveScores() {
     }));
     // Persist auto-saved scores
     writeJSON(OVERRIDE_F, savedOverrides);
-    // Update minutesCache with latest data
+    // Update minutesCache — only keep players from currently LIVE games
+    // Clear entries for players whose games have ended (prevents stale minutes causing false flames)
+    const livePlayerNames = new Set(Object.keys(freshMinutes));
+    for (const name of Object.keys(minutesCache)) {
+      if (!livePlayerNames.has(name)) {
+        delete minutesCache[name];
+      }
+    }
     Object.assign(minutesCache, freshMinutes);
 
     console.log(`[Scores] ${Object.keys(scores).length} players, ${allEvents.length} events, ${liveHalf.size} schools in 1st half`);
