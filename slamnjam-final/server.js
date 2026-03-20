@@ -1026,12 +1026,12 @@ function buildBlankBracket() {
     ],
     east: {
       r64: [
-        { id:'e1', date:'Thu Mar 19', time:'2:50 PM ET',  location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', t1:team(1,'Duke'),        t2:team(16,'Siena')         },
+        { id:'e1', date:'Thu Mar 19', time:'2:50 PM ET',  location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', status:'STATUS_FINAL', t1:{seed:1,name:'Duke',score:71,won:true}, t2:{seed:16,name:'Siena',score:65,won:false} },
         { id:'e2', date:'Thu Mar 19', time:'12:15 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'CBS', status:'STATUS_FINAL', t1:{seed:8,name:'Ohio State',score:64,won:false}, t2:{seed:9,name:'TCU',score:66,won:true} },
         { id:'e3', date:'Fri Mar 20', time:'7:10 PM ET',  location:'Viejas Arena, San Diego, CA',                tv:'CBS', t1:team(5,"St. John's"), t2:team(12,'Northern Iowa') },
         { id:'e4', date:'Fri Mar 20', time:'9:45 PM ET',  location:'Viejas Arena, San Diego, CA',                tv:'CBS', t1:team(4,'Kansas'),     t2:team(13,'CA Baptist')    },
-        { id:'e5', date:'Thu Mar 19', time:'1:30 PM ET',  location:'KeyBank Center, Buffalo, NY',                tv:'TNT', t1:team(6,'Louisville'), t2:team(11,'South Florida') },
-        { id:'e6', date:'Thu Mar 19', time:'4:05 PM ET',  location:'KeyBank Center, Buffalo, NY',                tv:'TNT', t1:team(3,'Michigan St'),t2:team(14,'N. Dakota St')  },
+        { id:'e5', date:'Thu Mar 19', time:'1:30 PM ET',  location:'KeyBank Center, Buffalo, NY',                tv:'TNT', status:'STATUS_FINAL', t1:{seed:6,name:'Louisville',score:83,won:true}, t2:{seed:11,name:'South Florida',score:79,won:false} },
+        { id:'e6', date:'Thu Mar 19', time:'4:05 PM ET',  location:'KeyBank Center, Buffalo, NY',                tv:'TNT', status:'STATUS_FINAL', t1:{seed:3,name:'Michigan St',score:92,won:true}, t2:{seed:14,name:'N. Dakota St',score:67,won:false} },
         { id:'e7', date:'Fri Mar 20', time:'7:25 PM ET',  location:'Wells Fargo Center, Philadelphia, PA',       tv:'TBS', t1:team(7,'UCLA'),       t2:team(10,'UCF')           },
         { id:'e8', date:'Fri Mar 20', time:'10:00 PM ET', location:'Wells Fargo Center, Philadelphia, PA',       tv:'TBS', t1:team(2,'UConn'),      t2:team(15,'Furman')        }
       ],
@@ -1058,11 +1058,11 @@ function buildBlankBracket() {
       r64: [
         { id:'s1', date:'Fri Mar 20', time:'9:25 PM ET',  location:'Amalie Arena, Tampa, FL',                    tv:'TNT',   t1:team(1,'Florida'),     t2:team(16,'Prairie View A&M') },
         { id:'s2', date:'Fri Mar 20', time:'6:50 PM ET',  location:'Amalie Arena, Tampa, FL',                    tv:'TNT',   t1:team(8,'Clemson'),     t2:team(9,'Iowa')           },
-        { id:'s3', date:'Thu Mar 19', time:'9:20 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1:team(5,'Vanderbilt'),  t2:team(12,'McNeese')       },
+        { id:'s3', date:'Thu Mar 19', time:'9:20 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', status:'STATUS_FINAL', t1:{seed:5,name:'Vanderbilt',score:78,won:true}, t2:{seed:12,name:'McNeese',score:68,won:false} },
         { id:'s4', date:'Thu Mar 19', time:'6:45 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', status:'STATUS_FINAL', t1:{seed:4,name:'Nebraska',score:76,won:true}, t2:{seed:13,name:'Troy',score:47,won:false} },
-        { id:'s5', date:'Thu Mar 19', time:'12:10 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'TNT',   t1:team(6,'N. Carolina'), t2:team(11,'VCU')           },
+        { id:'s5', date:'Thu Mar 19', time:'12:10 PM ET', location:'Bon Secours Wellness Arena, Greenville, SC', tv:'TNT',   status:'STATUS_FINAL', t1:{seed:6,name:'N. Carolina',score:78,won:false}, t2:{seed:11,name:'VCU',score:82,won:true} },
         { id:'s6', date:'Thu Mar 19', time:'2:45 PM ET',  location:'Bon Secours Wellness Arena, Greenville, SC', tv:'TNT',   t1:team(3,'Illinois'),    t2:team(14,'Penn')          },
-        { id:'s7', date:'Thu Mar 19', time:'7:35 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1:team(7,"Saint Mary's"),t2:team(10,'Texas A&M')     },
+        { id:'s7', date:'Thu Mar 19', time:'7:35 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', status:'STATUS_FINAL', t1:{seed:7,name:"Saint Mary's",score:50,won:false}, t2:{seed:10,name:'Texas A&M',score:63,won:true} },
         { id:'s8', date:'Thu Mar 19', time:'10:10 PM ET', location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', t1:team(2,'Houston'),     t2:team(15,'Idaho')         }
       ],
       r32:  [{ id:'s9',t1:tbd(),t2:tbd() },{ id:'s10',t1:tbd(),t2:tbd() },{ id:'s11',t1:tbd(),t2:tbd() },{ id:'s12',t1:tbd(),t2:tbd() }],
@@ -1071,7 +1071,7 @@ function buildBlankBracket() {
     },
     midwest: {
       r64: [
-        { id:'m1', date:'Thu Mar 19', time:'7:10 PM ET',  location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1:team(1,'Michigan'),   t2:team(16,'Howard') },
+        { id:'m1', date:'Thu Mar 19', time:'7:10 PM ET',  location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   status:'STATUS_FINAL', t1:{seed:1,name:'Michigan',score:101,won:true}, t2:{seed:16,name:'Howard',score:80,won:false} },
         { id:'m2', date:'Thu Mar 19', time:'9:45 PM ET',  location:'KeyBank Center, Buffalo, NY',          tv:'CBS',   t1:team(8,'Georgia'),    t2:team(9,'Saint Louis')      },
         { id:'m3', date:'Fri Mar 20', time:'12:40 PM ET', location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1:team(5,'Texas Tech'), t2:team(12,'Akron')           },
         { id:'m4', date:'Fri Mar 20', time:'3:15 PM ET',  location:'Amalie Arena, Tampa, FL',              tv:'truTV', t1:team(4,'Alabama'),    t2:team(13,'Hofstra')         },
