@@ -87,7 +87,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .rnk.r1{color:var(--gold)}.rnk.r2{color:#bbb}.rnk.r3{color:#cd7f32}
 .tn{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;cursor:pointer;transition:color .2s}
 .tn:hover{color:var(--orange)}
-.pts{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:32px!important;color:var(--orange)}
+.pts{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:30px!important;color:var(--orange)}
 .chip{display:inline-flex;align-items:center;background:rgba(0,230,118,.1);color:var(--green);padding:2px 9px;border-radius:10px;font-size:13px;font-weight:700}
 .chip.out{background:rgba(255,61,90,.1);color:var(--red)}
 
@@ -2671,35 +2671,42 @@ function buildTickerItem(m, type) {
   if (type === 'live') {
     const t1w = m.t1?.score > m.t2?.score;
     const t2w = m.t2?.score > m.t1?.score;
+    const t1seed = m.t1?.seed ? `(${m.t1.seed}) ` : '';
+    const t2seed = m.t2?.seed ? `(${m.t2.seed}) ` : '';
     return `<div class="tick-item"><div class="tick-live">
       <span class="live-badge">● LIVE</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--orange)':'#fff'}">${m.t1?.name||'TBD'}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--orange)':'#fff'}">${t1seed}${m.t1?.name||'TBD'}</span>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:15px">${m.t1?.score??''}</span>
       <span style="color:rgba(255,255,255,.25);font-size:11px">–</span>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:15px">${m.t2?.score??''}</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--orange)':'#fff'}">${m.t2?.name||'TBD'}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--orange)':'#fff'}">${t2seed}${m.t2?.name||'TBD'}</span>
       ${m.tv?`<span style="font-size:10px;color:var(--muted)">${m.tv}</span>`:''}
     </div></div>${sep}`;
   }
   if (type === 'final') {
     const t1w = m.t1?.won; const t2w = m.t2?.won;
+    const t1seed = m.t1?.seed ? `(${m.t1.seed}) ` : '';
+    const t2seed = m.t2?.seed ? `(${m.t2.seed}) ` : '';
     return `<div class="tick-item"><div class="tick-upcoming">
       <span style="font-size:10px;color:var(--orange);letter-spacing:1px;margin-right:4px">FINAL</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--green)':'var(--muted)'}">${m.t1?.name||'TBD'}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t1w?'var(--green)':'var(--muted)'}">${t1seed}${m.t1?.name||'TBD'}</span>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:15px;margin:0 2px;color:${t1w?'var(--green)':'var(--muted)'}">${m.t1?.score??''}</span>
       <span style="color:rgba(255,255,255,.25)">–</span>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:15px;margin:0 2px;color:${t2w?'var(--green)':'var(--muted)'}">${m.t2?.score??''}</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--green)':'var(--muted)'}">${m.t2?.name||'TBD'}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${t2w?'var(--green)':'var(--muted)'}">${t2seed}${m.t2?.name||'TBD'}</span>
       <span style="font-size:10px;color:var(--muted);margin-left:4px">${m.tv||''}</span>
     </div></div>${sep}`;
   }
+  // upcoming
+  const t1seed = m.t1?.seed ? `(${m.t1.seed}) ` : '';
+  const t2seed = m.t2?.seed ? `(${m.t2.seed}) ` : '';
   const d = (m.date||'').replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*/,'');
   const t = (m.time||'').replace('ET','').trim();
   const dt = [d, t].filter(Boolean).join(' · ');
   return `<div class="tick-item"><div class="tick-upcoming">
-    ${dt?`<span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gold);white-space:nowrap;margin-right:8px">${dt} ET</span>`:''}
-    <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:#fff">${m.t1?.name||'TBD'} vs ${m.t2?.name||'TBD'}</span>
-    ${m.tv?`<span style="font-size:12px;color:var(--muted);margin-left:6px">${m.tv}</span>`:''}
+    ${dt?`<span style="font-family:'Bebas Neue',sans-serif;font-size:12px;color:var(--gold);letter-spacing:.5px;white-space:nowrap;margin-right:8px">${dt} ET</span>`:''}
+    <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:#fff">${t1seed}${m.t1?.name||'TBD'} vs ${t2seed}${m.t2?.name||'TBD'}</span>
+    ${m.tv?`<span style="font-size:11px;color:var(--muted);margin-left:6px">${m.tv}</span>`:''}
   </div></div>${sep}`;
 }
 
@@ -2736,21 +2743,20 @@ function refreshTicker() {
   }
 
   const MONTH_ORDER = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
-  // Returns a real JS timestamp. Games with no time get Infinity so they sort last.
+  // Returns a JS timestamp. Games with no date sort last (Infinity).
   function matchupTimestamp(m) {
     const dp = (m.date||'').split(' ');
     const mo = MONTH_ORDER[dp[1]]||0, dy = parseInt(dp[2])||0;
-    if (!mo && !dy) return Infinity; // no date → push to end
+    if (!mo || !dy) return Infinity;
     const tp = (m.time||'').replace(' ET','').trim().split(' ');
     const hm = (tp[0]||'0:0').split(':');
     let h = parseInt(hm[0])||0; const mn = parseInt(hm[1])||0;
     if (tp[1]==='PM'&&h!==12) h+=12; if (tp[1]==='AM'&&h===12) h=0;
-    const year = new Date().getFullYear();
-    return new Date(year, mo-1, dy, h, mn, 0).getTime();
+    return new Date(new Date().getFullYear(), mo-1, dy, h, mn, 0).getTime();
   }
   allMatchups.sort((a,b) => matchupTimestamp(a) - matchupTimestamp(b));
 
-  // Anything (final or upcoming) older than 24 hours is hidden entirely
+  // Drop anything older than 24 hours (handles completed First Four games too)
   const now = Date.now();
   const now24hAgo = now - 24 * 60 * 60 * 1000;
   const liveItems=[], finalItems=[], upcomingItems=[];
@@ -2759,21 +2765,17 @@ function refreshTicker() {
     const hasScore = m.t1.score!=null||m.t2.score!=null;
     const hasFinal = m.t1.won!=null;
     const ts = matchupTimestamp(m);
-
-    // Skip anything with a timestamp older than 24 hours (handles First Four etc)
     if (ts !== Infinity && ts < now24hAgo) return;
-
     if (hasScore && hasFinal) {
       finalItems.push(buildTickerItem(m,'final'));
     } else if (hasScore) {
       liveItems.push(buildTickerItem(m,'live'));
-    } else if (ts > now) {
-      // Only show upcoming games that haven't started yet
+    } else {
       upcomingItems.push(buildTickerItem(m,'upcoming'));
     }
   });
 
-  // Order: live → recent finals (chronological) → upcoming (chronological)
+  // Order: live → today's finals (chrono) → upcoming (chrono)
   const allItems = [...liveItems, ...finalItems, ...upcomingItems];
   if (!allItems.length) return;
 
@@ -2781,13 +2783,13 @@ function refreshTicker() {
   const html = allItems.join('') + spacer;
   track.innerHTML = html + html;
 
-  // Measure track width — temporarily make it position:static to get real width
-  // then switch back to absolute for animation
-  track.style.position = 'static';
-  track.style.whiteSpace = 'nowrap';
+  // Measure by cloning outside overflow:hidden — position:static inside it returns 0
   requestAnimationFrame(() => {
-    const fullWidth = track.offsetWidth;
-    track.style.position = 'absolute';
+    const clone = track.cloneNode(true);
+    clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;white-space:nowrap;visibility:hidden;display:flex;align-items:center;';
+    document.body.appendChild(clone);
+    const fullWidth = clone.scrollWidth;
+    document.body.removeChild(clone);
     tickerHalfWidth = fullWidth / 2;
     if (tickerPos >= tickerHalfWidth) tickerPos = 0;
   });
