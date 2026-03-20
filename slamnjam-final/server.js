@@ -678,6 +678,7 @@ const HARDCODED_AVERAGES = {
   "Duke Brennan": 8.6,
   "Derek Dixon": 11.2,
   "Rylan Griffen": 10.4,
+  "Rashaun Agee": 14.7,
   "Dre Bullock": 13.5
 };
 
@@ -1226,6 +1227,7 @@ const HARDCODED_OVERRIDES = {
   "Chase McCarty":       2,   // Houston
   // Harwell omitted — 0 pts, active, auto-save handles future — 0/low pts Thu, auto-save handles future games
   // ── R64 Thu Mar 19 — Texas A&M 63, Saint Marys 50 ──
+  "Rashaun Agee":       22,   // Texas A&M
   "Rylan Griffen":       4,   // Texas A&M
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
   "Graham Ike":         19,   // Gonzaga
