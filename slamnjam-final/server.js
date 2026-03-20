@@ -1128,16 +1128,21 @@ const HARDCODED_OVERRIDES = {
   "Devin Royal":        14,
   "Amare Bynum":        12,
   "John Mobley Jr.":    15,
-  "Christoph Tilly":     8,
-  "Bruce Thornton":      0,
+  "Christoph Tilly":    10,
+  "Bruce Thornton":     10,
   "Micah Robinson":     18,
   "Xavier Edmonds":     16,
   "David Punch":        16,
   "Jayden Pierre":       4,
   "Liutauras Lelevicius": 4,
   // ── R64 Thu Mar 19 — Nebraska 76, Troy 47 ──
-  "Thomas Dowd":         4,
-  "Victor Valdes":      14,
+  "Pryce Sandfort":     23,   // Nebraska
+  "Jamarques Lawrence": 13,   // Nebraska
+  "Braden Frager":      13,   // Nebraska
+  "Rienk Mast":         11,   // Nebraska
+  "Thomas Dowd":         4,   // Nebraska
+  "Sam Hoiberg":         4,   // Nebraska
+  "Victor Valdes":      14,   // Troy (eliminated)
   // ── R64 Thu Mar 19 — Wisconsin 82, High Point 83 ──
   "Austin Rapp":        12,
   "Braeden Carrington":  5,
@@ -1173,11 +1178,17 @@ const HARDCODED_OVERRIDES = {
   "Jaxon Kohler":       12,   // Michigan St
   "Jeremy Fears Jr.":    7,   // Michigan St
   // ── R64 Thu Mar 19 — Louisville 83, So Florida 79 ──
-  "Tyler Nickel":       12,
-  "Paulius Murauskas":   4,
-  "Joshua Dent":        18,
-  "Mikey Lewis":         5,
+  "Isaac McKneely":     23,   // Louisville
+  "Ryan Conwell":       18,   // Louisville
+  "Tyler Nickel":       12,   // Louisville
+  "J'Vonne Hadley":     10,   // Louisville
+  "Paulius Murauskas":   4,   // Louisville
+  "Joshua Dent":        18,   // Saint Marys (eliminated)
+  "Mikey Lewis":         5,   // Saint Marys (eliminated)
+  "Izaiyah Nelson":     22,   // So Florida (eliminated)
   "Joseph Pinion":      27,   // So Florida (eliminated)
+  "Wes Enis":            4,   // So Florida (eliminated)
+  "Joseph Omojafo":      6,   // So Florida (eliminated)
   // ── R64 Thu Mar 19 — Vanderbilt 78, McNeese 68 ──
   "Tyler Tanner":       26,   // Vanderbilt
   "Duke Miles":         13,   // Vanderbilt
