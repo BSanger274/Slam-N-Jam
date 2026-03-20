@@ -1050,7 +1050,7 @@ function buildBlankBracket() {
         { id:'w3', date:'Thu Mar 19', time:'1:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:5,name:'Wisconsin',score:82,won:false}, t2:{seed:12,name:'High Point',score:83,won:true} },
         { id:'w4', date:'Thu Mar 19', time:'4:25 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:4,name:'Arkansas',score:97,won:true}, t2:{seed:13,name:"Hawai'i",score:78,won:false} },
         { id:'w5', date:'Thu Mar 19', time:'9:50 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:6,name:'BYU',score:71,won:false}, t2:{seed:11,name:'Texas',score:79,won:true} },
-        { id:'w6', date:'Thu Mar 19', time:'7:15 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', t1:team(3,'Gonzaga'),   t2:team(14,'Kennesaw State') },
+        { id:'w6', date:'Thu Mar 19', time:'7:15 PM ET', location:'Moda Center, Portland, OR',     tv:'TBS', status:'STATUS_FINAL', t1:{seed:3,name:'Gonzaga',score:73,won:true}, t2:{seed:14,name:'Kennesaw State',score:64,won:false} },
         { id:'w7', date:'Fri Mar 20', time:'6:50 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(7,'Miami FL'),  t2:team(10,'Missouri')       },
         { id:'w8', date:'Fri Mar 20', time:'9:25 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', t1:team(2,'Purdue'),    t2:team(15,'Queens')         }
       ],
@@ -1110,18 +1110,67 @@ function buildBlankBracket() {
 // Their First Four pts are a BASE that accumulates with future live game pts
 // ALL other completed game scores go to overrides.json via auto-save
 const HARDCODED_OVERRIDES = {
-  // ── Prairie View A&M (won First Four, plays R64 Fri) ──
-  "Dontae Horne":       25,   // FF only so far
-  "Tai Reon Joseph":     5,   // FF only so far
-  // ── Miami OH (won First Four, plays R64 Fri) ──
-  "Eian Elmer":         23,   // FF only so far
-  "Brant Byers":        19,   // FF only so far
-  "Peter Suder":         7,   // FF only so far
-  // ── Texas (won First Four + R64 vs BYU, plays R32) ──
+  // ── First Four eliminated ──
+  "Nasir Whitlock":      5,   // Lehigh
+  "Hank Alvey":         23,   // Lehigh
+  "Jaron Pierre Jr.":   18,   // SMU
+  "Boopie Miller":      15,   // SMU
+  "Corey Washington":   13,   // SMU
+  "Samet Yigitoglu":     8,   // SMU
+  "B.J. Edwards":        0,   // SMU
+  // ── R64 Thu Mar 19 — TCU 66, Ohio St 64 ──
+  "Devin Royal":        14,
+  "Amare Bynum":        12,
+  "John Mobley Jr.":    15,
+  "Christoph Tilly":     8,
+  "Bruce Thornton":      0,
+  "Micah Robinson":     18,
+  "Xavier Edmonds":     16,
+  "David Punch":        16,
+  "Jayden Pierre":       4,
+  "Liutauras Lelevicius": 4,
+  // ── R64 Thu Mar 19 — Nebraska 76, Troy 47 ──
+  "Thomas Dowd":         4,
+  "Victor Valdes":      14,
+  // ── R64 Thu Mar 19 — Wisconsin 82, High Point 83 ──
+  "Austin Rapp":        12,
+  "Braeden Carrington":  5,
+  "Nolan Winter":        8,
+  "John Blackwell":     22,
+  "Nick Boyd":          27,
+  // ── R64 Thu Mar 19 — Arkansas 97, Hawaii 78 ──
+  "Trevon Brazile":     19,
+  "D.J. Wagner":         7,
+  "Billy Richmond III": 10,
+  "Malique Ewin":       16,
+  "Darius Acuff":       24,
+  "Meleek Thomas":      21,
+  "Nick Pringle":        0,
+  // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
+  // ── R64 Thu Mar 19 — VCU 82, UNC 78 ──
+  // ── R64 Thu Mar 19 — Michigan St 92, N. Dakota St 67 ──
+  // ── R64 Thu Mar 19 — Louisville 83, So Florida 79 ──
+  "Tyler Nickel":       12,
+  "Paulius Murauskas":   4,
+  "Joshua Dent":        18,
+  "Mikey Lewis":         5,
+  // ── R64 Thu Mar 19 — Vanderbilt 78, McNeese 68 ──
+  // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
+  // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
+  // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
+  // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
+  // ── Texas (won FF + R64, plays R32 Sat) ──
   "Dailyn Swain":       27,   // 13 FF + 14 R64
   "Tramon Mark":        36,   // 17 FF + 19 R64
   "Jordan Pope":        16,   //  5 FF + 11 R64
   "Matas Vokietaitis":  38,   // 15 FF + 23 R64
+  // ── Prairie View A&M (won FF, plays R64 Fri) ──
+  "Dontae Horne":       25,   // FF only
+  "Tai Reon Joseph":     5,   // FF only
+  // ── Miami OH (won FF, plays R64 Fri) ──
+  "Eian Elmer":         23,   // FF only
+  "Brant Byers":        19,   // FF only
+  "Peter Suder":         7,   // FF only
 };
 
 async function getMergedScores() {
