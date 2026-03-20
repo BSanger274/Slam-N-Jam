@@ -1117,8 +1117,7 @@ const HARDCODED_OVERRIDES = {
   "Boopie Miller":      15,   // SMU
   "Corey Washington":   13,   // SMU
   "Samet Yigitoglu":     8,   // SMU
-  "B.J. Edwards":        0,   // SMU
-  // ── R64 Thu Mar 19 — Duke 71, Siena 65 ──
+    // ── R64 Thu Mar 19 — Duke 71, Siena 65 ──
   "Cameron Boozer":    22,   // Duke
   "Cayden Boozer":     19,   // Duke
   "Isaiah Evans":      16,   // Duke
@@ -1152,8 +1151,7 @@ const HARDCODED_OVERRIDES = {
   "Malique Ewin":       16,
   "Darius Acuff":       24,
   "Meleek Thomas":      21,
-  "Nick Pringle":        0,
-  // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
+    // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
   "David Mirkovic":     29,   // Illinois
   "Keaton Wagler":      18,   // Illinois
   "Kylan Boswell":      13,   // Illinois
@@ -1201,6 +1199,8 @@ const HARDCODED_OVERRIDES = {
   "Milos Uzan":         12,   // Houston
   "Chris Cenac":         7,   // Houston
   // Harwell + McCarty omitted — 0/low pts Thu, auto-save handles future games
+  // ── R64 Thu Mar 19 — Texas A&M 63, Saint Marys 50 ──
+  "Rylan Griffen":       4,   // Texas A&M
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
   "Graham Ike":         19,   // Gonzaga
   "Davis Fogle":        17,   // Gonzaga
@@ -1208,6 +1208,9 @@ const HARDCODED_OVERRIDES = {
   "Mario Saint-Supery":  7,   // Gonzaga
   "Adam Miller":         2,   // Gonzaga
   // Cottle (Kennesaw, eliminated) omitted — DNP
+  // ── R64 Thu Mar 19 — Texas 79, BYU 71 ──
+  "AJ Dybantsa":        35,   // BYU (eliminated)
+  "Robert Wright III":  14,   // BYU (eliminated)
   // ── Texas (won FF + R64, plays R32 Sat) ──
   "Dailyn Swain":       27,   // 13 FF + 14 R64
   "Tramon Mark":        36,   // 17 FF + 19 R64
