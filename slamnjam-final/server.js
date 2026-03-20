@@ -1148,11 +1148,6 @@ const HARDCODED_OVERRIDES = {
   "Nick Pringle":        0,
   // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
   "TJ Power":            6,   // Penn (eliminated)
-  "Adam Miller":         0,   // Illinois (bench, 0 pts vs Penn)
-  "Sam Lewis":           0,   // Illinois (bench, 0 pts vs Penn)
-  // ── R64 Thu Mar 19 — BYU 71, Texas 79 ──
-  "AJ Dybantsa":        35,   // BYU (eliminated)
-  "Robert Wright III":  14,   // BYU (eliminated)
   // ── R64 Thu Mar 19 — VCU 82, UNC 78 ──
   "Terrence Hill Jr.":  34,   // VCU
   "Lazar Djokovic":     15,   // VCU
@@ -1173,8 +1168,13 @@ const HARDCODED_OVERRIDES = {
   "Mikey Lewis":         5,
   "Joseph Pinion":      27,   // So Florida (eliminated)
   // ── R64 Thu Mar 19 — Vanderbilt 78, McNeese 68 ──
-  // (no drafted Vanderbilt or McNeese players in this game)
-  // note: Donovan Dent=UCLA, Chance Mallory=Virginia — both play Fri
+  "Tyler Tanner":       26,   // Vanderbilt
+  "Duke Miles":         13,   // Vanderbilt
+  "Devin McGlockton":   12,   // Vanderbilt
+  "AK Okereke":          7,   // Vanderbilt
+  "Larry Johnson":      15,   // McNeese (eliminated)
+  "Tyshawn Archie":     13,   // McNeese (eliminated)
+  "Javohn Garcia":      10,   // McNeese (eliminated)
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
   "Jeremiah Wilkinson":  30,   // Georgia (eliminated)
   "Blue Cain":            6,   // Georgia (eliminated)
@@ -1182,13 +1182,16 @@ const HARDCODED_OVERRIDES = {
   "Trey McKenney":      10,   // Michigan
   "Elliot Cadeau":       9,   // Michigan
   // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
-  // (no drafted players from this game)
+  "Kingston Flemings":  18,   // Houston
+  "Emanuel Sharp":      16,   // Houston
+  "Joseph Tugler":      13,   // Houston
+  "Milos Uzan":         12,   // Houston
+  "Chris Cenac":         7,   // Houston
+  // Harwell + McCarty omitted — 0/low pts Thu, auto-save handles future games
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
   "Graham Ike":         19,   // Gonzaga
   "Davis Fogle":        17,   // Gonzaga
   "Braden Huff":         0,   // Gonzaga (DNP — knee injury)
-  // ── R64 Thu Mar 19 — Texas A&M 63, Saint Mary's 50 ──
-  "Rylan Griffen":      10,   // Texas A&M (est.)
   // ── Texas (won FF + R64, plays R32 Sat) ──
   "Dailyn Swain":       27,   // 13 FF + 14 R64
   "Tramon Mark":        36,   // 17 FF + 19 R64
