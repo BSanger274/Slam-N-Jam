@@ -252,48 +252,8 @@ async function fetchLiveScores() {
         }
       }
     }
-    // Auto-persist scores for completed games before ESPN drops them
-    // This runs on every poll — saves STATUS_FINAL player scores to overrides.json
-    // Skips players already in HARDCODED_OVERRIDES to prevent doubling
-    const savedOverrides = readJSON(OVERRIDE_F, {});
-    let overridesChanged = false;
-    for (const event of allEvents) {
-      if (event.status?.type?.name !== 'STATUS_FINAL') continue;
-      for (const comp of (event.competitions || [])) {
-        for (const team of (comp.competitors || [])) {
-          // Try statistics first
-          for (const statGroup of (team.statistics || [])) {
-            if (statGroup.name === 'scoring' || statGroup.abbreviation === 'PTS') {
-              for (const athlete of (statGroup.athletes || [])) {
-                const name = athlete.athlete?.displayName;
-                const pts  = parseFloat(athlete.value) || 0;
-                if (name && pts > 0 && HARDCODED_OVERRIDES[name] === undefined && savedOverrides[name] === undefined) {
-                  savedOverrides[name] = pts;
-                  overridesChanged = true;
-                }
-              }
-            }
-          }
-          // Fall back to leaders
-          for (const leader of (team.leaders || [])) {
-            if (leader.name === 'points') {
-              for (const l of (leader.leaders || [])) {
-                const name = l.athlete?.displayName;
-                const pts  = parseFloat(l.value) || 0;
-                if (name && pts > 0 && HARDCODED_OVERRIDES[name] === undefined && savedOverrides[name] === undefined) {
-                  savedOverrides[name] = pts;
-                  overridesChanged = true;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    if (overridesChanged) writeJSON(OVERRIDE_F, savedOverrides);
-
     // Fetch full box scores for live AND recently completed games
-    // Gets ALL player stats, not just top scorers from the leaders feed
+    const savedOverrides = readJSON(OVERRIDE_F, {});
     const activeEvents = allEvents.filter(ev => {
       const s = ev.status?.type?.name || '';
       return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL';
@@ -332,9 +292,8 @@ async function fetchLiveScores() {
                 : parseFloat(minRaw) || 0;
               if (name) {
                 if (pts > 0) scores[name] = pts;
-                // For completed games: persist to overrides.json so scores survive ESPN dropping the game
-                // Skip if already in HARDCODED_OVERRIDES to prevent doubling
-                if (isFinal && pts > 0 && HARDCODED_OVERRIDES[name] === undefined && savedOverrides[name] === undefined) {
+                // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
+                if (isFinal && pts > 0 && HARDCODED_OVERRIDES[name] === undefined) {
                   savedOverrides[name] = pts;
                 }
                 freshMinutes[name] = playerMins > 0 ? playerMins : (isFinal ? 0 : minsElapsed);
@@ -344,7 +303,7 @@ async function fetchLiveScores() {
         }
       } catch(e) {}
     }));
-    // Persist captured final game scores to overrides.json
+    // Persist auto-saved scores
     writeJSON(OVERRIDE_F, savedOverrides);
     // Update minutesCache with latest data
     Object.assign(minutesCache, freshMinutes);
@@ -1164,48 +1123,17 @@ function buildBlankBracket() {
 // These survive Render redeploys (disk wipes on restart).
 // Add any completed-game scores here that must persist.
 // Admin UI overrides in overrides.json take highest priority.
+// HARDCODED_OVERRIDES: ONLY active First Four players who still have games to play
+// Their First Four pts are a BASE that accumulates with future live game pts
+// ALL other completed game scores go to overrides.json via auto-save
 const HARDCODED_OVERRIDES = {
-  // First Four — Wed Mar 18
-  // R64 Thu Mar 19 — Ohio State vs TCU
-  // R64 Thu Mar 19 — Arkansas vs Hawaii
-  "Trevon Brazile":            19,
-  "D.J. Wagner":                7,
-  "Billy Richmond III":        10,
-  "Malique Ewin":              16,
-  "Darius Acuff":              24,
-  "Meleek Thomas":             21,
-  "Nick Pringle":               0,
-  // R64 Thu Mar 19 — Nebraska vs Troy
-  // R64 Thu Mar 19 — Wisconsin vs High Point (upset!)
-  "Austin Rapp":               12,
-  "Braeden Carrington":         5,
-  "Nolan Winter":               8,
-  "John Blackwell":            22,
-  "Nick Boyd":                 27,
-  "Thomas Dowd":               4,
-  "Victor Valdes":             14,
-  "Devin Royal":               14,
-  "Amare Bynum":               12,
-  "John Mobley Jr.":           15,
-  "Christoph Tilly":            8,
-  "Micah Robinson":            18,
-  "Xavier Edmonds":            16,
-  "Liutauras Lelevicius":       4,
-  "David Punch":               16,
-  "Jayden Pierre":              4,
-  "Dontae Horne":       25,
-  "Tai Reon Joseph":      5,
-  "Nasir Whitlock":      5,
-  "Hank Alvey":         23,
-  "Jaron Pierre Jr.":   18,
-  "Boopie Miller":      15,
-  "Corey Washington":   13,
-  "Samet Yigitoglu":     8,
-  "B.J. Edwards":        0,
-  "Eian Elmer":         23,
-  "Brant Byers":        19,
-  "Peter Suder":         7,
-  "Dailyn Swain":       13,
+  // First Four survivors still playing — base pts that accumulate going forward
+  "Dontae Horne":       25,   // Prairie View A&M — plays R64
+  "Tai Reon Joseph":     5,   // Prairie View A&M — plays R64
+  "Eian Elmer":         23,   // Miami OH — plays R64
+  "Brant Byers":        19,   // Miami OH — plays R64
+  "Peter Suder":         7,   // Miami OH — plays R64
+  "Dailyn Swain":       13,   // Texas — plays R64
 };
 
 async function getMergedScores() {
