@@ -292,13 +292,14 @@ async function fetchLiveScores() {
     }
     if (overridesChanged) writeJSON(OVERRIDE_F, savedOverrides);
 
-    // Fetch full box scores for live games only
+    // Fetch full box scores for live AND recently completed games
+    // Gets ALL player stats, not just top scorers from the leaders feed
     const activeEvents = allEvents.filter(ev => {
       const s = ev.status?.type?.name || '';
-      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME';
+      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL';
     });
     const freshMinutes = {}; // player -> minutes played this game
-    await Promise.all(activeEvents.slice(0, 10).map(async ev => {
+    await Promise.all(activeEvents.slice(0, 15).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
       const isFinal  = evStatus === 'STATUS_FINAL';
       try {
@@ -331,14 +332,20 @@ async function fetchLiveScores() {
                 : parseFloat(minRaw) || 0;
               if (name) {
                 if (pts > 0) scores[name] = pts;
-                // Use player's actual minutes if available, else use game clock
-                freshMinutes[name] = playerMins > 0 ? playerMins : minsElapsed;
+                // For completed games: persist to overrides.json so scores survive ESPN dropping the game
+                // Skip if already in HARDCODED_OVERRIDES to prevent doubling
+                if (isFinal && pts > 0 && HARDCODED_OVERRIDES[name] === undefined && savedOverrides[name] === undefined) {
+                  savedOverrides[name] = pts;
+                }
+                freshMinutes[name] = playerMins > 0 ? playerMins : (isFinal ? 0 : minsElapsed);
               }
             }
           }
         }
       } catch(e) {}
     }));
+    // Persist captured final game scores to overrides.json
+    writeJSON(OVERRIDE_F, savedOverrides);
     // Update minutesCache with latest data
     Object.assign(minutesCache, freshMinutes);
 
@@ -651,7 +658,7 @@ const HARDCODED_AVERAGES = {
   "Tyshawn Archie": 14.3,
   "Shammah Scott": 9.8,
   "Travis Harper II": 17.3,
-  "Tyler Tanner": 19.1,
+  "Tyler Tanner": 10.8,
   "Carson Cooper": 11.2,
   "Sam Lewis": 9.6,
   "Dontae Horne": 20.2,
@@ -689,7 +696,7 @@ const HARDCODED_AVERAGES = {
   "Tai Reon Joseph": 12.1,
   "Elijah Mahi": 12.6,
   "Gavin Doty": 17.9,
-  "Nick Boyd": 20.6,
+  "Nick Boyd": 10.8,
   "Melvin Council Jr.": 13.2,
   "Terrence Hill": 14.6,
   "B.J. Edwards": 12.4,
@@ -1459,25 +1466,62 @@ app.get('/api/teams', async (req, res) => {
       const avg      = fuzzyLookup(avgs) ?? null;
       let trend = null;
 
-      // ── OPTION 1 (ACTIVE): Pace-adjusted trend — mimics DraftKings style ──
-      // Uses player's actual minutes played to project final score
-      // No animation until 8+ minutes played to avoid noise at game start
+      // ── OPTION 1 (ACTIVE): Pace-adjusted trend ──
       const GAME_MINUTES = 40;
       const minsPlayed = fuzzyLookup(minutesCache) || 0;
 
-      if (avg && avg > 0 && pts > 0 && minsPlayed >= 8) {
-        // Project what player will score by end of game at current pace
-        const projectedFinal = pts / (minsPlayed / GAME_MINUTES);
-        const ratio = projectedFinal / avg;
-        if      (ratio >= 1.5) trend = 'hot3';
-        else if (ratio >= 1.3) trend = 'hot2';
-        else if (ratio >= 1.2) trend = 'hot1';
-        else if (ratio <= 0.5) trend = 'cold3';
-        else if (ratio <= 0.7) trend = 'cold2';
-        else if (ratio <= 0.8) trend = 'cold1';
-      } else if (avg && avg > 0 && pts > 0 && minsPlayed === 0) {
-        // Game is over (no live minutes tracked) — compare final score to avg directly
-        const ratio = pts / avg;
+      // Today's live pts only (not cumulative) — for live/just-finished game comparison
+      const livePtsOnly = (scores[p.name] !== undefined ? scores[p.name]
+        : Object.entries(scores).find(([k]) => normalizeName(k) === normP)?.[1]) || 0;
+
+      // Games played based on how deep in the bracket the player's school has gone
+      // First Four teams get 1 game before R64, everyone else starts at R64
+      const firstFourSchools = new Set(['Prairie View A&M','Miami OH','Texas','Howard']);
+      const roundGames = { firstfour:0, r64:1, r32:2, r16:3, r8:4, r4:5, rfinal:6 };
+      let gamesPlayed = 0;
+      if (bracket) {
+        for (const region of ['east','west','south','midwest']) {
+          for (const [round, gamesInRound] of Object.entries(roundGames)) {
+            const matchups = bracket[region]?.[round] || [];
+            for (const m of matchups) {
+              const schoolNorm = normSchool(p.school).toLowerCase();
+              const t1 = (m.t1?.name||'').toLowerCase();
+              const t2 = (m.t2?.name||'').toLowerCase();
+              if ((t1.includes(schoolNorm)||schoolNorm.includes(t1)||t2.includes(schoolNorm)||schoolNorm.includes(t2)) && m.status === 'STATUS_FINAL') {
+                gamesPlayed = Math.max(gamesPlayed, gamesInRound);
+              }
+            }
+          }
+        }
+        // Add First Four game if applicable
+        for (const ff of (bracket._firstFour || [])) {
+          const schoolNorm = normSchool(p.school).toLowerCase();
+          const t1 = (ff.t1?.name||'').toLowerCase();
+          const t2 = (ff.t2?.name||'').toLowerCase();
+          if ((t1.includes(schoolNorm)||schoolNorm.includes(t1)||t2.includes(schoolNorm)||schoolNorm.includes(t2)) && ff.status === 'STATUS_FINAL') {
+            gamesPlayed = Math.max(gamesPlayed, gamesPlayed + 1);
+          }
+        }
+      }
+      // Fallback: at least 1 game if they have any pts
+      if (gamesPlayed === 0 && pts > 0) gamesPlayed = 1;
+
+      if (avg && avg > 0 && minsPlayed >= 8) {
+        // LIVE right now: project today's pts vs single-game avg
+        if (livePtsOnly > 0) {
+          const projectedFinal = livePtsOnly / (minsPlayed / GAME_MINUTES);
+          const ratio = projectedFinal / avg;
+          if      (ratio >= 1.5) trend = 'hot3';
+          else if (ratio >= 1.3) trend = 'hot2';
+          else if (ratio >= 1.2) trend = 'hot1';
+          else if (ratio <= 0.5) trend = 'cold3';
+          else if (ratio <= 0.7) trend = 'cold2';
+          else if (ratio <= 0.8) trend = 'cold1';
+        }
+      } else if (avg && avg > 0 && minsPlayed === 0 && pts > 0) {
+        // Not live: compare cumulative pts vs (avg * gamesPlayed)
+        const expectedTotal = avg * gamesPlayed;
+        const ratio = pts / expectedTotal;
         if      (ratio >= 1.5) trend = 'hot3';
         else if (ratio >= 1.3) trend = 'hot2';
         else if (ratio >= 1.2) trend = 'hot1';
