@@ -629,7 +629,7 @@ const HARDCODED_AVERAGES = {
   "Ethan Roberts": 16.9,
   "Luka Bogavac": 9.8,
   "Ryan Conwell": 18.7,
-  "Tyler Nickels": 13.6,
+  "Tyler Nickel": 13.3,
   "LeJuan Watts": 14.8,
   "Isaac McKneely": 13.4,
   "Jordan Burks": 10.8,
