@@ -605,7 +605,7 @@ const HARDCODED_AVERAGES = {
   "Eric Dailey": 11.6,
   "Amani Lyles": 14.6,
   "Preston Edmead": 15.9,
-  "Hank Alvey": 8.6,
+  "Hank Alvey": 15.2,
   "Malachi Moreno": 8.0,
   "Tai Reon Joseph": 17.8,
   "Yexel Lendeberg": 8.2,
