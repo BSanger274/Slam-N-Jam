@@ -556,7 +556,7 @@ const HARDCODED_AVERAGES = {
   "Joseph Omojafo": 12.6,
   "Duke Miles": 16.5,
   "Wes Enis": 16.8,
-  "Paulius Muraukas": 14.2,
+  "Paulius Murauskas": 14.2,
   "Simeon Cottle": 20.2,
   "Jaylen Petty": 13.6,
   "Cooper Koch": 11.2,
