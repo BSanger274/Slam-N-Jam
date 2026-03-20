@@ -689,7 +689,7 @@ const HARDCODED_AVERAGES = {
   "Tai Reon Joseph": 12.1,
   "Elijah Mahi": 12.6,
   "Gavin Doty": 17.9,
-  "Nick Boyd": 10.8,
+  "Nick Boyd": 20.6,
   "Melvin Council Jr.": 13.2,
   "Terrence Hill": 14.6,
   "B.J. Edwards": 12.4,
