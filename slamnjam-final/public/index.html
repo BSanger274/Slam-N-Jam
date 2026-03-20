@@ -87,7 +87,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .rnk.r1{color:var(--gold)}.rnk.r2{color:#bbb}.rnk.r3{color:#cd7f32}
 .tn{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;cursor:pointer;transition:color .2s}
 .tn:hover{color:var(--orange)}
-.pts{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:32px!important;color:var(--orange)}
+.pts{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:30px!important;color:var(--orange)}
 .chip{display:inline-flex;align-items:center;background:rgba(0,230,118,.1);color:var(--green);padding:2px 9px;border-radius:10px;font-size:13px;font-weight:700}
 .chip.out{background:rgba(255,61,90,.1);color:var(--red)}
 
@@ -2736,55 +2736,41 @@ function refreshTicker() {
   }
 
   const MONTH_ORDER = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
-  // Returns a real JS timestamp so we can compare against Date.now()
-  function matchupTimestamp(m) {
+  function sortKey(m) {
     const dp = (m.date||'').split(' ');
     const mo = MONTH_ORDER[dp[1]]||0, dy = parseInt(dp[2])||0;
     const tp = (m.time||'').replace(' ET','').trim().split(' ');
     const hm = (tp[0]||'0:0').split(':');
     let h = parseInt(hm[0])||0; const mn = parseInt(hm[1])||0;
     if (tp[1]==='PM'&&h!==12) h+=12; if (tp[1]==='AM'&&h===12) h=0;
-    const year = new Date().getFullYear();
-    return new Date(year, mo-1, dy, h, mn, 0).getTime();
+    return mo*1000000+dy*10000+h*100+mn;
   }
-  allMatchups.sort((a,b) => matchupTimestamp(a) - matchupTimestamp(b));
+  allMatchups.sort((a,b)=>sortKey(a)-sortKey(b));
 
-  // Finals older than 24 hours drop off automatically
-  const now24hAgo = Date.now() - 24 * 60 * 60 * 1000;
   const liveItems=[], finalItems=[], upcomingItems=[];
   allMatchups.forEach(m => {
     if (!m?.t1||!m?.t2) return;
     const hasScore = m.t1.score!=null||m.t2.score!=null;
     const hasFinal = m.t1.won!=null;
-    const ts = matchupTimestamp(m);
-
-    if (hasScore && hasFinal) {
-      // Only show completed games from the last 24 hours
-      if (ts >= now24hAgo) finalItems.push(buildTickerItem(m,'final'));
-    } else if (hasScore) {
-      liveItems.push(buildTickerItem(m,'live'));
-    } else {
-      // Show all upcoming (not-yet-started) games
-      upcomingItems.push(buildTickerItem(m,'upcoming'));
-    }
+    if (hasScore&&hasFinal) finalItems.push(buildTickerItem(m,'final'));
+    else if (hasScore)      liveItems.push(buildTickerItem(m,'live'));
+    else                    upcomingItems.push(buildTickerItem(m,'upcoming'));
   });
 
-  // Order: live → recent finals → upcoming games
-  const allItems = [...liveItems, ...finalItems, ...upcomingItems];
+  const allItems = [...liveItems,...finalItems,...upcomingItems];
   if (!allItems.length) return;
 
   const spacer = '<span style="display:inline-block;width:80px;flex-shrink:0"></span>';
   const html = allItems.join('') + spacer;
   track.innerHTML = html + html;
 
-  // Measure by cloning outside the overflow:hidden container
-  // (position:static inside overflow:hidden returns 0)
+  // Measure track width — temporarily make it position:static to get real width
+  // then switch back to absolute for animation
+  track.style.position = 'static';
+  track.style.whiteSpace = 'nowrap';
   requestAnimationFrame(() => {
-    const clone = track.cloneNode(true);
-    clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;white-space:nowrap;visibility:hidden;display:flex;align-items:center;';
-    document.body.appendChild(clone);
-    const fullWidth = clone.scrollWidth;
-    document.body.removeChild(clone);
+    const fullWidth = track.offsetWidth;
+    track.style.position = 'absolute';
     tickerHalfWidth = fullWidth / 2;
     if (tickerPos >= tickerHalfWidth) tickerPos = 0;
   });
