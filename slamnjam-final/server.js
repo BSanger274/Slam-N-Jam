@@ -296,7 +296,11 @@ async function fetchLiveScores() {
                 if (isFinal && pts > 0 && HARDCODED_OVERRIDES[name] === undefined) {
                   savedOverrides[name] = pts;
                 }
-                freshMinutes[name] = playerMins > 0 ? playerMins : (isFinal ? 0 : minsElapsed);
+                // Only track minutes for LIVE games — final game players must NOT
+                // appear in freshMinutes or the cache cleanup won't clear their stale minutes
+                if (!isFinal) {
+                  freshMinutes[name] = playerMins > 0 ? playerMins : minsElapsed;
+                }
               }
             }
           }
@@ -1112,7 +1116,7 @@ const HARDCODED_OVERRIDES = {
   "Eian Elmer":         23,   // Miami OH — plays R64
   "Brant Byers":        19,   // Miami OH — plays R64
   "Peter Suder":         7,   // Miami OH — plays R64
-  "Dailyn Swain":       13,   // Texas — plays R64
+  "Dailyn Swain":       27,   // Texas — played First Four + R64, plays R32
 };
 
 async function getMergedScores() {
