@@ -64,6 +64,115 @@ function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
+// ─── GitHub persistence for overrides.json ───────────
+// Survives Render free-tier disk wipes on restart.
+// Requires GITHUB_TOKEN env var with repo scope.
+const GH_TOKEN  = process.env.GITHUB_TOKEN || '';
+const GH_REPO   = 'BSanger274/Slam-N-Jam';
+const GH_PATH   = 'slamnjam-final/data/overrides.json';
+const GH_BRANCH = 'main';
+
+async function ghGet(apiPath) {
+  return new Promise((resolve, reject) => {
+    const opts = {
+      hostname: 'api.github.com',
+      path: apiPath,
+      headers: {
+        'Authorization': `Bearer ${GH_TOKEN}`,
+        'User-Agent':    'slam-n-jam-server',
+        'Accept':        'application/vnd.github+json'
+      }
+    };
+    const req = https.get(opts, res => {
+      let body = '';
+      res.on('data', d => body += d);
+      res.on('end', () => {
+        try { resolve(JSON.parse(body)); }
+        catch { resolve({}); }
+      });
+    });
+    req.on('error', reject);
+  });
+}
+
+async function ghPut(apiPath, payload) {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify(payload);
+    const opts = {
+      hostname: 'api.github.com',
+      path: apiPath,
+      method: 'PUT',
+      headers: {
+        'Authorization':  `Bearer ${GH_TOKEN}`,
+        'User-Agent':     'slam-n-jam-server',
+        'Accept':         'application/vnd.github+json',
+        'Content-Type':   'application/json',
+        'Content-Length': Buffer.byteLength(body)
+      }
+    };
+    const req = https.request(opts, res => {
+      let b = '';
+      res.on('data', d => b += d);
+      res.on('end', () => resolve(b));
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+// Push overrides to GitHub (debounced — max once per 60s to avoid rate limits)
+let ghPushTimer = null;
+let ghPushPending = null;
+function pushOverridesToGitHub(data) {
+  if (!GH_TOKEN) return; // no token configured, skip silently
+  ghPushPending = data;
+  if (ghPushTimer) return; // already scheduled
+  ghPushTimer = setTimeout(async () => {
+    ghPushTimer = null;
+    const toSave = ghPushPending;
+    ghPushPending = null;
+    try {
+      const apiPath = `/repos/${GH_REPO}/contents/${GH_PATH}`;
+      const current = await ghGet(apiPath);
+      const sha     = current?.sha; // needed for update, undefined for create
+      const encoded = Buffer.from(JSON.stringify(toSave, null, 2)).toString('base64');
+      await ghPut(apiPath, {
+        message: `auto: update overrides.json [${new Date().toISOString()}]`,
+        content: encoded,
+        branch:  GH_BRANCH,
+        ...(sha ? { sha } : {})
+      });
+      console.log(`[GitHub] overrides.json pushed (${Object.keys(toSave).length} players)`);
+    } catch(e) {
+      console.warn('[GitHub] push failed:', e.message);
+    }
+  }, 60_000); // debounce 60s
+}
+
+// On startup: if local overrides.json is empty/missing, seed from GitHub
+async function seedOverridesFromGitHub() {
+  if (!GH_TOKEN) return;
+  try {
+    const local = readJSON(OVERRIDE_F, {});
+    if (Object.keys(local).length > 0) {
+      console.log(`[GitHub] local overrides.json has ${Object.keys(local).length} entries — skipping seed`);
+      return;
+    }
+    const apiPath = `/repos/${GH_REPO}/contents/${GH_PATH}`;
+    const res = await ghGet(apiPath);
+    if (res?.content) {
+      const data = JSON.parse(Buffer.from(res.content, 'base64').toString('utf8'));
+      if (Object.keys(data).length > 0) {
+        writeJSON(OVERRIDE_F, data);
+        console.log(`[GitHub] seeded overrides.json with ${Object.keys(data).length} players from GitHub`);
+      }
+    }
+  } catch(e) {
+    console.warn('[GitHub] seed failed:', e.message);
+  }
+}
+
 // ─── Player name normalization ───────────────────────
 // Strips Jr./Sr./II/III/IV suffixes and normalizes punctuation
 // so ESPN names like "John Mobley Jr." match roster "John Mobley Jr."
@@ -259,7 +368,7 @@ async function fetchLiveScores() {
       return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL';
     });
     const freshMinutes = {}; // player -> minutes played this game
-    await Promise.all(activeEvents.slice(0, 15).map(async ev => {
+    await Promise.all(activeEvents.slice(0, 20).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
       const isFinal  = evStatus === 'STATUS_FINAL';
       try {
@@ -309,6 +418,7 @@ async function fetchLiveScores() {
     }));
     // Persist auto-saved scores
     writeJSON(OVERRIDE_F, savedOverrides);
+    pushOverridesToGitHub(savedOverrides);  // persist to GitHub so restarts don't lose scores
     // Update minutesCache — only keep players from currently LIVE games
     // Clear entries for players whose games have ended (prevents stale minutes causing false flames)
     const livePlayerNames = new Set(Object.keys(freshMinutes));
@@ -1850,6 +1960,7 @@ app.listen(PORT, async () => {
   await Promise.all([getLiveBracket(), getSeasonAverages()]);
   await getLiveScores();
   fetchJerseyNumbers().then(j => { jerseyCache = j; }).catch(() => {});
+  await seedOverridesFromGitHub();
   console.log('✅ Ready.\n');
   setInterval(getLiveScores,     SCORE_TTL);
   setInterval(getLiveBracket,    BRACKET_TTL);
