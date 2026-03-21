@@ -1123,7 +1123,7 @@ const HARDCODED_OVERRIDES = {
   "Cayden Boozer":     19,   // Duke
   "Isaiah Evans":      16,   // Duke
   "Nikolas Khamenia":   9,   // Duke
-  "Dame Sarr":          9,   // Duke
+  "Dame Sarr":          5,   // Duke
   "Gavin Doty":        21,   // Siena (eliminated)
   // ── R64 Thu Mar 19 — TCU 66, Ohio St 64 ──
   "Devin Royal":        14,
