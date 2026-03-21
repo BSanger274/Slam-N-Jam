@@ -2731,7 +2731,9 @@ function refreshTicker() {
   if (BRACKET) {
     allMatchups.push(...(BRACKET._firstFour||[]));
     ['east','west','south','midwest'].forEach(r => {
-      if (BRACKET[r]?.r64) allMatchups.push(...BRACKET[r].r64);
+      ['r64','r32','r16','r8'].forEach(round => {
+        if (BRACKET[r]?.[round]) allMatchups.push(...BRACKET[r][round]);
+      });
     });
   }
 
@@ -2772,10 +2774,14 @@ function refreshTicker() {
   document.body.removeChild(probe);
 
   // Only update DOM + reset position if content actually changed
-  if (halfW > 0) {
+  const newHtml = html + html;
+  if (halfW > 0 && track.innerHTML !== newHtml) {
     tickerHalfWidth = halfW;
     tickerPos = 0;
-    track.innerHTML = html + html;
+    track.innerHTML = newHtml;
+  } else if (halfW > 0) {
+    // Content unchanged — just update the measured width in case fonts shifted
+    tickerHalfWidth = halfW;
   }
 
   if (dot) dot.style.background = liveItems.length ? '#00e676' : '#ffb800';
