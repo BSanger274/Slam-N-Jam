@@ -565,7 +565,7 @@ const HARDCODED_AVERAGES = {
   "Tamin Lipsey": 13.3,
   "Killyan Toure": 8.3,
   "Nate Heise": 4.0,
-  "Jamarion Batemon": 3.5,
+  "Jamarion Batemon": 6.9,
   "Keaton Wagler": 17.9,
   "Kylan Boswell": 13.0,
   "David Mirkovic": 13.4,
