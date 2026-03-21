@@ -1247,8 +1247,8 @@ const HARDCODED_OVERRIDES = {
   "Jordan Pope":        16,   //  5 FF + 11 R64
   "Matas Vokietaitis":  38,   // 15 FF + 23 R64
   // ── Prairie View A&M (won FF, plays R64 Fri) ──
-  "Dontae Horne":       25,   // FF only
-  "Tai Reon Joseph":     5,   // FF only
+  "Dontae Horne":       37,   // FF + R64 (25 FF + 12 vs Florida)
+  "Tai Reon Joseph":    21,   // FF + R64 (5 FF + 16 vs Florida)
   // ── Miami OH (won FF, plays R64 Fri) ──
   "Eian Elmer":         23,   // FF only
   "Brant Byers":        19,   // FF only
