@@ -2762,18 +2762,21 @@ function refreshTicker() {
 
   const spacer = '<span style="display:inline-block;width:80px;flex-shrink:0"></span>';
   const html = allItems.join('') + spacer;
-  track.innerHTML = html + html;
 
-  // Measure track width — temporarily make it position:static to get real width
-  // then switch back to absolute for animation
-  track.style.position = 'static';
-  track.style.whiteSpace = 'nowrap';
-  requestAnimationFrame(() => {
-    const fullWidth = track.offsetWidth;
-    track.style.position = 'absolute';
-    tickerHalfWidth = fullWidth / 2;
-    if (tickerPos >= tickerHalfWidth) tickerPos = 0;
-  });
+  // Measure one copy's width using an off-screen clone — never touch the live track
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;visibility:hidden;top:-9999px;white-space:nowrap;display:flex;align-items:center;height:34px;';
+  probe.innerHTML = html;
+  document.body.appendChild(probe);
+  const halfW = probe.offsetWidth;
+  document.body.removeChild(probe);
+
+  // Only update DOM + reset position if content actually changed
+  if (halfW > 0) {
+    tickerHalfWidth = halfW;
+    tickerPos = 0;
+    track.innerHTML = html + html;
+  }
 
   if (dot) dot.style.background = liveItems.length ? '#00e676' : '#ffb800';
 }
