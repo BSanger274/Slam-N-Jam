@@ -64,115 +64,6 @@ function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
-// ─── GitHub persistence for overrides.json ───────────
-// Survives Render free-tier disk wipes on restart.
-// Requires GITHUB_TOKEN env var with repo scope.
-const GH_TOKEN  = process.env.GITHUB_TOKEN || '';
-const GH_REPO   = 'BSanger274/Slam-N-Jam';
-const GH_PATH   = 'slamnjam-final/data/overrides.json';
-const GH_BRANCH = 'main';
-
-async function ghGet(apiPath) {
-  return new Promise((resolve, reject) => {
-    const opts = {
-      hostname: 'api.github.com',
-      path: apiPath,
-      headers: {
-        'Authorization': `Bearer ${GH_TOKEN}`,
-        'User-Agent':    'slam-n-jam-server',
-        'Accept':        'application/vnd.github+json'
-      }
-    };
-    const req = https.get(opts, res => {
-      let body = '';
-      res.on('data', d => body += d);
-      res.on('end', () => {
-        try { resolve(JSON.parse(body)); }
-        catch { resolve({}); }
-      });
-    });
-    req.on('error', reject);
-  });
-}
-
-async function ghPut(apiPath, payload) {
-  return new Promise((resolve, reject) => {
-    const body = JSON.stringify(payload);
-    const opts = {
-      hostname: 'api.github.com',
-      path: apiPath,
-      method: 'PUT',
-      headers: {
-        'Authorization':  `Bearer ${GH_TOKEN}`,
-        'User-Agent':     'slam-n-jam-server',
-        'Accept':         'application/vnd.github+json',
-        'Content-Type':   'application/json',
-        'Content-Length': Buffer.byteLength(body)
-      }
-    };
-    const req = https.request(opts, res => {
-      let b = '';
-      res.on('data', d => b += d);
-      res.on('end', () => resolve(b));
-    });
-    req.on('error', reject);
-    req.write(body);
-    req.end();
-  });
-}
-
-// Push overrides to GitHub (debounced — max once per 60s to avoid rate limits)
-let ghPushTimer = null;
-let ghPushPending = null;
-function pushOverridesToGitHub(data) {
-  if (!GH_TOKEN) return; // no token configured, skip silently
-  ghPushPending = data;
-  if (ghPushTimer) return; // already scheduled
-  ghPushTimer = setTimeout(async () => {
-    ghPushTimer = null;
-    const toSave = ghPushPending;
-    ghPushPending = null;
-    try {
-      const apiPath = `/repos/${GH_REPO}/contents/${GH_PATH}`;
-      const current = await ghGet(apiPath);
-      const sha     = current?.sha; // needed for update, undefined for create
-      const encoded = Buffer.from(JSON.stringify(toSave, null, 2)).toString('base64');
-      await ghPut(apiPath, {
-        message: `auto: update overrides.json [${new Date().toISOString()}]`,
-        content: encoded,
-        branch:  GH_BRANCH,
-        ...(sha ? { sha } : {})
-      });
-      console.log(`[GitHub] overrides.json pushed (${Object.keys(toSave).length} players)`);
-    } catch(e) {
-      console.warn('[GitHub] push failed:', e.message);
-    }
-  }, 60_000); // debounce 60s
-}
-
-// On startup: if local overrides.json is empty/missing, seed from GitHub
-async function seedOverridesFromGitHub() {
-  if (!GH_TOKEN) return;
-  try {
-    const local = readJSON(OVERRIDE_F, {});
-    if (Object.keys(local).length > 0) {
-      console.log(`[GitHub] local overrides.json has ${Object.keys(local).length} entries — skipping seed`);
-      return;
-    }
-    const apiPath = `/repos/${GH_REPO}/contents/${GH_PATH}`;
-    const res = await ghGet(apiPath);
-    if (res?.content) {
-      const data = JSON.parse(Buffer.from(res.content, 'base64').toString('utf8'));
-      if (Object.keys(data).length > 0) {
-        writeJSON(OVERRIDE_F, data);
-        console.log(`[GitHub] seeded overrides.json with ${Object.keys(data).length} players from GitHub`);
-      }
-    }
-  } catch(e) {
-    console.warn('[GitHub] seed failed:', e.message);
-  }
-}
-
 // ─── Player name normalization ───────────────────────
 // Strips Jr./Sr./II/III/IV suffixes and normalizes punctuation
 // so ESPN names like "John Mobley Jr." match roster "John Mobley Jr."
@@ -368,7 +259,7 @@ async function fetchLiveScores() {
       return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL';
     });
     const freshMinutes = {}; // player -> minutes played this game
-    await Promise.all(activeEvents.slice(0, 20).map(async ev => {
+    await Promise.all(activeEvents.slice(0, 15).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
       const isFinal  = evStatus === 'STATUS_FINAL';
       try {
@@ -418,7 +309,6 @@ async function fetchLiveScores() {
     }));
     // Persist auto-saved scores
     writeJSON(OVERRIDE_F, savedOverrides);
-    pushOverridesToGitHub(savedOverrides);  // persist to GitHub so restarts don't lose scores
     // Update minutesCache — only keep players from currently LIVE games
     // Clear entries for players whose games have ended (prevents stale minutes causing false flames)
     const livePlayerNames = new Set(Object.keys(freshMinutes));
@@ -565,7 +455,7 @@ const HARDCODED_AVERAGES = {
   "Tamin Lipsey": 13.3,
   "Killyan Toure": 8.3,
   "Nate Heise": 4.0,
-  "Jamarion Batemon": 6.9,
+  "Jamarion Batemon": 3.5,
   "Keaton Wagler": 17.9,
   "Kylan Boswell": 13.0,
   "David Mirkovic": 13.4,
@@ -1217,152 +1107,175 @@ function buildBlankBracket() {
 // These survive Render redeploys (disk wipes on restart).
 // Add any completed-game scores here that must persist.
 // Admin UI overrides in overrides.json take highest priority.
-// HARDCODED_OVERRIDES: ONLY active First Four players who still have games to play
-// Their First Four pts are a BASE that accumulates with future live game pts
-// ALL other completed game scores go to overrides.json via auto-save
+// HARDCODED_OVERRIDES: cumulative pts through all completed games
+// ALL completed game scores are locked in here for redeploy safety
+// Auto-save + GitHub push handles any players NOT listed here
 const HARDCODED_OVERRIDES = {
   // ── First Four eliminated ──
-  "Nasir Whitlock":      5,   // Lehigh
-  "Hank Alvey":         23,   // Lehigh
-  "Jaron Pierre Jr.":   18,   // SMU
-  "Boopie Miller":      15,   // SMU
-  "Corey Washington":   13,   // SMU
-  "Samet Yigitoglu":     8,   // SMU
-    // ── R64 Thu Mar 19 — Duke 71, Siena 65 ──
-  "Cameron Boozer":    22,   // Duke
-  "Cayden Boozer":     19,   // Duke
-  "Isaiah Evans":      16,   // Duke
-  "Nikolas Khamenia":   9,   // Duke
-  "Dame Sarr":          5,   // Duke
-  "Gavin Doty":        21,   // Siena (eliminated)
-  // ── R64 Thu Mar 19 — TCU 66, Ohio St 64 ──
-  "Devin Royal":        14,
-  "Amare Bynum":        12,
-  "John Mobley Jr.":    15,
-  "Christoph Tilly":    10,
-  "Bruce Thornton":     10,
-  "Micah Robinson":     18,
-  "Xavier Edmonds":     16,
-  "David Punch":        16,
-  "Jayden Pierre":       4,
-  "Liutauras Lelevicius": 4,
+  "Nasir Whitlock":      5,   // Lehigh (FF elim)
+  "Hank Alvey":         23,   // Lehigh (FF elim)
+  "Jaron Pierre Jr.":   18,   // SMU (FF elim)
+  "Boopie Miller":      15,   // SMU (FF elim)
+  "Corey Washington":   13,   // SMU (FF elim)
+  "Samet Yigitoglu":     8,   // SMU (FF elim)
+
+  // ── R64 Thu Mar 19 — Duke 71, Siena 65 ──
+  // ── R32 Sat Mar 22 — Duke 81, TCU 58 ──
+  "Cameron Boozer":    41,   // Duke  (22 R64 + 19 R32)
+  "Cayden Boozer":     28,   // Duke  (19 R64 +  9 R32)
+  "Isaiah Evans":      33,   // Duke  (16 R64 + 17 R32)
+  "Nikolas Khamenia":  15,   // Duke  ( 9 R64 +  6 R32)
+  "Dame Sarr":         19,   // Duke  ( 5 R64 + 14 R32)
+  "Gavin Doty":        21,   // Siena (eliminated R64)
+  // TCU eliminated in R32 — final totals:
+  "Micah Robinson":    36,   // TCU (18 R64 + 18 R32) ELIM
+  "Xavier Edmonds":    28,   // TCU (16 R64 + 12 R32) ELIM
+  "David Punch":       20,   // TCU (16 R64 +  4 R32) ELIM
+  "Jayden Pierre":      8,   // TCU ( 4 R64 +  4 R32) ELIM
+  "Liutauras Lelevicius": 5, // TCU ( 4 R64 +  1 R32) ELIM
+  "Devin Royal":       14,   // TCU (14 R64 +  0 R32) ELIM
+  "Amare Bynum":       12,   // TCU (12 R64 +  0 R32) ELIM
+  "John Mobley Jr.":   15,   // TCU (15 R64 +  0 R32) ELIM
+  "Christoph Tilly":   10,   // TCU (10 R64 +  0 R32) ELIM
+  "Bruce Thornton":    10,   // Ohio St (R64 elim)
+
   // ── R64 Thu Mar 19 — Nebraska 76, Troy 47 ──
-  "Pryce Sandfort":     23,   // Nebraska
-  "Jamarques Lawrence": 13,   // Nebraska
-  "Braden Frager":      13,   // Nebraska
-  "Rienk Mast":         11,   // Nebraska
-  "Thomas Dowd":         4,   // Nebraska
-  "Sam Hoiberg":         4,   // Nebraska
-  "Victor Valdes":      14,   // Troy (eliminated)
+  // ── R32 Sat Mar 22 — Nebraska 74, Vanderbilt 72 ──
+  "Pryce Sandfort":    38,   // Nebraska (23 R64 + 15 R32)
+  "Jamarques Lawrence":22,   // Nebraska (13 R64 +  9 R32)
+  "Rienk Mast":        24,   // Nebraska (11 R64 + 13 R32)
+  "Sam Hoiberg":       12,   // Nebraska ( 4 R64 +  8 R32)
+  "Braden Frager":     28,   // Nebraska (13 R64 + 15 R32)
+  "Thomas Dowd":        4,   // Nebraska ( 4 R64 +  0 R32)
+  "Victor Valdes":     14,   // Troy (eliminated R64)
+  // Vanderbilt eliminated in R32 — final totals:
+  "Tyler Tanner":      53,   // Vandy (26 R64 + 27 R32) ELIM
+  "Duke Miles":        22,   // Vandy (13 R64 +  9 R32) ELIM
+  "Devin McGlockton":  15,   // Vandy (12 R64 +  3 R32) ELIM
+  "AK Okereke":        16,   // Vandy ( 7 R64 +  9 R32) ELIM
+  "Tyler Nickel":      28,   // Vandy (12 R64 + 16 R32) ELIM
+  "Larry Johnson":     15,   // McNeese (eliminated R64)
+  "Tyshawn Archie":    13,   // McNeese (eliminated R64)
+  "Javohn Garcia":     10,   // McNeese (eliminated R64)
+
   // ── R64 Thu Mar 19 — Wisconsin 82, High Point 83 ──
-  "Rob Martin":         23,   // High Point
-  "Cam'Ron Fletcher":   14,   // High Point
-  "Terry Anderson":     15,   // High Point
-  "Austin Rapp":        12,
-  "Braeden Carrington":  5,
-  "Nolan Winter":        8,
-  "John Blackwell":     22,
-  "Nick Boyd":          27,
+  // ── R32 Sat Mar 22 — Arkansas 94, High Point 88 ──
+  // High Point eliminated in R32 — final totals:
+  "Rob Martin":        53,   // HP (23 R64 + 30 R32) ELIM
+  "Cam'Ron Fletcher":  39,   // HP (14 R64 + 25 R32) ELIM
+  "Terry Anderson":    30,   // HP (15 R64 + 15 R32) ELIM
+  "Austin Rapp":       14,   // HP (12 R64 +  2 R32) ELIM
+  "Braeden Carrington": 8,   // HP ( 5 R64 +  3 R32) ELIM
+  "Nick Boyd":         27,   // HP (27 R64 +  0 R32) ELIM
+  "John Blackwell":    22,   // HP (22 R64 +  0 R32) ELIM
+  "Nolan Winter":       8,   // Wisconsin (R64 elim)
+
   // ── R64 Thu Mar 19 — Arkansas 97, Hawaii 78 ──
-  "Dre Bullock":        21,   // Hawaii (eliminated)
-  "Trevon Brazile":     19,
-  "D.J. Wagner":         7,
-  "Billy Richmond III": 10,
-  "Malique Ewin":       16,
-  "Darius Acuff":       24,
-  "Meleek Thomas":      21,
-    // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
-  "David Mirkovic":     29,   // Illinois
-  "Keaton Wagler":      18,   // Illinois
-  "Kylan Boswell":      13,   // Illinois
-  "Tomislav Ivisic":    12,   // Illinois
-  "Andrej Stojakovic":   9,   // Illinois
-  "Zvonimir Ivisic":     6,   // Illinois
-  "TJ Power":            6,   // Penn (eliminated)
-  // ── R64 Thu Mar 19 — VCU 82, UNC 78 ──
-  "Terrence Hill Jr.":  34,   // VCU
-  "Lazar Djokovic":     15,   // VCU
-  "Henri Veesaar":      26,   // UNC (eliminated)
-  "Seth Trimble":       15,   // UNC (eliminated)
-  "Derek Dixon":        11,   // UNC (eliminated)
-  "Jarin Stevenson":    11,   // UNC (eliminated)
-  "Luka Bogavac":        8,   // UNC (eliminated)
+  // ── R32 Sat Mar 22 — Arkansas 94, High Point 88 ──
+  "Dre Bullock":       21,   // Hawaii (eliminated R64)
+  "Trevon Brazile":    27,   // Arkansas (19 R64 +  8 R32)
+  "D.J. Wagner":        9,   // Arkansas ( 7 R64 +  2 R32)
+  "Billy Richmond III":25,   // Arkansas (10 R64 + 15 R32)
+  "Malique Ewin":      30,   // Arkansas (16 R64 + 14 R32)
+  "Darius Acuff":      60,   // Arkansas (24 R64 + 36 R32)
+  "Meleek Thomas":     40,   // Arkansas (21 R64 + 19 R32)
+
+  // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
+  // ── R32 Sat Mar 22 — Illinois 76, VCU 55 ──
+  "David Mirkovic":    36,   // Illinois (29 R64 +  7 R32)
+  "Keaton Wagler":     32,   // Illinois (18 R64 + 14 R32)
+  "Kylan Boswell":     25,   // Illinois (13 R64 + 12 R32)
+  "Tomislav Ivisic":   26,   // Illinois (12 R64 + 14 R32)
+  "Andrej Stojakovic": 30,   // Illinois ( 9 R64 + 21 R32)
+  "Zvonimir Ivisic":    8,   // Illinois ( 6 R64 +  2 R32)
+  "TJ Power":           6,   // Penn (eliminated R64)
+  // VCU eliminated in R32 — final totals:
+  "Terrence Hill Jr.": 51,   // VCU (34 R64 + 17 R32) ELIM
+  "Lazar Djokovic":    17,   // VCU (15 R64 +  2 R32) ELIM
+  "Henri Veesaar":     26,   // UNC (eliminated R64)
+  "Seth Trimble":      15,   // UNC (eliminated R64)
+  "Derek Dixon":       11,   // UNC (eliminated R64)
+  "Jarin Stevenson":   11,   // UNC (eliminated R64)
+  "Luka Bogavac":       8,   // UNC (eliminated R64)
+
   // ── R64 Thu Mar 19 — Michigan St 92, N. Dakota St 67 ──
-  "Carson Cooper":      20,   // Michigan St
-  "Coen Carr":          17,   // Michigan St
-  "Jaxon Kohler":       12,   // Michigan St
-  "Jeremy Fears":        7,   // Michigan St
-  "Jordan Scott":        6,   // Michigan St
-  "Kur Teng":            3,   // Michigan St
-  // ── R64 Thu Mar 19 — Louisville 83, So Florida 79 ──
-  "Isaac McKneely":     23,   // Louisville
-  "Ryan Conwell":       18,   // Louisville
-  "Tyler Nickel":       12,   // Louisville
-  "J'Vonne Hadley":     10,   // Louisville
-  "Paulius Murauskas":   4,   // Louisville
-  "Joshua Dent":        18,   // Saint Marys (eliminated)
-  "Mikey Lewis":         5,   // Saint Marys (eliminated)
-  "Izaiyah Nelson":     22,   // So Florida (eliminated)
-  "Joseph Pinion":      27,   // So Florida (eliminated)
-  "Wes Enis":            4,   // So Florida (eliminated)
-  "Joseph Omojafo":      6,   // So Florida (eliminated)
-  // ── R64 Thu Mar 19 — Vanderbilt 78, McNeese 68 ──
-  "Tyler Tanner":       26,   // Vanderbilt
-  "Duke Miles":         13,   // Vanderbilt
-  "Devin McGlockton":   12,   // Vanderbilt
-  "AK Okereke":          7,   // Vanderbilt
-  "Larry Johnson":      15,   // McNeese (eliminated)
-  "Tyshawn Archie":     13,   // McNeese (eliminated)
-  "Javohn Garcia":      10,   // McNeese (eliminated)
+  // ── R32 Sat Mar 22 — Michigan St 77, Louisville 69 ──
+  "Carson Cooper":     29,   // Mich St (20 R64 +  9 R32)
+  "Coen Carr":         38,   // Mich St (17 R64 + 21 R32)
+  "Jaxon Kohler":      22,   // Mich St (12 R64 + 10 R32)
+  "Jeremy Fears":      19,   // Mich St ( 7 R64 + 12 R32)
+  "Jordan Scott":      10,   // Mich St ( 6 R64 +  4 R32)
+  "Kur Teng":          10,   // Mich St ( 3 R64 +  7 R32)
+  // Louisville eliminated in R32 — final totals:
+  "Isaac McKneely":    32,   // Louisville (23 R64 +  9 R32) ELIM
+  "Ryan Conwell":      39,   // Louisville (18 R64 + 21 R32) ELIM
+  "J'Vonne Hadley":    12,   // Louisville (10 R64 +  2 R32) ELIM
+  "Paulius Murauskas":  4,   // Louisville ( 4 R64 +  0 R32) ELIM
+  "Joshua Dent":       18,   // Saint Marys (eliminated R64)
+  "Mikey Lewis":        5,   // Saint Marys (eliminated R64)
+  "Izaiyah Nelson":    22,   // So Florida (eliminated R64)
+  "Joseph Pinion":     27,   // So Florida (eliminated R64)
+  "Wes Enis":           4,   // So Florida (eliminated R64)
+  "Joseph Omojafo":     6,   // So Florida (eliminated R64)
+
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
-  "Robbie Avila":       12,   // Saint Louis
-  "Jeremiah Wilkinson":  30,   // Georgia (eliminated)
-  "Marcus Millender":    13,   // Georgia (eliminated)
-  "Blue Cain":            6,   // Georgia (eliminated)
+  // ── R32 Sat Mar 22 — Michigan 95, Saint Louis 72 ──
+  // Saint Louis eliminated in R32 — final totals:
+  "Robbie Avila":      21,   // Saint Louis (12 R64 +  9 R32) ELIM
+  "Jeremiah Wilkinson":30,   // Georgia (eliminated R64)
+  "Marcus Millender":  13,   // Georgia (eliminated R64)
+  "Blue Cain":          6,   // Georgia (eliminated R64)
+
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
-  "Morez Johnson":      21,   // Michigan
-  "Aday Mara":          19,   // Michigan
-  "Nimari Burnett":     15,   // Michigan
-  "Trey McKenney":      10,   // Michigan
-  "Will Tschetter":      6,   // Michigan
-  "Elliot Cadeau":       5,   // Michigan
-  "Yaxel Lendeborg":     9,   // Michigan
-  "Roddy Gayle Jr.":    14,   // Michigan
-  "Cedric Taylor":      19,   // Howard (eliminated)
+  // ── R32 Sat Mar 22 — Michigan 95, Saint Louis 72 ──
+  "Yaxel Lendeborg":   34,   // Michigan ( 9 R64 + 25 R32)
+  "Morez Johnson":     36,   // Michigan (21 R64 + 15 R32)
+  "Aday Mara":         35,   // Michigan (19 R64 + 16 R32)
+  "Elliot Cadeau":     17,   // Michigan ( 5 R64 + 12 R32)
+  "Nimari Burnett":    26,   // Michigan (15 R64 + 11 R32)
+  "Will Tschetter":     8,   // Michigan ( 6 R64 +  2 R32)
+  "Roddy Gayle Jr.":   14,   // Michigan (14 R64 +  0 R32)
+  "Trey McKenney":     10,   // Michigan (10 R64 +  0 R32)
+  "Cedric Taylor":     19,   // Howard (eliminated R64)
+
   // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
-  "Kingston Flemings":  18,   // Houston
-  "Emanuel Sharp":      16,   // Houston
-  "Joseph Tugler":      13,   // Houston
-  "Milos Uzan":         12,   // Houston
-  "Chris Cenac":         7,   // Houston
-  "Chase McCarty":       2,   // Houston
-  // Harwell omitted — 0 pts, active, auto-save handles future — 0/low pts Thu, auto-save handles future games
-  // ── R64 Thu Mar 19 — Texas A&M 63, Saint Marys 50 ──
-  "Rashaun Agee":       22,   // Texas A&M
-  "Rylan Griffen":       4,   // Texas A&M
+  // ── R32 Sat Mar 22 — Houston 88, Texas A&M 57 ──
+  "Kingston Flemings": 27,   // Houston (18 R64 +  9 R32)
+  "Emanuel Sharp":     34,   // Houston (16 R64 + 18 R32)
+  "Joseph Tugler":     19,   // Houston (13 R64 +  6 R32)
+  "Milos Uzan":        27,   // Houston (12 R64 + 15 R32)
+  "Chris Cenac":       24,   // Houston ( 7 R64 + 17 R32)
+  "Chase McCarty":      8,   // Houston ( 2 R64 +  6 R32)
+  // Texas A&M eliminated in R32 — final totals:
+  "Rashaun Agee":      29,   // Texas A&M (22 R64 +  7 R32) ELIM
+  "Rylan Griffen":     10,   // Texas A&M ( 4 R64 +  6 R32) ELIM
+
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
-  "Graham Ike":         19,   // Gonzaga
-  "Davis Fogle":        17,   // Gonzaga
-  "Tyon Grant-Foster":   9,   // Gonzaga
-  "Mario Saint-Supery":  7,   // Gonzaga
-  "Adam Miller":         2,   // Gonzaga
-  // Cottle (Kennesaw, eliminated) omitted — DNP
+  // ── R32 Sat Mar 22 — Texas 74, Gonzaga 68 ──
+  // Gonzaga eliminated in R32 — final totals:
+  "Graham Ike":        44,   // Gonzaga (19 R64 + 25 R32) ELIM
+  "Davis Fogle":       23,   // Gonzaga (17 R64 +  6 R32) ELIM
+  "Tyon Grant-Foster": 16,   // Gonzaga ( 9 R64 +  7 R32) ELIM
+  "Mario Saint-Supery":16,   // Gonzaga ( 7 R64 +  9 R32) ELIM
+  "Adam Miller":        4,   // Gonzaga ( 2 R64 +  2 R32) ELIM
+
   // ── R64 Thu Mar 19 — Texas 79, BYU 71 ──
-  "AJ Dybantsa":        35,   // BYU (eliminated)
-  "Robert Wright III":  14,   // BYU (eliminated)
-  "Kennard Davis":        9,   // BYU (eliminated)
-  // ── Texas (won FF + R64, plays R32 Sat) ──
-  "Dailyn Swain":       27,   // 13 FF + 14 R64
-  "Tramon Mark":        36,   // 17 FF + 19 R64
-  "Jordan Pope":        16,   //  5 FF + 11 R64
-  "Matas Vokietaitis":  38,   // 15 FF + 23 R64
-  // ── Prairie View A&M (won FF, plays R64 Fri) ──
-  "Dontae Horne":       37,   // FF + R64 (25 FF + 12 vs Florida)
-  "Tai Reon Joseph":    21,   // FF + R64 (5 FF + 16 vs Florida)
-  // ── Miami OH (won FF, plays R64 Fri) ──
-  "Eian Elmer":         23,   // FF only
-  "Brant Byers":        19,   // FF only
-  "Peter Suder":         7,   // FF only
+  // ── R32 Sat Mar 22 — Texas 74, Gonzaga 68 ──
+  "AJ Dybantsa":       35,   // BYU (eliminated R64)
+  "Robert Wright III": 14,   // BYU (eliminated R64)
+  "Kennard Davis":      9,   // BYU (eliminated R64)
+  // Texas: FF + R64 + R32 cumulative
+  "Dailyn Swain":      38,   // Texas (13 FF + 14 R64 + 11 R32)
+  "Tramon Mark":       42,   // Texas (17 FF + 19 R64 +  6 R32)
+  "Jordan Pope":       33,   // Texas ( 5 FF + 11 R64 + 17 R32)
+  "Matas Vokietaitis": 55,   // Texas (15 FF + 23 R64 + 17 R32)
+
+  // ── FF + R64 Fri Mar 20 players (no R32 yet) ──
+  "Dontae Horne":      37,   // Prairie View (25 FF + 12 R64 vs Florida) ELIM
+  "Tai Reon Joseph":   21,   // Prairie View ( 5 FF + 16 R64 vs Florida) ELIM
+  "Eian Elmer":        23,   // Miami OH (FF only) ELIM
+  "Brant Byers":       19,   // Miami OH (FF only) ELIM
+  "Peter Suder":        7,   // Miami OH (FF only) ELIM
 };
 
 async function getMergedScores() {
@@ -1960,7 +1873,6 @@ app.listen(PORT, async () => {
   await Promise.all([getLiveBracket(), getSeasonAverages()]);
   await getLiveScores();
   fetchJerseyNumbers().then(j => { jerseyCache = j; }).catch(() => {});
-  await seedOverridesFromGitHub();
   console.log('✅ Ready.\n');
   setInterval(getLiveScores,     SCORE_TTL);
   setInterval(getLiveBracket,    BRACKET_TTL);
