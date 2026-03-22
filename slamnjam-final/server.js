@@ -354,7 +354,7 @@ async function fetchSeasonAverages() {
     'Duke':150,'Ohio St':194,'St Johns':2569,'Kansas':2305,'Louisville':97,
     'Mich St':127,'UCLA':26,'UConn':41,'Arizona':12,'Villanova':222,
     'Wisc':275,'Arkansas':8,'BYU':252,'Gonzaga':2250,'Miami FL':2390,
-    'Purdue':2509,'Florida':57,'Clemson':228,'Vandy':238,'Nebraska':158,
+    'Purdue':2509,'Florida':57,'Clemson':228,'Vanderbilt':238,'Nebraska':158,
     'UNC':153,'Illinois':356,'St Marys':2608,'Houston':248,'Michigan':130,
     'Georgia':61,'Tx Tech':2641,'Alabama':333,'Tenn':2633,'Virginia':258,
     'Kentucky':96,'Iowa St':66,'Texas':251,'NC St':152,'Howard':47,
@@ -717,7 +717,7 @@ const TOURNAMENT_TEAM_IDS_JERSEY = {
   150:'Duke',2509:'Purdue',2569:'St Johns',2305:'Kansas',97:'Louisville',
   127:'Mich St',26:'UCLA',41:'UConn',12:'Arizona',222:'Villanova',
   275:'Wisc',8:'Arkansas',252:'BYU',2250:'Gonzaga',2390:'Miami FL',
-  57:'Florida',228:'Clemson',238:'Vandy',158:'Nebraska',153:'UNC',
+  57:'Florida',228:'Clemson',238:'Vanderbilt',158:'Nebraska',153:'UNC',
   356:'Illinois',2608:'St Marys',248:'Houston',130:'Michigan',61:'Georgia',
   2641:'Tx Tech',333:'Alabama',2633:'Tenn',258:'Virginia',96:'Kentucky',
   251:'Texas',152:'NC St',47:'Howard',2294:'Iowa',2377:'McNeese St',
@@ -1181,11 +1181,11 @@ const HARDCODED_OVERRIDES = {
   "Thomas Dowd":        4,   // Nebraska ( 4 R64 +  0 R32)
   "Victor Valdes":     14,   // Troy (eliminated R64)
   // Vanderbilt eliminated in R32 — final totals:
-  "Tyler Tanner":      53,   // Vandy (26 R64 + 27 R32) ELIM
-  "Duke Miles":        22,   // Vandy (13 R64 +  9 R32) ELIM
-  "Devin McGlockton":  15,   // Vandy (12 R64 +  3 R32) ELIM
-  "AK Okereke":        16,   // Vandy ( 7 R64 +  9 R32) ELIM
-  "Tyler Nickel":      28,   // Vandy (12 R64 + 16 R32) ELIM
+  "Tyler Tanner":      53,   // Vanderbilt (26 R64 + 27 R32) ELIM
+  "Duke Miles":        22,   // Vanderbilt (13 R64 +  9 R32) ELIM
+  "Devin McGlockton":  15,   // Vanderbilt (12 R64 +  3 R32) ELIM
+  "AK Okereke":        16,   // Vanderbilt ( 7 R64 +  9 R32) ELIM
+  "Tyler Nickel":      28,   // Vanderbilt (12 R64 + 16 R32) ELIM
   "Larry Johnson":     15,   // McNeese (eliminated R64)
   "Tyshawn Archie":    13,   // McNeese (eliminated R64)
   "Javohn Garcia":     10,   // McNeese (eliminated R64)
