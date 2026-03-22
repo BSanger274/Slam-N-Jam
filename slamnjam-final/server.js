@@ -435,7 +435,7 @@ const HARDCODED_AVERAGES = {
   "Tobe Awaka": 9.6,
   "Ivan Kharchenkov": 8.0,
   "Dwayne Aristode": 5.0,
-  "Yaxel Lendeberg": 14.7,
+  "Yaxel Lendeborg": 14.4,
   "Morez Johnson": 13.7,
   "Aday Mara": 11.3,
   "Elliot Cadeau": 9.9,
@@ -608,7 +608,7 @@ const HARDCODED_AVERAGES = {
   "Hank Alvey": 15.2,
   "Malachi Moreno": 8.0,
   "Tai Reon Joseph": 17.8,
-  "Yaxel Lendeborg": 8.2,
+  "Yaxel Lendeborg": 14.4,
   "Jordan Scott": 7.5,
   "Jalen Washington": 6.8,
   "Allen Graves": 5.4,
@@ -1040,7 +1040,12 @@ function buildBlankBracket() {
         { id:'e7', espnId:'401856480', date:'Fri Mar 20', time:'7:25 PM ET',  location:'Wells Fargo Center, Philadelphia, PA',       tv:'TBS', status:'STATUS_FINAL', t1:{seed:7,name:'UCLA',score:75,won:true},          t2:{seed:10,name:'UCF',score:71,won:false} },
         { id:'e8', espnId:'401856481', date:'Fri Mar 20', time:'10:00 PM ET', location:'Wells Fargo Center, Philadelphia, PA',       tv:'TBS', status:'STATUS_FINAL', t1:{seed:2,name:'UConn',score:82,won:true},         t2:{seed:15,name:'Furman',score:71,won:false} }
       ],
-      r32:  [{ id:'e9',t1:tbd(),t2:tbd() },{ id:'e10',t1:tbd(),t2:tbd() },{ id:'e11',t1:tbd(),t2:tbd() },{ id:'e12',t1:tbd(),t2:tbd() }],
+      r32:  [
+        { id:'e9',  date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:1,name:'Duke',score:81,won:true},         t2:{seed:9,name:'TCU',score:58,won:false} },
+        { id:'e10', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:5,name:"St. John's",score:null,won:null},  t2:{seed:4,name:'Kansas',score:null,won:null} },
+        { id:'e11', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:6,name:'Louisville',score:69,won:false},   t2:{seed:3,name:'Michigan St',score:77,won:true} },
+        { id:'e12', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:7,name:'UCLA',score:null,won:null},        t2:{seed:2,name:'UConn',score:null,won:null} }
+      ],
       r16:  [{ id:'e13',t1:tbd(),t2:tbd() },{ id:'e14',t1:tbd(),t2:tbd() }],
       r8:   [{ id:'e15',t1:tbd(),t2:tbd() }]
     },
@@ -1055,7 +1060,12 @@ function buildBlankBracket() {
         { id:'w7', espnId:'401856486', date:'Fri Mar 20', time:'6:50 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', status:'STATUS_FINAL', t1:{seed:7,name:'Miami FL',score:80,won:true},      t2:{seed:10,name:'Missouri',score:66,won:false} },
         { id:'w8', espnId:'401856487', date:'Fri Mar 20', time:'9:25 PM ET', location:'Pechanga Arena, San Diego, CA', tv:'TNT', status:'STATUS_FINAL', t1:{seed:2,name:'Purdue',score:104,won:true},       t2:{seed:15,name:'Queens',score:71,won:false} }
       ],
-      r32:  [{ id:'w9',t1:tbd(),t2:tbd() },{ id:'w10',t1:tbd(),t2:tbd() },{ id:'w11',t1:tbd(),t2:tbd() },{ id:'w12',t1:tbd(),t2:tbd() }],
+      r32:  [
+        { id:'w9',  date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:1,name:'Arizona',score:null,won:null},     t2:{seed:9,name:'Utah State',score:null,won:null} },
+        { id:'w10', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:12,name:'High Point',score:88,won:false},  t2:{seed:4,name:'Arkansas',score:94,won:true} },
+        { id:'w11', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:11,name:'Texas',score:74,won:true},        t2:{seed:3,name:'Gonzaga',score:68,won:false} },
+        { id:'w12', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:7,name:'Miami FL',score:null,won:null},     t2:{seed:2,name:'Purdue',score:null,won:null} }
+      ],
       r16:  [{ id:'w13',t1:tbd(),t2:tbd() },{ id:'w14',t1:tbd(),t2:tbd() }],
       r8:   [{ id:'w15',t1:tbd(),t2:tbd() }]
     },
@@ -1070,7 +1080,12 @@ function buildBlankBracket() {
         { id:'s7', date:'Thu Mar 19', time:'7:35 PM ET',  location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', status:'STATUS_FINAL', t1:{seed:7,name:"Saint Mary's",score:50,won:false}, t2:{seed:10,name:'Texas A&M',score:63,won:true} },
         { id:'s8', date:'Thu Mar 19', time:'10:10 PM ET', location:'Paycom Center, Oklahoma City, OK',           tv:'truTV', status:'STATUS_FINAL', t1:{seed:2,name:'Houston',score:78,won:true}, t2:{seed:15,name:'Idaho',score:47,won:false} }
       ],
-      r32:  [{ id:'s9',t1:tbd(),t2:tbd() },{ id:'s10',t1:tbd(),t2:tbd() },{ id:'s11',t1:tbd(),t2:tbd() },{ id:'s12',t1:tbd(),t2:tbd() }],
+      r32:  [
+        { id:'s9',  date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:1,name:'Florida',score:null,won:null},     t2:{seed:9,name:'Iowa',score:null,won:null} },
+        { id:'s10', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:5,name:'Vanderbilt',score:72,won:false},   t2:{seed:4,name:'Nebraska',score:74,won:true} },
+        { id:'s11', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:11,name:'VCU',score:55,won:false},         t2:{seed:3,name:'Illinois',score:76,won:true} },
+        { id:'s12', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:10,name:'Texas A&M',score:57,won:false},   t2:{seed:2,name:'Houston',score:88,won:true} }
+      ],
       r16:  [{ id:'s13',t1:tbd(),t2:tbd() },{ id:'s14',t1:tbd(),t2:tbd() }],
       r8:   [{ id:'s15',t1:tbd(),t2:tbd() }]
     },
@@ -1085,7 +1100,12 @@ function buildBlankBracket() {
         { id:'m7', espnId:'401856494', date:'Fri Mar 20', time:'12:15 PM ET', location:'Enterprise Center, St. Louis, MO',     tv:'CBS',   status:'STATUS_FINAL', t1:{seed:7,name:'Kentucky',score:89,won:true},     t2:{seed:10,name:'Santa Clara',score:84,won:false} },
         { id:'m8', espnId:'401856495', date:'Fri Mar 20', time:'2:50 PM ET',  location:'Enterprise Center, St. Louis, MO',     tv:'CBS',   status:'STATUS_FINAL', t1:{seed:2,name:'Iowa State',score:108,won:true},  t2:{seed:15,name:'Tennessee St',score:74,won:false} }
       ],
-      r32:  [{ id:'m9',t1:tbd(),t2:tbd() },{ id:'m10',t1:tbd(),t2:tbd() },{ id:'m11',t1:tbd(),t2:tbd() },{ id:'m12',t1:tbd(),t2:tbd() }],
+      r32:  [
+        { id:'m9',  date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:1,name:'Michigan',score:95,won:true},      t2:{seed:9,name:'Saint Louis',score:72,won:false} },
+        { id:'m10', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:5,name:'Texas Tech',score:null,won:null},   t2:{seed:4,name:'Alabama',score:null,won:null} },
+        { id:'m11', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:6,name:'Tennessee',score:null,won:null},    t2:{seed:3,name:'Virginia',score:null,won:null} },
+        { id:'m12', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:7,name:'Kentucky',score:null,won:null},     t2:{seed:2,name:'Iowa State',score:null,won:null} }
+      ],
       r16:  [{ id:'m13',t1:tbd(),t2:tbd() },{ id:'m14',t1:tbd(),t2:tbd() }],
       r8:   [{ id:'m15',t1:tbd(),t2:tbd() }]
     },
@@ -1273,9 +1293,9 @@ const HARDCODED_OVERRIDES = {
   // ── FF + R64 Fri Mar 20 players (no R32 yet) ──
   "Dontae Horne":      37,   // Prairie View (25 FF + 12 R64 vs Florida) ELIM
   "Tai Reon Joseph":   21,   // Prairie View ( 5 FF + 16 R64 vs Florida) ELIM
-  "Eian Elmer":        23,   // Miami OH (FF only) ELIM
-  "Brant Byers":       19,   // Miami OH (FF only) ELIM
-  "Peter Suder":        7,   // Miami OH (FF only) ELIM
+  "Eian Elmer":        27,   // Miami OH (23 FF + 4 R64 vs Tennessee) ELIM
+  "Brant Byers":       28,   // Miami OH (19 FF + 9 R64 vs Tennessee) ELIM
+  "Peter Suder":       34,   // Miami OH ( 7 FF + 27 R64 vs Tennessee) ELIM
 };
 
 async function getMergedScores() {
