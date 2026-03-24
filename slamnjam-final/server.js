@@ -1256,7 +1256,7 @@ const HARDCODED_OVERRIDES = {
   // ── R64 Thu Mar 19 — Saint Louis 102, Georgia 77 ──
   // ── R32 Sat Mar 22 — Michigan 95, Saint Louis 72 ──
   // Saint Louis eliminated in R32 — final totals:
-  "Robbie Avila":      21,   // Saint Louis (12 R64 +  9 R32) ELIM
+  "Robbie Avila":      18,   // St Louis (9 R64 vs Georgia + 9 R32 vs Michigan) ELIM
   "Jeremiah Wilkinson":30,   // Georgia (eliminated R64)
   "Marcus Millender":  13,   // Georgia (eliminated R64)
   "Blue Cain":          6,   // Georgia (eliminated R64)
@@ -1264,13 +1264,13 @@ const HARDCODED_OVERRIDES = {
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
   // ── R32 Sat Mar 22 — Michigan 95, Saint Louis 72 ──
   "Yaxel Lendeborg":   34,   // Michigan ( 9 R64 + 25 R32)
-  "Morez Johnson":     36,   // Michigan (21 R64 + 15 R32)
-  "Aday Mara":         35,   // Michigan (19 R64 + 16 R32)
-  "Elliot Cadeau":     17,   // Michigan ( 5 R64 + 12 R32)
-  "Nimari Burnett":    26,   // Michigan (15 R64 + 11 R32)
-  "Will Tschetter":     8,   // Michigan ( 6 R64 +  2 R32)
-  "Roddy Gayle Jr.":   14,   // Michigan (14 R64 +  0 R32)
-  "Trey McKenney":     10,   // Michigan (10 R64 +  0 R32)
+  "Morez Johnson":     26,   // Michigan (11 R64 vs Howard + 15 R32 vs St Louis)
+  "Aday Mara":         30,   // Michigan (14 R64 vs Howard + 16 R32 vs St Louis)
+  "Elliot Cadeau":     29,   // Michigan (17 R64 vs Howard + 12 R32 vs St Louis)
+  "Nimari Burnett":    23,   // Michigan (12 R64 vs Howard + 11 R32 vs St Louis)
+  "Will Tschetter":    10,   // Michigan ( 8 R64 vs Howard +  2 R32 vs St Louis)
+  "Roddy Gayle Jr.":   17,   // Michigan (14 R64 vs Howard +  3 R32 vs St Louis)
+  "Trey McKenney":      8,   // Michigan ( 0 R64 vs Howard +  8 R32 vs St Louis)
   "Cedric Taylor":     19,   // Howard (eliminated R64)
 
   // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
@@ -1283,8 +1283,9 @@ const HARDCODED_OVERRIDES = {
   "Chase McCarty":      8,   // Houston ( 2 R64 +  6 R32)
   "Mercy Miller":       22,  // Houston (10 R64 vs Idaho + 12 R32 vs Texas A&M)
   // Texas A&M eliminated in R32 — final totals:
+  "Pop Isaacs":         11,   // Texas A&M (3 R64 vs St Marys + 8 R32 vs Houston) ELIM
   "Rashaun Agee":      29,   // Texas A&M (22 R64 +  7 R32) ELIM
-  "Rylan Griffen":     16,   // Texas A&M (10 R64 vs St Marys + 6 R32 vs Houston) ELIM
+  "Rylan Griffen":     10,   // Texas A&M (4 R64 vs St Marys + 6 R32 vs Houston) ELIM
 
   // ── R64 Thu Mar 19 — Gonzaga 73, Kennesaw St 64 ──
   // ── R32 Sat Mar 22 — Texas 74, Gonzaga 68 ──
@@ -1330,6 +1331,7 @@ const HARDCODED_OVERRIDES = {
   "Motiejus Krivas":       20,  // Arizona ( 9 R64 + 11 R32)
 
   // ── Sun Mar 23 — Purdue 79, Miami FL 69 ── (Purdue advancing)
+  "C.J. Cox":              22,  // Purdue (11 R64 vs Queens + 11 R32 vs Miami FL)
   "Fletcher Loyer":        38,  // Purdue (14 R64 vs Queens + 24 R32 vs Miami FL)
   "Trey Kaufman-Renn":     44,  // Purdue (25 R64 vs Queens + 19 R32 vs Miami FL)
   "Malik Reneau":          16,  // Miami FL (R32 box=16) ELIM
@@ -1353,25 +1355,30 @@ const HARDCODED_OVERRIDES = {
   "Alex Karaban":          49,  // UConn (22 R64 vs Furman + 27 R32)
   // UCLA eliminated — final totals:
   "Eric Dailey":           32,  // UCLA (20 R64 vs UCF + 12 R32) ELIM
-  "Skyy Clark":            22,  // UCLA (11 R64 + 11 R32) ELIM
-  "Donovan Dent":          11,  // UCLA (R64=0 + R32=11) ELIM
+  "Skyy Clark":            19,  // UCLA (8 R64 vs UCF + 11 R32 vs UConn) ELIM
+  "Donovan Dent":          21,  // UCLA (10 R64 vs UCF + 11 R32 vs UConn) ELIM
   "Tyler Bilodeau":         0,  // UCLA (out injury R32) ELIM
   "Trent Perry":           20,  // UCLA (15 R64 vs UCF + 5 R32 vs UConn) ELIM
-  "Xavier Booker":         13,  // UCLA (R64 low + R32=13 led Bruins) ELIM
+  "Xavier Booker":         28,  // UCLA (15 R64 vs UCF + 13 R32 vs UConn) ELIM
 
   // ── Sun Mar 23 — Iowa State 82, Kentucky 63 ── (Iowa State advancing)
+  "Jamarion Batemon":      11,  // Iowa St (8 R64 vs Tenn St + 3 R32 vs Kentucky)
   "Tamin Lipsey":          29,  // Iowa St (3 R64 vs Tenn St + 26 R32 vs Kentucky)
   "Milan Momcilovic":      37,  // Iowa St (17 R64 vs Tenn St + 20 R32 vs Kentucky)
   "Nate Heise":            34,  // Iowa St (22 R64 + 12 R32)
   "Killyan Toure":         35,  // Iowa St (25 R64 + 10 R32)
   // Kentucky eliminated — final totals:
-  "Otega Oweh":            18,  // Kentucky (18 R64 vs Santa Clara + 0 R32 vs Iowa St) ELIM
-  "Malachi Moreno":          4,  // Kentucky (4 R64 vs Santa Clara + 0 R32) ELIM
-  "Collin Chandler":        6,  // Kentucky (6 R64 vs Santa Clara + 0 R32 vs Iowa St) ELIM
-  "Mouhamed Dioubate":      4,  // Kentucky (4 R64 vs Santa Clara + 0 R32 vs Iowa St) ELIM
-  "Denzel Aberdeen":       20,  // Kentucky (20 R64 vs Santa Clara + 0 R32 vs Iowa St) ELIM
+  "Otega Oweh":            53,  // Kentucky (35 R64 vs Santa Clara OT + 18 R32 vs Iowa St) ELIM
+  "Malachi Moreno":          7,  // Kentucky (3 R64 vs Santa Clara + 4 R32 vs Iowa St) ELIM (4 R64 vs Santa Clara + 0 R32) ELIM
+  "Collin Chandler":       11,  // Kentucky (5 R64 vs Santa Clara + 6 R32 vs Iowa St) ELIM
+  "Mouhamed Dioubate":     21,  // Kentucky (17 R64 vs Santa Clara + 4 R32 vs Iowa St) ELIM
+  "Denzel Aberdeen":       36,  // Kentucky (16 R64 vs Santa Clara + 20 R32 vs Iowa St) ELIM
 
   // ── Sun Mar 23 — Tennessee 79, Virginia 72 ── (Tennessee advancing)
+  "Nate Ament":            16,  // Tennessee (0 R64 vs Miami OH + 16 R32 vs Virginia)
+  "Felix Okpara":          19,  // Tennessee (12 R64 vs Miami OH + 7 R32 vs Virginia)
+  "Bishop Boswell":        18,  // Tennessee (5 R64 vs Miami OH + 13 R32 vs Virginia)
+  "Jaylen Carey":          10,  // Tennessee (0 R64 vs Miami OH + 10 R32 vs Virginia)
   "Ja'Kobi Gillespie":     50,  // Tennessee (29 R64 vs Miami OH + 21 R32)
   // Virginia eliminated — final totals:
   "Sam Lewis":            17,  // Virginia (12 R64 vs Wright St + 5 R32 vs Tennessee) ELIM
@@ -1460,11 +1467,11 @@ const GAME_LOG = {
   "Frankie Fidler":       [{ round:"R64", opp:"N Dakota St", pts:13 }, { round:"R32", opp:"Louisville",   pts:10 }],
   // UCLA (eliminated R32)
   "Eric Dailey":           [{ round:"R64", opp:"UCF",         pts:20 }, { round:"R32", opp:"UConn",        pts:12 }],
-  "Skyy Clark":           [{ round:"R64", opp:"UCF",         pts:11 }, { round:"R32", opp:"UConn",        pts:11 }],
-  "Donovan Dent":         [{ round:"R64", opp:"UCF",         pts:0  }, { round:"R32", opp:"UConn",        pts:11 }],
+  "Skyy Clark":           [{ round:"R64", opp:"UCF",         pts:8  }, { round:"R32", opp:"UConn",        pts:11 }],
+  "Donovan Dent":         [{ round:"R64", opp:"UCF",         pts:10 }, { round:"R32", opp:"UConn",        pts:11 }],
   "Tyler Bilodeau":       [{ round:"R64", opp:"UCF",         pts:0  }, { round:"R32", opp:"UConn",        pts:0  }],
   "Trent Perry":          [{ round:"R64", opp:"UCF",         pts:15 }, { round:"R32", opp:"UConn",        pts:5  }],
-  "Xavier Booker":        [{ round:"R64", opp:"UCF",         pts:0  }, { round:"R32", opp:"UConn",        pts:13 }],
+  "Xavier Booker":        [{ round:"R64", opp:"UCF",         pts:15 }, { round:"R32", opp:"UConn",        pts:13 }],
   // UConn
   "Alex Karaban":         [{ round:"R64", opp:"Furman",      pts:22 }, { round:"R32", opp:"UCLA",         pts:27 }],
   // Arizona
@@ -1527,7 +1534,7 @@ const GAME_LOG = {
   "Ben Humrichous":       [{ round:"R64", opp:"Penn",        pts:7  }, { round:"R32", opp:"VCU",          pts:18 }],
   // Texas A&M (eliminated R32)
   "Rashaun Agee":         [{ round:"R64", opp:"St Mary's",   pts:22 }, { round:"R32", opp:"Houston",      pts:7  }],
-  "Rylan Griffen":        [{ round:"R64", opp:"St Mary's",   pts:10 }, { round:"R32", opp:"Houston",      pts:6  }],
+  "Rylan Griffen":        [{ round:"R64", opp:"St Mary's",   pts:4  }, { round:"R32", opp:"Houston",      pts:6  }],
   // Houston
   "Kingston Flemings":    [{ round:"R64", opp:"Idaho",       pts:18 }, { round:"R32", opp:"Texas A&M",    pts:9  }],
   "Emanuel Sharp":        [{ round:"R64", opp:"Idaho",       pts:16 }, { round:"R32", opp:"Texas A&M",    pts:18 }],
@@ -1537,18 +1544,28 @@ const GAME_LOG = {
   "Chris Cenac Jr.":      [{ round:"R64", opp:"Idaho",       pts:7  }, { round:"R32", opp:"Texas A&M",    pts:17 }],
   // Michigan
   "Yaxel Lendeborg":      [{ round:"R64", opp:"Howard",      pts:9  }, { round:"R32", opp:"St Louis",     pts:25 }],
-  "Morez Johnson Jr.":    [{ round:"R64", opp:"Howard",      pts:11 }, { round:"R32", opp:"St Louis",     pts:25 }],
-  "Tre Donovan Mara":     [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:21 }],
-  "Roddy Gayle Jr.":      [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:0  }],
-  "Nimari Burnett":       [{ round:"R64", opp:"Howard",      pts:12 }, { round:"R32", opp:"St Louis",     pts:14 }],
+  "Elliot Cadeau":       [{ round:"R64", opp:"Howard",      pts:17 }, { round:"R32", opp:"St Louis",     pts:12 }],
+  "Will Tschetter":      [{ round:"R64", opp:"Howard",      pts:8  }, { round:"R32", opp:"St Louis",     pts:2  }],
+  "Trey McKenney":       [{ round:"R64", opp:"Howard",      pts:0  }, { round:"R32", opp:"St Louis",     pts:8  }],
+  "C.J. Cox":            [{ round:"R64", opp:"Queens",      pts:11 }, { round:"R32", opp:"Miami FL",     pts:11 }],
+  "Pop Isaacs":          [{ round:"R64", opp:"St Mary's",   pts:3  }, { round:"R32", opp:"Houston",      pts:8  }],
+  "Morez Johnson Jr.":    [{ round:"R64", opp:"Howard",      pts:11 }, { round:"R32", opp:"St Louis",     pts:15 }],
+  "Tre Donovan Mara":     [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:16 }],
+  "Roddy Gayle Jr.":      [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:3  }],
+  "Nimari Burnett":       [{ round:"R64", opp:"Howard",      pts:12 }, { round:"R32", opp:"St Louis",     pts:11 }],
   "Danny Wolf":           [{ round:"R64", opp:"Howard",      pts:17 }, { round:"R32", opp:"St Louis",     pts:0  }],
   "Olivier Nkamhoua":     [{ round:"R64", opp:"Howard",      pts:0  }, { round:"R32", opp:"St Louis",     pts:0  }],
   "Aidan Hadaway":        [{ round:"R64", opp:"Howard",      pts:8  }, { round:"R32", opp:"St Louis",     pts:0  }],
   "Tschetter Brian":      [{ round:"R64", opp:"Howard",      pts:8  }, { round:"R32", opp:"St Louis",     pts:0  }],
   "Caris LeVert":         [{ round:"R64", opp:"Howard",      pts:10 }, { round:"R32", opp:"St Louis",     pts:0  }],
   // Saint Louis (eliminated R32)
-  "Robbie Avila":         [{ round:"R64", opp:"Georgia",     pts:12 }, { round:"R32", opp:"Michigan",     pts:9  }],
+  "Robbie Avila":         [{ round:"R64", opp:"Georgia",     pts:9  }, { round:"R32", opp:"Michigan",     pts:9  }],
   // Tennessee
+  "Nate Ament":           [{ round:"R64", opp:"Miami OH",    pts:0  }, { round:"R32", opp:"Virginia",     pts:16 }],
+  "Felix Okpara":         [{ round:"R64", opp:"Miami OH",    pts:12 }, { round:"R32", opp:"Virginia",     pts:7  }],
+  "Bishop Boswell":       [{ round:"R64", opp:"Miami OH",    pts:5  }, { round:"R32", opp:"Virginia",     pts:13 }],
+  "Jaylen Carey":         [{ round:"R64", opp:"Miami OH",    pts:0  }, { round:"R32", opp:"Virginia",     pts:10 }],
+  "Jamarion Batemon":     [{ round:"R64", opp:"Tenn St",     pts:8  }, { round:"R32", opp:"Kentucky",     pts:3  }],
   "Ja'Kobi Gillespie":    [{ round:"R64", opp:"Miami OH",    pts:29 }, { round:"R32", opp:"Virginia",     pts:21 }],
   // Virginia (eliminated R32)
   "Thijs De Ridder":      [{ round:"R64", opp:"Wright St",   pts:10 }, { round:"R32", opp:"Tennessee",    pts:22 }],
@@ -1558,11 +1575,11 @@ const GAME_LOG = {
   "Jacari White":         [{ round:"R64", opp:"Wright St",   pts:26 }, { round:"R32", opp:"Tennessee",    pts:10 }],
   "Dallin Hall":          [{ round:"R64", opp:"Wright St",   pts:8  }, { round:"R32", opp:"Tennessee",    pts:7  }],
   // Kentucky (eliminated R32)
-  "Otega Oweh":           [{ round:"R64", opp:"Santa Clara", pts:18 }, { round:"R32", opp:"Iowa State",   pts:0  }],
-  "Malachi Moreno":       [{ round:"R64", opp:"Santa Clara", pts:4  }, { round:"R32", opp:"Iowa State",   pts:0  }],
-  "Collin Chandler":      [{ round:"R64", opp:"Santa Clara", pts:6  }, { round:"R32", opp:"Iowa State",   pts:0  }],
-  "Mouhamed Dioubate":    [{ round:"R64", opp:"Santa Clara", pts:4  }, { round:"R32", opp:"Iowa State",   pts:0  }],
-  "Denzel Aberdeen":      [{ round:"R64", opp:"Santa Clara", pts:20 }, { round:"R32", opp:"Iowa State",   pts:0  }],
+  "Otega Oweh":           [{ round:"R64", opp:"Santa Clara", pts:35 }, { round:"R32", opp:"Iowa State",   pts:18 }],
+  "Malachi Moreno":       [{ round:"R64", opp:"Santa Clara", pts:3  }, { round:"R32", opp:"Iowa State",   pts:4  }],
+  "Collin Chandler":      [{ round:"R64", opp:"Santa Clara", pts:5  }, { round:"R32", opp:"Iowa State",   pts:6  }],
+  "Mouhamed Dioubate":    [{ round:"R64", opp:"Santa Clara", pts:17 }, { round:"R32", opp:"Iowa State",   pts:4  }],
+  "Denzel Aberdeen":      [{ round:"R64", opp:"Santa Clara", pts:16 }, { round:"R32", opp:"Iowa State",   pts:20 }],
   // Iowa State
   "Tamin Lipsey":         [{ round:"R64", opp:"Tenn St",     pts:3  }, { round:"R32", opp:"Kentucky",     pts:26 }],
   "Milan Momcilovic":     [{ round:"R64", opp:"Tenn St",     pts:17 }, { round:"R32", opp:"Kentucky",     pts:20 }],
