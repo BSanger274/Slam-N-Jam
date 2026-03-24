@@ -89,7 +89,7 @@ const SCHOOL_NAME_MAP_SRV = {
   'California Baptist':'Cal Baptist', 'Vanderbilt':'Vandy', 'Wisconsin':'Wisc',
   'Miami':'Miami FL', 'Miami (OH)':'Miami OH', 'Iowa State':'Iowa St',
   'McNeese':'McNeese St', 'Kennesaw State':'Kennesaw St', 'Utah State':'Utah St',
-  'Wright State':'Wright St', "St. John's":'St Johns',
+  'Wright State':'Wright St', "St. John's":'St. John\'s',
 };
 function normSchool(name) { return SCHOOL_NAME_MAP_SRV[name] || name; }
 
@@ -354,7 +354,7 @@ async function fetchSeasonAverages() {
   const avgs = {};
 
   const TEAM_IDS = {
-    'Duke':150,'Ohio St':194,'St Johns':2569,'Kansas':2305,'Louisville':97,
+    'Duke':150,'Ohio St':194,'St. John\'s':2569,'Kansas':2305,'Louisville':97,
     'Mich St':127,'UCLA':26,'UConn':41,'Arizona':12,'Villanova':222,
     'Wisc':275,'Arkansas':8,'BYU':252,'Gonzaga':2250,'Miami FL':2390,
     'Purdue':2509,'Florida':57,'Clemson':228,'Vandy':238,'Nebraska':158,
@@ -717,7 +717,7 @@ async function getSeasonAverages() {
 //  JERSEY NUMBERS
 // ════════════════════════════════════════════════════════
 const TOURNAMENT_TEAM_IDS_JERSEY = {
-  150:'Duke',2509:'Purdue',2569:'St Johns',2305:'Kansas',97:'Louisville',
+  150:'Duke',2509:'Purdue',2569:'St. John\'s',2305:'Kansas',97:'Louisville',
   127:'Mich St',26:'UCLA',41:'UConn',12:'Arizona',222:'Villanova',
   275:'Wisc',8:'Arkansas',252:'BYU',2250:'Gonzaga',2390:'Miami FL',
   57:'Florida',228:'Clemson',238:'Vandy',158:'Nebraska',153:'UNC',
@@ -1200,7 +1200,7 @@ const HARDCODED_OVERRIDES = {
   "Cam'Ron Fletcher":  39,   // HP (14 R64 + 25 R32) ELIM
   "Terry Anderson":    30,   // HP (15 R64 + 15 R32) ELIM
   "Austin Rapp":       14,   // HP (12 R64 +  2 R32) ELIM
-  "Braeden Carrington": 8,   // HP ( 5 R64 +  3 R32) ELIM
+  "Braeden Carrington":       5,  // Wisc (5 R64 vs High Point) ELIM,   // HP ( 5 R64 +  3 R32) ELIM
   "Nick Boyd":         27,   // HP (27 R64 +  0 R32) ELIM
   "John Blackwell":    22,   // HP (22 R64 +  0 R32) ELIM
   "Nolan Winter":       8,   // Wisconsin (R64 elim)
@@ -1329,6 +1329,7 @@ const HARDCODED_OVERRIDES = {
     // ── Sun Mar 23 — Arizona 78, Utah State 66 ── (Arizona advancing)
   "MJ Collins":           32,  // Utah St (20 R64 vs Villanova + 12 R32 vs Arizona) ELIM
   "Mason Falslev":        30,  // Utah St (22 R64 vs Villanova + 8 R32 vs Arizona) ELIM
+  "Dwayne Aristode":        6,  // Arizona (3 R64 vs LIU + 3 R32 vs Utah State)
   "Tobe Awaka":            15,  // Arizona (11 R64 vs LIU + 4 R32 vs Utah State)
   "Ivan Kharchenkov":     23,  // Arizona (14 R64 vs LIU + 9 R32 vs Utah State)
   "Koa Peat":              29,  // Arizona (15 R64 + 14 R32)
@@ -1347,9 +1348,11 @@ const HARDCODED_OVERRIDES = {
   "Tru Washington":        11,  // Miami FL (R32 box=11) ELIM
 
   // ── Sun Mar 23 — St. John's 67, Kansas 65 ── (St Johns advancing)
-  "Zuby Ejiofor":          34,  // St Johns (R64=16 avg + R32=18 confirmed = use 34)
-  "Bryce Hopkins":         34,  // St Johns (R64=13 + R32=21)
-  "Ian Jackson":           21,  // St Johns (R64=11 + R32=10)
+  "Zuby Ejiofor":          32,  // St Johns (14 R64 vs N Iowa + 18 R32 vs Kansas)
+  "Bryce Hopkins":         31,  // St Johns (18 R64 vs N Iowa + 13 R32 vs Kansas)
+  "Ian Jackson":           19,  // St Johns (9 R64 vs N Iowa + 10 R32 vs Kansas)
+  "Dillon Mitchell":        8,  // St Johns (R64 pts pending; R32=8 vs Kansas estimated)
+  "Oziyah Sellers":         3,  // St Johns (3 R64 vs N Iowa; R32 vs Kansas pending box)
   "Dylan Darling":          2,  // St Johns (R64=0 DNP + R32=2)
   // Kansas eliminated — final totals:
   "Darryn Peterson":       49,  // Kansas (28 R64 vs Cal Baptist + 21 R32) ELIM
@@ -1414,6 +1417,7 @@ const HARDCODED_OVERRIDES = {
   "Isaiah Brown":          10,  // Florida ( 7 R64 vs Prairie View + 3 R32 vs Iowa) ELIM
 
   // ── Sun Mar 23 — Alabama 90, Texas Tech 65 ── (Alabama advancing)
+  "Aiden Sherrell":        25,  // Alabama (15 R64 vs Hofstra + 10 R32 vs Texas Tech)
   "Latrell Wrightsell":    35,  // Alabama (11 R64 vs Hofstra + 24 R32 vs Texas Tech)
   // Texas Tech eliminated:
   "Jaylen Petty":          33,  // Tx Tech (24 R64 vs Akron + 9 R32 vs Alabama) ELIM
@@ -1455,9 +1459,11 @@ const GAME_LOG = {
   "Tilly Teufel":         [{ round:"R64", opp:"Ohio State",  pts:10 }],
   "Bruce Thornton":       [{ round:"R64", opp:"Ohio State",  pts:10 }],
   // St John's
-  "Zuby Ejiofor":         [{ round:"R64", opp:"N Iowa",      pts:16 }, { round:"R32", opp:"Kansas",       pts:18 }],
-  "Bryce Hopkins":        [{ round:"R64", opp:"N Iowa",      pts:13 }, { round:"R32", opp:"Kansas",       pts:21 }],
-  "Ian Jackson":          [{ round:"R64", opp:"N Iowa",      pts:11 }, { round:"R32", opp:"Kansas",       pts:10 }],
+  "Zuby Ejiofor":         [{ round:"R64", opp:"N Iowa",      pts:14 }, { round:"R32", opp:"Kansas",       pts:18 }],
+  "Bryce Hopkins":        [{ round:"R64", opp:"N Iowa",      pts:18 }, { round:"R32", opp:"Kansas",       pts:13 }],
+  "Ian Jackson":          [{ round:"R64", opp:"N Iowa",      pts:9  }, { round:"R32", opp:"Kansas",       pts:10 }],
+  "Oziyah Sellers":       [{ round:"R64", opp:"N Iowa",      pts:3  }, { round:"R32", opp:"Kansas",       pts:0  }],
+  "Dillon Mitchell":      [{ round:"R64", opp:"N Iowa",      pts:0  }, { round:"R32", opp:"Kansas",       pts:8  }],
   "Dylan Darling":        [{ round:"R64", opp:"N Iowa",      pts:0  }, { round:"R32", opp:"Kansas",       pts:2  }],
   // Kansas (eliminated R32)
   "Darryn Peterson":      [{ round:"R64", opp:"Cal Baptist", pts:28 }, { round:"R32", opp:"St John's",   pts:21 }],
@@ -1490,12 +1496,14 @@ const GAME_LOG = {
   "Mason Falslev":        [{ round:"R64", opp:"Villanova",  pts:22 }, { round:"R32", opp:"Arizona",     pts:8  }],
   "Marcus Hill":          [{ round:"R64", opp:"St Mary's",  pts:4  }, { round:"R32", opp:"Houston",     pts:0  }],
   "Tobe Awaka":           [{ round:"R64", opp:"LIU",         pts:11 }, { round:"R32", opp:"Utah State",   pts:4  }],
+  "Dwayne Aristode":      [{ round:"R64", opp:"LIU",         pts:3  }, { round:"R32", opp:"Utah State",   pts:3  }],
   "Ivan Kharchenkov":    [{ round:"R64", opp:"LIU",         pts:14 }, { round:"R32", opp:"Utah State",   pts:9  }],
   "Koa Peat":             [{ round:"R64", opp:"LIU",         pts:15 }, { round:"R32", opp:"Utah State",   pts:14 }],
   "Brayden Burries":      [{ round:"R64", opp:"LIU",         pts:18 }, { round:"R32", opp:"Utah State",   pts:16 }],
   "Jaden Bradley":        [{ round:"R64", opp:"LIU",         pts:7  }, { round:"R32", opp:"Utah State",   pts:18 }],
   "Motiejus Krivas":      [{ round:"R64", opp:"LIU",         pts:9  }, { round:"R32", opp:"Utah State",   pts:11 }],
   // High Point (eliminated R32)
+  "Braeden Carrington":   [{ round:"R64", opp:"High Point",  pts:5  }],
   "Rob Martin":           [{ round:"R64", opp:"Wisconsin",   pts:23 }, { round:"R32", opp:"Arkansas",     pts:30 }],
   "Cam'Ron Fletcher":     [{ round:"R64", opp:"Wisconsin",   pts:23 }, { round:"R32", opp:"Arkansas",     pts:16 }],
   "Terry Anderson":       [{ round:"R64", opp:"Wisconsin",   pts:30 }, { round:"R32", opp:"Arkansas",     pts:0  }],
@@ -1624,6 +1632,7 @@ const GAME_LOG = {
   "Donovan Atwell":       [{ round:"R64", opp:"Akron",       pts:15 }, { round:"R32", opp:"Alabama",      pts:12 }],
   "LeJuan Watts":         [{ round:"R64", opp:"Akron",       pts:14 }, { round:"R32", opp:"Alabama",      pts:16 }],
   // Alabama
+  "Aiden Sherrell":       [{ round:"R64", opp:"Hofstra",     pts:15 }, { round:"R32", opp:"Texas Tech",   pts:10 }],
   "Latrell Wrightsell":   [{ round:"R64", opp:"Hofstra",     pts:11 }, { round:"R32", opp:"Texas Tech",   pts:24 }],
   // Prairie View (eliminated R64)
   "Dontae Horne":         [{ round:"FF",  opp:"Lehigh",      pts:25 }, { round:"R64", opp:"Florida",      pts:12 }],
@@ -1853,7 +1862,7 @@ const CHAMPION_ROSTERS = {
       { round:4,  name:'Tre Holloman',      school:'Mich St',   pts:40  },
       { round:5,  name:'Khalif Battle',     school:'Gonzaga',   pts:41  },
       { round:6,  name:'Dain Dainja',       school:'Memphis',   pts:22  },
-      { round:7,  name:'Simeon Wilcher',    school:'St Johns',  pts:15  },
+      { round:7,  name:'Simeon Wilcher',    school:'St. John\'s',  pts:15  },
       { round:8,  name:'Jeremiah Fears',    school:'Oklahoma',  pts:20  },
       { round:9,  name:'Ven Allen Lubin',   school:'UNC',       pts:26  },
       { round:10, name:'Coen Carr',         school:'Mich St',   pts:45  },
