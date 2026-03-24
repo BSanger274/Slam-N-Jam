@@ -1238,7 +1238,7 @@ const HARDCODED_OVERRIDES = {
   "Ben Humrichous":        15,  // Illinois (12 R64 vs Penn + 3 R32 vs VCU)
   "Keaton Wagler":     32,   // Illinois (18 R64 + 14 R32)
   "Kylan Boswell":     25,   // Illinois (13 R64 + 12 R32)
-  "Tomislav Ivisic":   20,   // Illinois (12 R64 vs Penn + 8 R32 vs VCU)
+  "Tomislav Ivisic":   26,   // Illinois (14 R64 vs Penn + 12 R32 vs VCU)
   "Andrej Stojakovic": 30,   // Illinois (9 R64 vs Penn + 21 R32 vs VCU)
   "Zvonimir Ivisic":    8,   // Illinois ( 6 R64 +  2 R32)
   "TJ Power":           6,   // Penn (eliminated R64)
@@ -1315,7 +1315,7 @@ const HARDCODED_OVERRIDES = {
   // Gonzaga eliminated in R32 — final totals:
   "Graham Ike":        44,   // Gonzaga (19 R64 + 25 R32) ELIM
   "Davis Fogle":       23,   // Gonzaga (17 R64 +  6 R32) ELIM
-  "Braden Huff":         4,  // Gonzaga (0 R64 + 4 R32 vs Texas) ELIM
+  "Braden Huff":         0,  // Gonzaga (0 pts both games) ELIM
   "Tyon Grant-Foster": 16,   // Gonzaga ( 9 R64 +  7 R32) ELIM
   "Mario Saint-Supery":16,   // Gonzaga ( 7 R64 +  9 R32) ELIM
   "Adam Miller":        4,   // Gonzaga ( 2 R64 +  2 R32) ELIM
@@ -1590,7 +1590,7 @@ const GAME_LOG = {
   "Adam Miller":          [{ round:"R64", opp:"Kennesaw St", pts:2  }, { round:"R32", opp:"Texas",        pts:2  }],
   "Tyon Grant-Foster":    [{ round:"R64", opp:"Kennesaw St", pts:9  }, { round:"R32", opp:"Texas",        pts:7  }],
   "Mario Saint-Supery":   [{ round:"R64", opp:"Kennesaw St", pts:7  }, { round:"R32", opp:"Texas",        pts:9  }],
-  "Braden Huff":          [{ round:"R64", opp:"Kennesaw St", pts:0  }, { round:"R32", opp:"Texas",        pts:4  }],
+  "Braden Huff":          [{ round:"R64", opp:"Kennesaw St", pts:0  }, { round:"R32", opp:"Texas",        pts:0  }],
   // Miami FL (eliminated R32)
   "Malik Reneau":         [{ round:"R64", opp:"Missouri",    pts:24 }, { round:"R32", opp:"Purdue",       pts:16 }],
   "Shelton Henderson":    [{ round:"R64", opp:"Missouri",    pts:15 }, { round:"R32", opp:"Purdue",       pts:18 }],
@@ -1623,7 +1623,7 @@ const GAME_LOG = {
   "David Mirkovic":       [{ round:"R64", opp:"Penn",        pts:29 }, { round:"R32", opp:"VCU",          pts:7  }],
   "Keaton Wagler":        [{ round:"R64", opp:"Penn",        pts:18 }, { round:"R32", opp:"VCU",          pts:14 }],
   "Will Riley":           [{ round:"R64", opp:"Penn",        pts:7  }, { round:"R32", opp:"VCU",          pts:11 }],
-  "Tomislav Ivisic":      [{ round:"R64", opp:"Penn",        pts:12 }, { round:"R32", opp:"VCU",          pts:8  }],
+  "Tomislav Ivisic":      [{ round:"R64", opp:"Penn",        pts:14 }, { round:"R32", opp:"VCU",          pts:12 }],
   "Andrej Stojakovic":    [{ round:"R64", opp:"Penn",        pts:9  }, { round:"R32", opp:"VCU",          pts:21 }],
   "Zvonimir Ivisic":      [{ round:"R64", opp:"Penn",        pts:8  }, { round:"R32", opp:"VCU",          pts:0  }],
   "Ben Humrichous":       [{ round:"R64", opp:"Penn",        pts:12 }, { round:"R32", opp:"VCU",          pts:3  }],
