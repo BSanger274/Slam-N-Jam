@@ -165,6 +165,42 @@ button.nb:hover #players-logo, button.nb.active #players-logo { filter: invert(3
 button.nb:hover #dashboard-logo { opacity:1 !important; stroke:var(--orange); }
 button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 
+
+/* ── Player detail drawer ── */
+#player-drawer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 1100;
+  background: var(--card); border-top: 1px solid var(--border);
+  border-radius: 18px 18px 0 0;
+  transform: translateY(100%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+  max-height: 82vh; overflow-y: auto;
+  box-shadow: 0 -8px 40px rgba(0,0,0,.55);
+}
+#player-drawer.open { transform: translateY(0); }
+#player-drawer-backdrop {
+  position: fixed; inset: 0; z-index: 1099; background: rgba(0,0,0,.5);
+  backdrop-filter: blur(3px); display: none;
+}
+#player-drawer-backdrop.open { display: block; }
+.game-log-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.game-log-row:last-child { border-bottom: none; }
+.game-log-round {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gold); background: rgba(255,184,0,.12);
+  padding: 2px 7px; border-radius: 4px; min-width: 38px; text-align: center;
+}
+.game-log-opp {
+  flex: 1; margin: 0 12px; font-size: 13px; color: var(--muted);
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+}
+.game-log-pts {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+  color: var(--orange); min-width: 36px; text-align: right;
+}
+.game-log-pts.zero { color: var(--muted); font-size: 18px; }
 /* Champion roster modal */
 .hc { cursor:pointer; transition:background .15s; }
 .hc:hover { background:rgba(255,184,0,.06); border-radius:8px; }
@@ -711,6 +747,7 @@ const API = window.location.origin; // same-origin — works on any host
 // ═══════════════════════════════════════════════
 let TEAMS    = [];
 let BRACKET  = null;
+let GAME_LOG = {};
 let HISTORY  = [];
 let adminTok = localStorage.getItem('snj_adm') || null;
 let pTxt = '', pSta = 'all';
@@ -725,14 +762,16 @@ let pollTimer = null;
 async function fetchAll() {
   document.getElementById('spin').classList.add('on');
   try {
-    const [tRes, bRes, hRes] = await Promise.all([
+    const [tRes, bRes, hRes, gRes] = await Promise.all([
       fetch(`${API}/api/teams`).then(r=>r.json()),
       fetch(`${API}/api/bracket`).then(r=>r.json()),
-      HISTORY.length ? Promise.resolve(null) : fetch(`${API}/api/history`).then(r=>r.json())
+      HISTORY.length ? Promise.resolve(null) : fetch(`${API}/api/history`).then(r=>r.json()),
+      Object.keys(GAME_LOG).length ? Promise.resolve(null) : fetch(`${API}/api/gamelog`).then(r=>r.json())
     ]);
     if (tRes?.teams) TEAMS = tRes.teams;
     if (bRes?.bracket) BRACKET = bRes.bracket;
     if (hRes?.winners) HISTORY = hRes.winners;
+    if (gRes?.gamelog) GAME_LOG = gRes.gamelog;
 
     const t = new Date(tRes?.lastFetch || Date.now());
     document.getElementById('lupd').textContent = 'Updated ' + t.toLocaleTimeString();
@@ -949,7 +988,7 @@ function viewTeam(name, from) {
     <div style="text-align:right"><div class="dp">${t.totalPts}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px">Total Points</div></div>`;
   document.getElementById('d-alive').textContent = `${alive} active`;
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
-    <div class="pc ${p.active?'':'elim'}${p.isLive?' live':''}">
+    <div class="pc ${p.active?'':\'elim'}${p.isLive?' live':''}" data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerCardClick(this)" style="cursor:pointer">
       ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
       <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
       <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
@@ -1023,7 +1062,7 @@ function renderPlayers() {
       return m&&s;
     }).sort((a,b)=>b.pts-a.pts);
   document.getElementById('players-body').innerHTML = all.map((p,i)=>`
-    <tr>
+    <tr data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerRowClick(this.getAttribute('data-pname'))" style="cursor:pointer">
       <td class="rnk">${i+1}</td>
       <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px"><span style="display:inline-flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend)}</span></td>
       <td style="color:var(--muted);font-size:12px">${p.school}</td>
@@ -2791,6 +2830,104 @@ function refreshTicker() {
 tickerRAF = requestAnimationFrame(tickerLoop);
 setInterval(refreshTicker, 60000);
 
+
+// ═══════════════════════════════════════════════
+// PLAYER DRAWER
+// ═══════════════════════════════════════════════
+function handlePlayerCardClick(el) {
+  const name = el.getAttribute('data-pname');
+  if (!name) return;
+  // Find player across all teams
+  for (const t of TEAMS) {
+    for (const p of t.players) {
+      if (p.name === name) {
+        openPlayerDrawer(name, p.school, p.pts, p.active, p.seasonAvg, p.jersey, t.name);
+        return;
+      }
+    }
+  }
+}
+
+function handlePlayerRowClick(name) {
+  for (const t of TEAMS) {
+    for (const p of t.players) {
+      if (p.name === name) {
+        openPlayerDrawer(name, p.school, p.pts, p.active, p.seasonAvg, p.jersey, t.name);
+        return;
+      }
+    }
+  }
+}
+
+function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
+  const drawer = document.getElementById('player-drawer');
+  const backdrop = document.getElementById('player-drawer-backdrop');
+
+  document.getElementById('pd-name').textContent = name;
+  document.getElementById('pd-total').textContent = pts ?? 0;
+
+  const meta = [
+    jersey ? '#' + jersey : null,
+    school,
+    avg ? 'avg ' + avg + ' ppg' : null,
+    teamName ? teamName : null
+  ].filter(Boolean).join(' · ');
+  document.getElementById('pd-meta').textContent = meta;
+
+  const statusEl = document.getElementById('pd-status');
+  if (active) {
+    statusEl.innerHTML = '<span style="color:var(--green)">✓ ACTIVE</span>';
+  } else {
+    statusEl.innerHTML = '<span style="color:var(--red)">✗ ELIMINATED</span>';
+  }
+
+  // Render game log
+  const log = GAME_LOG[name];
+  const logEl = document.getElementById('pd-gamelog');
+  const noLogEl = document.getElementById('pd-nolog');
+
+  if (log && log.length > 0) {
+    logEl.style.display = 'block';
+    noLogEl.style.display = 'none';
+    const roundLabels = { 'FF':'First Four', 'R64':'Round of 64', 'R32':'Round of 32', 'S16':'Sweet 16', 'E8':'Elite Eight', 'F4':'Final Four', 'NC':'Championship' };
+    logEl.innerHTML = log.map(g => {
+      const label = roundLabels[g.round] || g.round;
+      const ptsClass = (!g.pts || g.pts === 0) ? 'zero' : '';
+      return `<div class="game-log-row">
+        <div class="game-log-round">${g.round}</div>
+        <div class="game-log-opp">
+          <div style="font-size:11px;font-weight:500">${label}</div>
+          <div>vs ${g.opp}</div>
+        </div>
+        <div class="game-log-pts ${ptsClass}">${g.pts ?? 0}</div>
+      </div>`;
+    }).join('') +
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;border-top:2px solid var(--border);margin-top:4px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Tournament Total</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange)">${pts ?? 0}</div>
+    </div>`;
+  } else {
+    logEl.style.display = 'none';
+    noLogEl.style.display = 'block';
+  }
+
+  backdrop.classList.add('open');
+  // Force reflow then animate in
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => drawer.classList.add('open'));
+  });
+}
+
+function closePlayerDrawer() {
+  document.getElementById('player-drawer').classList.remove('open');
+  document.getElementById('player-drawer-backdrop').classList.remove('open');
+}
+
+// Close drawer on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePlayerDrawer();
+});
+
 </script>
   <!-- CHAMPION ROSTER MODAL -->
   <div id="roster-modal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeRosterModal()">
@@ -2818,6 +2955,32 @@ setInterval(refreshTicker, 60000);
       </div>
     </div>
   </div>
+
+
+<!-- ── Player detail drawer ── -->
+<div id="player-drawer-backdrop" onclick="closePlayerDrawer()"></div>
+<div id="player-drawer">
+  <div style="padding:16px 18px 0">
+    <!-- handle bar -->
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div id="pd-name" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+        <div id="pd-meta" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div id="pd-total" style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--orange);line-height:1"></div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">Total Pts</div>
+      </div>
+    </div>
+    <div id="pd-status" style="margin-top:8px;margin-bottom:2px;font-size:11px;font-weight:700;letter-spacing:1px"></div>
+  </div>
+  <div style="padding:0 18px 24px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:14px 0 8px">Game Log</div>
+    <div id="pd-gamelog"></div>
+    <div id="pd-nolog" style="display:none;font-size:12px;color:var(--muted);padding:8px 0">No game log data yet</div>
+  </div>
+</div>
 
 </body>
 </html>
