@@ -1187,6 +1187,7 @@ const HARDCODED_OVERRIDES = {
   "Tyler Tanner":      53,   // Vandy (26 R64 + 27 R32) ELIM
   "Duke Miles":        22,   // Vandy (13 R64 +  9 R32) ELIM
   "Devin McGlockton":  15,   // Vandy (12 R64 +  3 R32) ELIM
+  "Jalen Washington":      4,  // Vandy (4 R64 vs McNeese St + 0 R32 vs Nebraska) ELIM
   "AK Okereke":        16,   // Vandy ( 7 R64 +  9 R32) ELIM
   "Tyler Nickel":      28,   // Vandy (12 R64 + 16 R32) ELIM
   "Larry Johnson":     15,   // McNeese (eliminated R64)
@@ -1342,26 +1343,29 @@ const HARDCODED_OVERRIDES = {
   "C.J. Cox":              22,  // Purdue (11 R64 vs Queens + 11 R32 vs Miami FL)
   "Fletcher Loyer":        38,  // Purdue (14 R64 vs Queens + 24 R32 vs Miami FL)
   "Trey Kaufman-Renn":     44,  // Purdue (25 R64 vs Queens + 19 R32 vs Miami FL)
-  "Malik Reneau":          16,  // Miami FL (R32 box=16) ELIM
+  "Malik Reneau":          40,  // Miami FL (24 R64 vs Missouri + 16 R32 vs Purdue) ELIM
   "Shelton Henderson":     36,  // Miami FL (18 R64 vs Missouri + 18 R32 vs Purdue) ELIM
   "Tre Donaldson":         30,  // Miami FL (17 R64 vs Missouri + 13 R32 vs Purdue) ELIM
-  "Tru Washington":        11,  // Miami FL (R32 box=11) ELIM
+  "Tru Washington":        20,  // Miami FL (9 R64 vs Missouri + 11 R32 vs Purdue) ELIM
 
   // ── Sun Mar 23 — St. John's 67, Kansas 65 ── (St Johns advancing)
   "Zuby Ejiofor":          32,  // St Johns (14 R64 vs N Iowa + 18 R32 vs Kansas)
   "Bryce Hopkins":         31,  // St Johns (18 R64 vs N Iowa + 13 R32 vs Kansas)
   "Ian Jackson":           19,  // St Johns (9 R64 vs N Iowa + 10 R32 vs Kansas)
-  "Dillon Mitchell":        8,  // St Johns (R64 pts pending; R32=8 vs Kansas estimated)
-  "Oziyah Sellers":         3,  // St Johns (3 R64 vs N Iowa; R32 vs Kansas pending box)
-  "Dylan Darling":          2,  // St Johns (R64=0 DNP + R32=2)
+  "Dillon Mitchell":       15,  // St Johns (7 R64 vs N Iowa + 8 R32 vs Kansas)
+  "Oziyah Sellers":        11,  // St Johns (11 R64 vs N Iowa + 0 R32 vs Kansas)
+  "Joson Sanon":            9,  // St Johns (6 R64 vs N Iowa + 3 R32 vs Kansas)
+  "Dylan Darling":          8,  // St Johns (6 R64 vs N Iowa + 2 R32 vs Kansas)
   // Kansas eliminated — final totals:
   "Darryn Peterson":       49,  // Kansas (28 R64 vs Cal Baptist + 21 R32) ELIM
   "Melvin Council Jr.":    15,  // Kansas (R64=0 + R32=15) ELIM
-  "Flory Bidunga":         14,  // Kansas (R64=0 low mins + R32=14) ELIM
+  "Flory Bidunga":         18,  // Kansas (12 R64 vs Cal Baptist + 6 R32 vs St John's) ELIM
   "Tre White":              6,  // Kansas (R64=0 + R32=6) ELIM
   "Bryson Tiller":          0,  // Kansas (R64+R32 DNP/0) ELIM
 
   // ── Sun Mar 23 — UConn 73, UCLA 57 ── (UConn advancing)
+  "Braylon Mullins":      17,  // UConn (17 R32 vs UCLA; R64 vs Furman pending box)
+  "Tarris Reed Jr.":      41,  // UConn (31 R64 vs Furman + 10 R32 vs UCLA)
   "Alex Karaban":          49,  // UConn (22 R64 vs Furman + 27 R32)
   // UCLA eliminated — final totals:
   "Eric Dailey":           32,  // UCLA (20 R64 vs UCF + 12 R32) ELIM
@@ -1417,6 +1421,7 @@ const HARDCODED_OVERRIDES = {
   "Isaiah Brown":          10,  // Florida ( 7 R64 vs Prairie View + 3 R32 vs Iowa) ELIM
 
   // ── Sun Mar 23 — Alabama 90, Texas Tech 65 ── (Alabama advancing)
+  "Amari Allen":           23,  // Alabama (11 R64 vs Hofstra + 12 R32 vs Texas Tech)
   "Aiden Sherrell":        25,  // Alabama (15 R64 vs Hofstra + 10 R32 vs Texas Tech)
   "Latrell Wrightsell":    35,  // Alabama (11 R64 vs Hofstra + 24 R32 vs Texas Tech)
   // Texas Tech eliminated:
@@ -1462,13 +1467,14 @@ const GAME_LOG = {
   "Zuby Ejiofor":         [{ round:"R64", opp:"N Iowa",      pts:14 }, { round:"R32", opp:"Kansas",       pts:18 }],
   "Bryce Hopkins":        [{ round:"R64", opp:"N Iowa",      pts:18 }, { round:"R32", opp:"Kansas",       pts:13 }],
   "Ian Jackson":          [{ round:"R64", opp:"N Iowa",      pts:9  }, { round:"R32", opp:"Kansas",       pts:10 }],
-  "Oziyah Sellers":       [{ round:"R64", opp:"N Iowa",      pts:3  }, { round:"R32", opp:"Kansas",       pts:0  }],
-  "Dillon Mitchell":      [{ round:"R64", opp:"N Iowa",      pts:0  }, { round:"R32", opp:"Kansas",       pts:8  }],
-  "Dylan Darling":        [{ round:"R64", opp:"N Iowa",      pts:0  }, { round:"R32", opp:"Kansas",       pts:2  }],
+  "Oziyah Sellers":       [{ round:"R64", opp:"N Iowa",      pts:11 }, { round:"R32", opp:"Kansas",       pts:0  }],
+  "Dillon Mitchell":      [{ round:"R64", opp:"N Iowa",      pts:7  }, { round:"R32", opp:"Kansas",       pts:8  }],
+  "Joson Sanon":          [{ round:"R64", opp:"N Iowa",      pts:6  }, { round:"R32", opp:"Kansas",       pts:3  }],
+  "Dylan Darling":        [{ round:"R64", opp:"N Iowa",      pts:6  }, { round:"R32", opp:"Kansas",       pts:2  }],
   // Kansas (eliminated R32)
   "Darryn Peterson":      [{ round:"R64", opp:"Cal Baptist", pts:28 }, { round:"R32", opp:"St John's",   pts:21 }],
   "Melvin Council Jr.":   [{ round:"R64", opp:"Cal Baptist", pts:0  }, { round:"R32", opp:"St John's",   pts:15 }],
-  "Flory Bidunga":        [{ round:"R64", opp:"Cal Baptist", pts:0  }, { round:"R32", opp:"St John's",   pts:14 }],
+  "Flory Bidunga":        [{ round:"R64", opp:"Cal Baptist", pts:12 }, { round:"R32", opp:"St John's",   pts:6  }],
   "Tre White":            [{ round:"R64", opp:"Cal Baptist", pts:0  }, { round:"R32", opp:"St John's",   pts:6  }],
   "Bryson Tiller":        [{ round:"R64", opp:"Cal Baptist", pts:0  }, { round:"R32", opp:"St John's",   pts:0  }],
   // Louisville (eliminated R32)
@@ -1490,6 +1496,8 @@ const GAME_LOG = {
   "Trent Perry":          [{ round:"R64", opp:"UCF",         pts:15 }, { round:"R32", opp:"UConn",        pts:5  }],
   "Xavier Booker":        [{ round:"R64", opp:"UCF",         pts:15 }, { round:"R32", opp:"UConn",        pts:13 }],
   // UConn
+  "Braylon Mullins":     [{ round:"R64", opp:"Furman",      pts:0  }, { round:"R32", opp:"UCLA",         pts:17 }],
+  "Tarris Reed Jr.":     [{ round:"R64", opp:"Furman",      pts:31 }, { round:"R32", opp:"UCLA",         pts:10 }],
   "Alex Karaban":         [{ round:"R64", opp:"Furman",      pts:22 }, { round:"R32", opp:"UCLA",         pts:27 }],
   // Arizona
   "MJ Collins":           [{ round:"R64", opp:"Villanova",  pts:20 }, { round:"R32", opp:"Arizona",     pts:12 }],
@@ -1525,10 +1533,10 @@ const GAME_LOG = {
   "Mario Saint-Supery":   [{ round:"R64", opp:"Kennesaw St", pts:16 }, { round:"R32", opp:"Texas",        pts:0  }],
   "Braden Huff":          [{ round:"R64", opp:"Kennesaw St", pts:0  }, { round:"R32", opp:"Texas",        pts:4  }],
   // Miami FL (eliminated R32)
-  "Malik Reneau":         [{ round:"R64", opp:"Missouri",    pts:0  }, { round:"R32", opp:"Purdue",       pts:16 }],
+  "Malik Reneau":         [{ round:"R64", opp:"Missouri",    pts:24 }, { round:"R32", opp:"Purdue",       pts:16 }],
   "Shelton Henderson":    [{ round:"R64", opp:"Missouri",    pts:18 }, { round:"R32", opp:"Purdue",       pts:18 }],
   "Tre Donaldson":        [{ round:"R64", opp:"Missouri",    pts:17 }, { round:"R32", opp:"Purdue",       pts:13 }],
-  "Tru Washington":       [{ round:"R64", opp:"Missouri",    pts:0  }, { round:"R32", opp:"Purdue",       pts:11 }],
+  "Tru Washington":       [{ round:"R64", opp:"Missouri",    pts:9  }, { round:"R32", opp:"Purdue",       pts:11 }],
   // Purdue — R64 (vs Queens) box score not yet received; R32 confirmed
   "Trey Kaufman-Renn":    [{ round:"R64", opp:"Queens",      pts:25 }, { round:"R32", opp:"Miami FL",     pts:19 }],
   "Fletcher Loyer":       [{ round:"R64", opp:"Queens",      pts:14 }, { round:"R32", opp:"Miami FL",     pts:24 }],
@@ -1537,6 +1545,7 @@ const GAME_LOG = {
   "Tyler Tanner":         [{ round:"R64", opp:"McNeese St",  pts:26 }, { round:"R32", opp:"Nebraska",     pts:27 }],
   "Duke Miles":           [{ round:"R64", opp:"McNeese St",  pts:22 }, { round:"R32", opp:"Nebraska",     pts:0  }],
   "Devin McGlockton":     [{ round:"R64", opp:"McNeese St",  pts:15 }, { round:"R32", opp:"Nebraska",     pts:0  }],
+  "Jalen Washington":     [{ round:"R64", opp:"McNeese St",  pts:4  }, { round:"R32", opp:"Nebraska",     pts:0  }],
   "AK Okereke":           [{ round:"R64", opp:"McNeese St",  pts:16 }, { round:"R32", opp:"Nebraska",     pts:0  }],
   "Tyler Nickel":         [{ round:"R64", opp:"McNeese St",  pts:28 }, { round:"R32", opp:"Nebraska",     pts:0  }],
   // Nebraska
@@ -1632,6 +1641,7 @@ const GAME_LOG = {
   "Donovan Atwell":       [{ round:"R64", opp:"Akron",       pts:15 }, { round:"R32", opp:"Alabama",      pts:12 }],
   "LeJuan Watts":         [{ round:"R64", opp:"Akron",       pts:14 }, { round:"R32", opp:"Alabama",      pts:16 }],
   // Alabama
+  "Amari Allen":          [{ round:"R64", opp:"Hofstra",     pts:11 }, { round:"R32", opp:"Texas Tech",   pts:12 }],
   "Aiden Sherrell":       [{ round:"R64", opp:"Hofstra",     pts:15 }, { round:"R32", opp:"Texas Tech",   pts:10 }],
   "Latrell Wrightsell":   [{ round:"R64", opp:"Hofstra",     pts:11 }, { round:"R32", opp:"Texas Tech",   pts:24 }],
   // Prairie View (eliminated R64)
