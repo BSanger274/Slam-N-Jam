@@ -641,6 +641,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px">ADMIN PANEL</h2>
       <div style="display:flex;gap:8px">
         <button class="btn btn-s" onclick="forceRefresh()" title="Force ESPN refresh">⚡ Force Refresh</button>
+        <button class="btn btn-s" onclick="clearOverrides()" title="Clear saved round pts — run AFTER updating server.js HARDCODED between rounds" style="background:rgba(255,80,80,.15);border-color:rgba(255,80,80,.4);color:#ff8080">🗑 Clear Round Data</button>
         <button class="btn btn-s" onclick="archiveSeason()" style="background:rgba(255,184,0,.15);border-color:rgba(255,184,0,.4);color:var(--gold)">🏆 Archive Season</button>
         <button class="btn btn-s" onclick="doLogout()">Logout</button>
       </div>
@@ -1968,6 +1969,15 @@ async function forceRefresh() {
   try {
     await apiFetch('/api/admin/refresh',{});
     document.getElementById('lupd').textContent = 'Force refreshed!';
+    setTimeout(fetchAll, 500);
+  } catch { alert('Server error'); }
+}
+
+async function clearOverrides() {
+  if (!confirm('Clear all saved round data?\n\nOnly do this AFTER updating server.js HARDCODED totals between rounds (e.g. after Sweet 16 before Elite 8).\n\nThis resets the bonus points tracker so the next round scores cleanly on top of the new hardcoded base.')) return;
+  try {
+    await apiFetch('/api/admin/clear-overrides', {});
+    document.getElementById('lupd').textContent = 'Round data cleared — ready for next round!';
     setTimeout(fetchAll, 500);
   } catch { alert('Server error'); }
 }
