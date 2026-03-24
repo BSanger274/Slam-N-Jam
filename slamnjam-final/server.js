@@ -296,8 +296,11 @@ async function fetchLiveScores() {
               if (name) {
                 if (pts > 0) scores[name] = pts;
                 // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
-                if (isFinal && pts > 0 && HARDCODED_OVERRIDES[name] === undefined) {
-                  savedOverrides[name] = pts;
+                if (isFinal && pts > 0) {
+                  // Always save completed game pts — even for hardcoded players
+                  // The merge logic will ADD these on top of HARDCODED base
+                  const existing = savedOverrides[name] || 0;
+                  savedOverrides[name] = existing + pts;
                 }
                 // Only track minutes for LIVE games — final game players must NOT
                 // appear in freshMinutes or the cache cleanup won't clear their stale minutes
@@ -1803,8 +1806,9 @@ async function getMergedScores() {
     const hardcodedBase = HARDCODED_OVERRIDES[name];
     const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
     if (hardcodedBase !== undefined && !playingNow) {
-      // Has a hardcoded base and not live — hardcoded wins, ignore file override
-      // (prevents doubling if auto-save ran during a previous game)
+      // Has hardcoded base (R64+R32 history) — ADD new rounds on top
+      // file override stores pts from Sweet 16+ games only
+      merged[name] = hardcodedBase + pts;
     } else {
       merged[name] = pts;
     }
