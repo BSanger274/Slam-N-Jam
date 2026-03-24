@@ -1263,13 +1263,15 @@ const HARDCODED_OVERRIDES = {
 
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
   // ── R32 Sat Mar 22 — Michigan 95, Saint Louis 72 ──
-  "Yaxel Lendeborg":   34,   // Michigan ( 9 R64 + 25 R32)
+  "Yaxel Lendeborg":   34,   // Michigan
+  "Yexel Lendeberg":    34,   // Michigan — alias (roster misspelling) ( 9 R64 + 25 R32)
   "Morez Johnson":     26,   // Michigan (11 R64 vs Howard + 15 R32 vs St Louis)
   "Aday Mara":         30,   // Michigan (14 R64 vs Howard + 16 R32 vs St Louis)
-  "Elliot Cadeau":     29,   // Michigan (17 R64 vs Howard + 12 R32 vs St Louis)
+  "Elliot Cadeau":     17,   // Michigan (5 R64 vs Howard + 12 R32 vs St Louis)
   "Nimari Burnett":    23,   // Michigan (12 R64 vs Howard + 11 R32 vs St Louis)
   "Will Tschetter":    10,   // Michigan ( 8 R64 vs Howard +  2 R32 vs St Louis)
   "Roddy Gayle Jr.":   17,   // Michigan (14 R64 vs Howard +  3 R32 vs St Louis)
+  "Roddy Gale":          17,   // Michigan — alias for Roddy Gayle Jr. (roster spelling)
   "Trey McKenney":      8,   // Michigan ( 0 R64 vs Howard +  8 R32 vs St Louis)
   "Cedric Taylor":     19,   // Howard (eliminated R64)
 
@@ -1283,6 +1285,7 @@ const HARDCODED_OVERRIDES = {
   "Chase McCarty":      8,   // Houston ( 2 R64 +  6 R32)
   "Mercy Miller":       22,  // Houston (10 R64 vs Idaho + 12 R32 vs Texas A&M)
   // Texas A&M eliminated in R32 — final totals:
+  "Marcus Hill":         4,   // Texas A&M (4 R64 vs St Marys + 0 R32 vs Houston) ELIM
   "Pop Isaacs":         11,   // Texas A&M (3 R64 vs St Marys + 8 R32 vs Houston) ELIM
   "Rashaun Agee":      29,   // Texas A&M (22 R64 +  7 R32) ELIM
   "Rylan Griffen":     10,   // Texas A&M (4 R64 vs St Marys + 6 R32 vs Houston) ELIM
@@ -1325,6 +1328,9 @@ const HARDCODED_OVERRIDES = {
   // need box scores — set to 0 until confirmed (auto-save would have missed them)
 
     // ── Sun Mar 23 — Arizona 78, Utah State 66 ── (Arizona advancing)
+  "MJ Collins":           32,  // Utah St (20 R64 vs Villanova + 12 R32 vs Arizona) ELIM
+  "Mason Falslev":        30,  // Utah St (22 R64 vs Villanova + 8 R32 vs Arizona) ELIM
+  "Tobe Awaka":            15,  // Arizona (11 R64 vs LIU + 4 R32 vs Utah State)
   "Koa Peat":              29,  // Arizona (15 R64 + 14 R32)
   "Brayden Burries":       34,  // Arizona (18 R64 + 16 R32)  [also in averages block, no conflict]
   "Jaden Bradley":         25,  // Arizona ( 7 R64 + 18 R32)
@@ -1475,6 +1481,10 @@ const GAME_LOG = {
   // UConn
   "Alex Karaban":         [{ round:"R64", opp:"Furman",      pts:22 }, { round:"R32", opp:"UCLA",         pts:27 }],
   // Arizona
+  "MJ Collins":           [{ round:"R64", opp:"Villanova",  pts:20 }, { round:"R32", opp:"Arizona",     pts:12 }],
+  "Mason Falslev":        [{ round:"R64", opp:"Villanova",  pts:22 }, { round:"R32", opp:"Arizona",     pts:8  }],
+  "Marcus Hill":          [{ round:"R64", opp:"St Mary's",  pts:4  }, { round:"R32", opp:"Houston",     pts:0  }],
+  "Tobe Awaka":           [{ round:"R64", opp:"LIU",         pts:11 }, { round:"R32", opp:"Utah State",   pts:4  }],
   "Koa Peat":             [{ round:"R64", opp:"LIU",         pts:15 }, { round:"R32", opp:"Utah State",   pts:14 }],
   "Brayden Burries":      [{ round:"R64", opp:"LIU",         pts:18 }, { round:"R32", opp:"Utah State",   pts:16 }],
   "Jaden Bradley":        [{ round:"R64", opp:"LIU",         pts:7  }, { round:"R32", opp:"Utah State",   pts:18 }],
@@ -1544,14 +1554,17 @@ const GAME_LOG = {
   "Chris Cenac Jr.":      [{ round:"R64", opp:"Idaho",       pts:7  }, { round:"R32", opp:"Texas A&M",    pts:17 }],
   // Michigan
   "Yaxel Lendeborg":      [{ round:"R64", opp:"Howard",      pts:9  }, { round:"R32", opp:"St Louis",     pts:25 }],
-  "Elliot Cadeau":       [{ round:"R64", opp:"Howard",      pts:17 }, { round:"R32", opp:"St Louis",     pts:12 }],
+  "Yexel Lendeberg":      [{ round:"R64", opp:"Howard",      pts:9  }, { round:"R32", opp:"St Louis",     pts:25 }],
+  "Elliot Cadeau":       [{ round:"R64", opp:"Howard",      pts:5  }, { round:"R32", opp:"St Louis",     pts:12 }],
   "Will Tschetter":      [{ round:"R64", opp:"Howard",      pts:8  }, { round:"R32", opp:"St Louis",     pts:2  }],
   "Trey McKenney":       [{ round:"R64", opp:"Howard",      pts:0  }, { round:"R32", opp:"St Louis",     pts:8  }],
   "C.J. Cox":            [{ round:"R64", opp:"Queens",      pts:11 }, { round:"R32", opp:"Miami FL",     pts:11 }],
   "Pop Isaacs":          [{ round:"R64", opp:"St Mary's",   pts:3  }, { round:"R32", opp:"Houston",      pts:8  }],
-  "Morez Johnson Jr.":    [{ round:"R64", opp:"Howard",      pts:11 }, { round:"R32", opp:"St Louis",     pts:15 }],
+  "Morez Johnson":        [{ round:"R64", opp:"Howard",      pts:11 }, { round:"R32", opp:"St Louis",     pts:15 }],
+  "Aday Mara":            [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:16 }],
   "Tre Donovan Mara":     [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:16 }],
   "Roddy Gayle Jr.":      [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:3  }],
+  "Roddy Gale":           [{ round:"R64", opp:"Howard",      pts:14 }, { round:"R32", opp:"St Louis",     pts:3  }],
   "Nimari Burnett":       [{ round:"R64", opp:"Howard",      pts:12 }, { round:"R32", opp:"St Louis",     pts:11 }],
   "Danny Wolf":           [{ round:"R64", opp:"Howard",      pts:17 }, { round:"R32", opp:"St Louis",     pts:0  }],
   "Olivier Nkamhoua":     [{ round:"R64", opp:"Howard",      pts:0  }, { round:"R32", opp:"St Louis",     pts:0  }],
