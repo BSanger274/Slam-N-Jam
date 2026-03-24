@@ -109,6 +109,9 @@ function fetchURL(url) {
 
 // ════════════════════════════════════════════════════════
 //  ESPN SCORING CACHE
+// In-memory cache of pts scored TODAY in completed games (resets on server restart)
+// Used to persist Sweet 16 / Elite 8 pts after game goes final without touching overrides.json
+const completedTodayCache = {};
 // ════════════════════════════════════════════════════════
 let scoreCache     = {};
 let liveHalfCache  = new Set();
@@ -297,11 +300,14 @@ async function fetchLiveScores() {
                 if (pts > 0) scores[name] = pts;
                 // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
                 if (isFinal && pts > 0) {
-                  // Save completed-game pts for ALL players.
-                  // For hardcoded players: this stores ONLY the current round pts.
-                  // Merge logic adds this on top of HARDCODED base.
-                  // Admin must clear overrides.json after updating HARDCODED each round.
-                  savedOverrides[name] = pts;
+                  if (HARDCODED_OVERRIDES[name] !== undefined) {
+                    // Hardcoded player finished a new round — store in memory cache.
+                    // This persists their score until server restarts (between rounds).
+                    completedTodayCache[name] = pts;
+                  } else {
+                    // Non-hardcoded player — save to file.
+                    savedOverrides[name] = pts;
+                  }
                 }
                 // Only track minutes for LIVE games — final game players must NOT
                 // appear in freshMinutes or the cache cleanup won't clear their stale minutes
@@ -1801,16 +1807,22 @@ async function getMergedScores() {
       merged[name] = basePts;
     }
   }
+  // In-memory completed-today scores for hardcoded players (new round pts)
+  for (const [name, todayPts] of Object.entries(completedTodayCache)) {
+    const basePts = HARDCODED_OVERRIDES[name];
+    if (basePts !== undefined) {
+      // Add today's completed game pts on top of historical hardcoded base
+      merged[name] = basePts + todayPts;
+    }
+  }
   // File overrides: auto-saved completed game scores + admin manual corrections
   // For active players with a hardcoded base (e.g. Miami OH), add today's saved pts on top
   for (const [name, pts] of Object.entries(fileOverrides)) {
     const hardcodedBase = HARDCODED_OVERRIDES[name];
     const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
     if (hardcodedBase !== undefined && !playingNow) {
-      // Add new-round pts on top of hardcoded historical base.
-      // overrides.json holds only the most recent round pts.
-      // Admin clears overrides.json after updating HARDCODED each round.
-      merged[name] = hardcodedBase + pts;
+      // Hardcoded total wins — ignore file override to prevent double-counting.
+      // Sweet 16+ pts are captured live via the playingNow branch above.
     } else {
       merged[name] = pts;
     }
