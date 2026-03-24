@@ -766,7 +766,7 @@ async function fetchAll() {
       fetch(`${API}/api/teams`).then(r=>r.json()),
       fetch(`${API}/api/bracket`).then(r=>r.json()),
       HISTORY.length ? Promise.resolve(null) : fetch(`${API}/api/history`).then(r=>r.json()),
-      Object.keys(GAME_LOG).length ? Promise.resolve(null) : fetch(`${API}/api/gamelog`).then(r=>r.json())
+      Object.keys(GAME_LOG).length ? Promise.resolve(null) : fetch(`${API}/api/gamelog`).then(r=>r.json()).catch(()=>null)
     ]);
     if (tRes?.teams) TEAMS = tRes.teams;
     if (bRes?.bracket) BRACKET = bRes.bracket;
