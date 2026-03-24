@@ -296,9 +296,11 @@ async function fetchLiveScores() {
               if (name) {
                 if (pts > 0) scores[name] = pts;
                 // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
-                if (isFinal && pts > 0 && HARDCODED_OVERRIDES[name] === undefined) {
-                  // Only auto-save players NOT already in HARDCODED_OVERRIDES
-                  // Hardcoded players get updated manually after each round
+                if (isFinal && pts > 0) {
+                  // Save completed-game pts for ALL players.
+                  // For hardcoded players: this stores ONLY the current round pts.
+                  // Merge logic adds this on top of HARDCODED base.
+                  // Admin must clear overrides.json after updating HARDCODED each round.
                   savedOverrides[name] = pts;
                 }
                 // Only track minutes for LIVE games — final game players must NOT
@@ -1321,7 +1323,7 @@ const HARDCODED_OVERRIDES = {
   "Dailyn Swain":      38,   // Texas (13 FF + 14 R64 + 11 R32)
   "Tramon Mark":       42,   // Texas (17 FF + 19 R64 +  6 R32)
   "Jordan Pope":         50,   // Texas (FF=0 + R64=33 + R32=17)
-  "Matas Vokietaitis":   61,   // Texas (FF=0 + R64=44 + R32=17)
+  "Matas Vokietaitis":   55,   // Texas (FF=0 + R64=44 + R32=17)
 
   // ── FF + R64 Fri Mar 20 players ──
   "Dontae Horne":      37,   // Prairie View (25 FF + 12 R64 vs Florida) ELIM
@@ -1718,7 +1720,7 @@ const GAME_LOG = {
   // ── Team McCarty missing players ──
   "Carson Cooper":         [{ round:"R64", opp:"N Dakota St", pts:20 }, { round:"R32", opp:"Louisville",  pts:9  }],
   "Tramon Mark":          [{ round:"FF",  opp:"NC State",    pts:17 }, { round:"R64", opp:"BYU",         pts:19 }, { round:"R32", opp:"Gonzaga",    pts:6  }],
-  "Matas Vokietaitis":    [{ round:"FF",  opp:"NC State",    pts:0  }, { round:"R64", opp:"BYU",         pts:44 }, { round:"R32", opp:"Gonzaga",    pts:17 }],
+  "Matas Vokietaitis":    [{ round:"FF",  opp:"NC State",    pts:23 }, { round:"R64", opp:"BYU",         pts:15 }, { round:"R32", opp:"Gonzaga",    pts:17 }],
   "Dailyn Swain":          [{ round:"FF",  opp:"NC State",    pts:13 }, { round:"R64", opp:"BYU",         pts:14 }, { round:"R32", opp:"Gonzaga",    pts:11 }],
   "Hank Alvey":            [{ round:"FF",  opp:"Miami OH",    pts:23 }],
   "Chase McCarty":         [{ round:"R64", opp:"Idaho",       pts:2  }, { round:"R32", opp:"Texas A&M",   pts:6  }],
@@ -1805,8 +1807,10 @@ async function getMergedScores() {
     const hardcodedBase = HARDCODED_OVERRIDES[name];
     const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
     if (hardcodedBase !== undefined && !playingNow) {
-      // Has a hardcoded base and not live — hardcoded wins, ignore file override
-      // (prevents doubling if auto-save ran during a previous game)
+      // Add new-round pts on top of hardcoded historical base.
+      // overrides.json holds only the most recent round pts.
+      // Admin clears overrides.json after updating HARDCODED each round.
+      merged[name] = hardcodedBase + pts;
     } else {
       merged[name] = pts;
     }
@@ -2272,6 +2276,11 @@ app.post('/api/admin/override', requireAdmin, (req, res) => {
   writeJSON(OVERRIDE_F, overrides);
   scoreCacheTime = 0;
   res.json({ ok: true, playerName, pts: overrides[playerName] });
+});
+
+app.post('/api/admin/clear-overrides', requireAdmin, (req, res) => {
+  writeJSON(OVERRIDE_F, {});
+  res.json({ ok: true, message: 'overrides.json cleared — ready for next round' });
 });
 
 app.delete('/api/admin/override/:playerName', requireAdmin, (req, res) => {
