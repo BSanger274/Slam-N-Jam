@@ -1276,7 +1276,7 @@ function renderMatchup(m) {
       team.players.filter(p => p.school === normSchool(t.name)).map(p => ({ ...p, teamName: team.name }))
     );
 
-    const sc = t.score!==null ? `<span class="sscore ${t.won?'hi':''}">${t.score}</span>` : '';
+    const sc = (t.score!=null && t.score!==undefined && t.score!=="") ? `<span class="sscore ${t.won?'hi':''}">${t.score}</span>` : '';
     let dp = '', ti = '';
 
     if (BRACKET_MANAGER_FILTER) {
@@ -1301,7 +1301,7 @@ function renderMatchup(m) {
       ${dp}${sc}
     </div>`;
   };
-  const hasScore = m.t1.score !== null || m.t2.score !== null;
+  const hasScore = (m.t1.score != null && m.t1.score !== undefined) || (m.t2.score != null && m.t2.score !== undefined);
   const t1n = (m.t1.name||'').replace(/'/g,'');
   const t2n = (m.t2.name||'').replace(/'/g,'');
   const isTbd = !t1n || t1n==='TBD' || !t2n || t2n==='TBD';
