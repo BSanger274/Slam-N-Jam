@@ -1264,7 +1264,6 @@ const HARDCODED_OVERRIDES = {
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
   // ── R32 Sat Mar 22 — Michigan 95, Saint Louis 72 ──
   "Yaxel Lendeborg":   34,   // Michigan
-  "Yexel Lendeberg":    34,   // Michigan — alias (roster misspelling) ( 9 R64 + 25 R32)
   "Morez Johnson":     26,   // Michigan (11 R64 vs Howard + 15 R32 vs St Louis)
   "Aday Mara":         30,   // Michigan (14 R64 vs Howard + 16 R32 vs St Louis)
   "Elliot Cadeau":     17,   // Michigan (5 R64 vs Howard + 12 R32 vs St Louis)
@@ -1331,12 +1330,14 @@ const HARDCODED_OVERRIDES = {
   "MJ Collins":           32,  // Utah St (20 R64 vs Villanova + 12 R32 vs Arizona) ELIM
   "Mason Falslev":        30,  // Utah St (22 R64 vs Villanova + 8 R32 vs Arizona) ELIM
   "Tobe Awaka":            15,  // Arizona (11 R64 vs LIU + 4 R32 vs Utah State)
+  "Ivan Kharchenkov":     23,  // Arizona (14 R64 vs LIU + 9 R32 vs Utah State)
   "Koa Peat":              29,  // Arizona (15 R64 + 14 R32)
   "Brayden Burries":       34,  // Arizona (18 R64 + 16 R32)  [also in averages block, no conflict]
   "Jaden Bradley":         25,  // Arizona ( 7 R64 + 18 R32)
   "Motiejus Krivas":       20,  // Arizona ( 9 R64 + 11 R32)
 
   // ── Sun Mar 23 — Purdue 79, Miami FL 69 ── (Purdue advancing)
+  "Oscar Cluff":          17,  // Purdue (9 R64 vs Queens + 8 R32 vs Miami FL)
   "C.J. Cox":              22,  // Purdue (11 R64 vs Queens + 11 R32 vs Miami FL)
   "Fletcher Loyer":        38,  // Purdue (14 R64 vs Queens + 24 R32 vs Miami FL)
   "Trey Kaufman-Renn":     44,  // Purdue (25 R64 vs Queens + 19 R32 vs Miami FL)
@@ -1369,6 +1370,7 @@ const HARDCODED_OVERRIDES = {
 
   // ── Sun Mar 23 — Iowa State 82, Kentucky 63 ── (Iowa State advancing)
   "Jamarion Batemon":      11,  // Iowa St (8 R64 vs Tenn St + 3 R32 vs Kentucky)
+  "Blake Buchanan":       20,  // Iowa St (11 R64 vs Tenn St + 9 R32 vs Kentucky)
   "Tamin Lipsey":          29,  // Iowa St (3 R64 vs Tenn St + 26 R32 vs Kentucky)
   "Milan Momcilovic":      37,  // Iowa St (17 R64 vs Tenn St + 20 R32 vs Kentucky)
   "Nate Heise":            34,  // Iowa St (22 R64 + 12 R32)
@@ -1387,6 +1389,9 @@ const HARDCODED_OVERRIDES = {
   "Jaylen Carey":          10,  // Tennessee (0 R64 vs Miami OH + 10 R32 vs Virginia)
   "Ja'Kobi Gillespie":     50,  // Tennessee (29 R64 vs Miami OH + 21 R32)
   // Virginia eliminated — final totals:
+  "Tavion Banks":         26,  // Iowa (6 R64 vs Clemson + 20 R32 vs Florida)
+  "Bennett Stirtz":       29,  // Iowa (16 R64 vs Clemson + 13 R32 vs Florida)
+  "Cooper Koch":          20,  // Iowa (8 R64 vs Clemson + 12 R32 vs Florida)
   "Sam Lewis":            17,  // Virginia (12 R64 vs Wright St + 5 R32 vs Tennessee) ELIM
   "Preston Edmead":       24,  // Hofstra (24 R64 vs Alabama) ELIM
   "J.P. Estrella":        24,  // Tennessee (14 R64 vs Miami OH + 10 R32 vs Virginia)
@@ -1485,6 +1490,7 @@ const GAME_LOG = {
   "Mason Falslev":        [{ round:"R64", opp:"Villanova",  pts:22 }, { round:"R32", opp:"Arizona",     pts:8  }],
   "Marcus Hill":          [{ round:"R64", opp:"St Mary's",  pts:4  }, { round:"R32", opp:"Houston",     pts:0  }],
   "Tobe Awaka":           [{ round:"R64", opp:"LIU",         pts:11 }, { round:"R32", opp:"Utah State",   pts:4  }],
+  "Ivan Kharchenkov":    [{ round:"R64", opp:"LIU",         pts:14 }, { round:"R32", opp:"Utah State",   pts:9  }],
   "Koa Peat":             [{ round:"R64", opp:"LIU",         pts:15 }, { round:"R32", opp:"Utah State",   pts:14 }],
   "Brayden Burries":      [{ round:"R64", opp:"LIU",         pts:18 }, { round:"R32", opp:"Utah State",   pts:16 }],
   "Jaden Bradley":        [{ round:"R64", opp:"LIU",         pts:7  }, { round:"R32", opp:"Utah State",   pts:18 }],
@@ -1554,10 +1560,10 @@ const GAME_LOG = {
   "Chris Cenac Jr.":      [{ round:"R64", opp:"Idaho",       pts:7  }, { round:"R32", opp:"Texas A&M",    pts:17 }],
   // Michigan
   "Yaxel Lendeborg":      [{ round:"R64", opp:"Howard",      pts:9  }, { round:"R32", opp:"St Louis",     pts:25 }],
-  "Yexel Lendeberg":      [{ round:"R64", opp:"Howard",      pts:9  }, { round:"R32", opp:"St Louis",     pts:25 }],
   "Elliot Cadeau":       [{ round:"R64", opp:"Howard",      pts:5  }, { round:"R32", opp:"St Louis",     pts:12 }],
   "Will Tschetter":      [{ round:"R64", opp:"Howard",      pts:8  }, { round:"R32", opp:"St Louis",     pts:2  }],
   "Trey McKenney":       [{ round:"R64", opp:"Howard",      pts:0  }, { round:"R32", opp:"St Louis",     pts:8  }],
+  "Oscar Cluff":         [{ round:"R64", opp:"Queens",      pts:9  }, { round:"R32", opp:"Miami FL",     pts:8  }],
   "C.J. Cox":            [{ round:"R64", opp:"Queens",      pts:11 }, { round:"R32", opp:"Miami FL",     pts:11 }],
   "Pop Isaacs":          [{ round:"R64", opp:"St Mary's",   pts:3  }, { round:"R32", opp:"Houston",      pts:8  }],
   "Morez Johnson":        [{ round:"R64", opp:"Howard",      pts:11 }, { round:"R32", opp:"St Louis",     pts:15 }],
@@ -1579,6 +1585,9 @@ const GAME_LOG = {
   "Bishop Boswell":       [{ round:"R64", opp:"Miami OH",    pts:5  }, { round:"R32", opp:"Virginia",     pts:13 }],
   "Jaylen Carey":         [{ round:"R64", opp:"Miami OH",    pts:0  }, { round:"R32", opp:"Virginia",     pts:10 }],
   "Jamarion Batemon":     [{ round:"R64", opp:"Tenn St",     pts:8  }, { round:"R32", opp:"Kentucky",     pts:3  }],
+  "Tavion Banks":        [{ round:"R64", opp:"Clemson",     pts:6  }, { round:"R32", opp:"Florida",      pts:20 }],
+  "Bennett Stirtz":      [{ round:"R64", opp:"Clemson",     pts:16 }, { round:"R32", opp:"Florida",      pts:13 }],
+  "Cooper Koch":         [{ round:"R64", opp:"Clemson",     pts:8  }, { round:"R32", opp:"Florida",      pts:12 }],
   "Ja'Kobi Gillespie":    [{ round:"R64", opp:"Miami OH",    pts:29 }, { round:"R32", opp:"Virginia",     pts:21 }],
   // Virginia (eliminated R32)
   "Thijs De Ridder":      [{ round:"R64", opp:"Wright St",   pts:10 }, { round:"R32", opp:"Tennessee",    pts:22 }],
@@ -1594,6 +1603,7 @@ const GAME_LOG = {
   "Mouhamed Dioubate":    [{ round:"R64", opp:"Santa Clara", pts:17 }, { round:"R32", opp:"Iowa State",   pts:4  }],
   "Denzel Aberdeen":      [{ round:"R64", opp:"Santa Clara", pts:16 }, { round:"R32", opp:"Iowa State",   pts:20 }],
   // Iowa State
+  "Blake Buchanan":      [{ round:"R64", opp:"Tenn St",     pts:11 }, { round:"R32", opp:"Kentucky",     pts:9  }],
   "Tamin Lipsey":         [{ round:"R64", opp:"Tenn St",     pts:3  }, { round:"R32", opp:"Kentucky",     pts:26 }],
   "Milan Momcilovic":     [{ round:"R64", opp:"Tenn St",     pts:17 }, { round:"R32", opp:"Kentucky",     pts:20 }],
   "Nate Heise":           [{ round:"R64", opp:"Tenn St",     pts:22 }, { round:"R32", opp:"Kentucky",     pts:12 }],
