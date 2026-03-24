@@ -988,7 +988,7 @@ function viewTeam(name, from) {
     <div style="text-align:right"><div class="dp">${t.totalPts}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px">Total Points</div></div>`;
   document.getElementById('d-alive').textContent = `${alive} active`;
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
-    <div class="pc ${p.active?'':\'elim'}${p.isLive?' live':''}" data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerCardClick(this)" style="cursor:pointer">
+    <div class="pc ${p.active?'':'elim'}${p.isLive?' live':''}" data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerCardClick(this)" style="cursor:pointer">
       ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
       <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
       <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
