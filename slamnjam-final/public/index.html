@@ -96,6 +96,9 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--orange),var(--gold));transition:width .6s}
 
 /* ── PLAYER ROWS ── */
+.prd-btn{padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.prd-btn:hover{border-color:var(--orange);color:var(--orange)}
+.prd-btn.prd-active{background:var(--orange);border-color:var(--orange);color:#000}
 .pr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);border-radius:6px;transition:background .15s}
 .pr:last-child{border-bottom:none}
 .pr[onclick]:hover{background:rgba(255,255,255,.05);padding-left:6px}
@@ -523,7 +526,7 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
 
 <!-- ══ PLAYERS ══ -->
 <div class="page" id="page-players">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px">ALL PLAYERS</h2>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <input class="srch" placeholder="Player or school…" oninput="fpTxt(this.value)">
@@ -532,8 +535,30 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
       </select>
     </div>
   </div>
+  <!-- Draft round filter row -->
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;white-space:nowrap">Draft:</span>
+    <button id="prd-0" class="prd-btn prd-active" onclick="fpRound(0)" title="Default view — all players sorted by total pts">All Pts</button>
+    <button id="prd-byround" class="prd-btn" onclick="fpRound('byround')" title="Group all players by draft round, sorted by pts within each round">By Round</button>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 2px"></div>
+    <button id="prd-1" class="prd-btn" onclick="fpRound(1)" title="Show only each team's 1st pick, sorted by pts">Rd 1</button>
+    <button id="prd-2" class="prd-btn" onclick="fpRound(2)">Rd 2</button>
+    <button id="prd-3" class="prd-btn" onclick="fpRound(3)">Rd 3</button>
+    <button id="prd-4" class="prd-btn" onclick="fpRound(4)">Rd 4</button>
+    <button id="prd-5" class="prd-btn" onclick="fpRound(5)">Rd 5</button>
+    <button id="prd-6" class="prd-btn" onclick="fpRound(6)">Rd 6</button>
+    <button id="prd-7" class="prd-btn" onclick="fpRound(7)">Rd 7</button>
+    <button id="prd-8" class="prd-btn" onclick="fpRound(8)">Rd 8</button>
+    <button id="prd-9" class="prd-btn" onclick="fpRound(9)">Rd 9</button>
+    <button id="prd-10" class="prd-btn" onclick="fpRound(10)">Rd 10</button>
+    <button id="prd-11" class="prd-btn" onclick="fpRound(11)">Rd 11</button>
+    <button id="prd-12" class="prd-btn" onclick="fpRound(12)">Rd 12</button>
+    <button id="prd-13" class="prd-btn" onclick="fpRound(13)">Rd 13</button>
+    <button id="prd-14" class="prd-btn" onclick="fpRound(14)">Rd 14</button>
+    <button id="prd-15" class="prd-btn" onclick="fpRound(15)">Rd 15</button>
+  </div>
   <div class="card">
-    <table class="tbl"><thead><tr><th>#</th><th>Player</th><th>School</th><th>Draft Team</th><th class="r">Pts</th><th class="r">Status</th></tr></thead>
+    <table class="tbl"><thead><tr><th>#</th><th>Player</th><th>School</th><th>Draft Team</th><th style="text-align:center;color:var(--muted);font-size:11px">PICK</th><th class="r">Pts</th><th class="r">Status</th></tr></thead>
     <tbody id="players-body"></tbody></table>
   </div>
 </div>
@@ -770,7 +795,7 @@ let BRACKET  = null;
 let GAME_LOG = {};
 let HISTORY  = [];
 let adminTok = localStorage.getItem('snj_adm') || null;
-let pTxt = '', pSta = 'all';
+let pTxt = '', pSta = 'all', pRound = 0;  // pRound: 0=all, 1-15=draft round
 let prevFrom = 'teams'; // for back button
 // FIX: Default to firstfour — it's Mar 17-18 (play-in days)
 let currentRegion = 'firstfour';
@@ -1074,22 +1099,53 @@ function renderRoundBreakdown(t) {
 // ═══════════════════════════════════════════════
 // PLAYERS PAGE
 // ═══════════════════════════════════════════════
+function playerRow(p, rankLabel) {
+  return `<tr data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerRowClick(this.getAttribute('data-pname'))" style="cursor:pointer">
+    <td class="rnk">${rankLabel}</td>
+    <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px"><span style="display:inline-flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend)}</span></td>
+    <td style="color:var(--muted);font-size:12px">${p.school}</td>
+    <td><span class="tn" onclick="viewTeam('${esc(p.teamName)}','players')" style="font-size:12px">${p.teamName}</span></td>
+    <td style="text-align:center"><span style="font-size:11px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.06);border-radius:4px;padding:2px 6px">${p.round?'Rd '+p.round:'–'}</span></td>
+    <td class="pts" style="font-size:18px">${p.pts}</td>
+    <td style="text-align:right"><span class="chip ${p.active?'':'out'}">${p.active?'<span class="status-check">✓ </span>Active':'✗ Out'}</span></td>
+  </tr>`;
+}
+
 function renderPlayers() {
-  const all = TEAMS.flatMap(t=>t.players.map(p=>({...p,teamName:t.name})))
+  const allPlayers = TEAMS.flatMap(t=>t.players.map(p=>({...p,teamName:t.name})))
     .filter(p=>{
       const m = p.name.toLowerCase().includes(pTxt)||p.school.toLowerCase().includes(pTxt)||p.teamName.toLowerCase().includes(pTxt);
       const s = pSta==='all'||(pSta==='active'&&p.active)||(pSta==='eliminated'&&!p.active);
       return m&&s;
-    }).sort((a,b)=>b.pts-a.pts);
-  document.getElementById('players-body').innerHTML = all.map((p,i)=>`
-    <tr data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerRowClick(this.getAttribute('data-pname'))" style="cursor:pointer">
-      <td class="rnk">${i+1}</td>
-      <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px"><span style="display:inline-flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend)}</span></td>
-      <td style="color:var(--muted);font-size:12px">${p.school}</td>
-      <td><span class="tn" onclick="viewTeam('${esc(p.teamName)}','players')" style="font-size:12px">${p.teamName}</span></td>
-      <td class="pts" style="font-size:18px">${p.pts}</td>
-      <td style="text-align:right"><span class="chip ${p.active?'':'out'}">${p.active?'<span class="status-check">✓ </span>Active':'✗ Out'}</span></td>
-    </tr>`).join('');
+    });
+
+  const tbody = document.getElementById('players-body');
+
+  if (pRound === 'byround') {
+    // Group by round, sorted by pts within each round
+    let html = '';
+    for (let rd = 1; rd <= 15; rd++) {
+      const group = allPlayers.filter(p=>p.round===rd).sort((a,b)=>b.pts-a.pts);
+      if (!group.length) continue;
+      // Round header row
+      html += `<tr style="background:rgba(255,184,0,.06);pointer-events:none">
+        <td colspan="7" style="padding:8px 12px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--gold)">
+          ROUND ${rd} PICKS
+          <span style="font-size:11px;font-weight:400;letter-spacing:0;color:var(--muted);margin-left:8px;font-family:inherit">
+            — top scorer: ${group[0].name} (${group[0].pts} pts)
+          </span>
+        </td>
+      </tr>`;
+      group.forEach((p,i) => { html += playerRow(p, i+1); });
+    }
+    tbody.innerHTML = html;
+  } else {
+    // Standard view — filter by specific round or show all, sorted by pts
+    const filtered = allPlayers
+      .filter(p => pRound===0 || p.round===pRound)
+      .sort((a,b)=>b.pts-a.pts);
+    tbody.innerHTML = filtered.map((p,i) => playerRow(p, i+1)).join('');
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -2074,6 +2130,14 @@ function filterStandings(v){ renderStandings([...TEAMS].sort((a,b)=>b.totalPts-a
 function filterTCards(v){ renderTCards([...TEAMS].sort((a,b)=>b.totalPts-a.totalPts),v); }
 function fpTxt(v){ pTxt=v.toLowerCase(); renderPlayers(); }
 function fpSta(v){ pSta=v; renderPlayers(); }
+function fpRound(v){
+  pRound=v;
+  // Update active button styling
+  document.querySelectorAll('.prd-btn').forEach(b=>b.classList.remove('prd-active'));
+  const btn = document.getElementById('prd-'+v);
+  if(btn) btn.classList.add('prd-active');
+  renderPlayers();
+}
 
 // ═══════════════════════════════════════════════
 // BOX SCORE MODAL
