@@ -38,7 +38,8 @@ app.use(express.static(path.join(__dirname, 'public'), {
 // ─── Paths ────────────────────────────────────────────
 const DATA       = path.join(__dirname, 'data');
 const ROSTER_F   = path.join(DATA, 'rosters.json');
-const OVERRIDE_F = path.join(DATA, 'overrides.json');
+const OVERRIDE_F   = path.join(DATA, 'overrides.json');
+const COMPLETED_F  = path.join(DATA, 'completed.json');  // persists new-round pts across restarts
 const BRACKET_F  = path.join(DATA, 'bracket.json');
 const HISTORY_F  = path.join(DATA, 'history.json');
 const AVERAGES_F = path.join(__dirname, 'data', 'averages.json');
@@ -109,9 +110,9 @@ function fetchURL(url) {
 
 // ════════════════════════════════════════════════════════
 //  ESPN SCORING CACHE
-// In-memory cache of pts scored TODAY in completed games (resets on server restart)
-// Used to persist Sweet 16 / Elite 8 pts after game goes final without touching overrides.json
-const completedTodayCache = {};
+// Completed-game pts for hardcoded players — persisted to file so server restarts don't lose data.
+// Cleared manually via admin button between rounds after HARDCODED is updated.
+let completedTodayCache = readJSON(COMPLETED_F, {});
 // ════════════════════════════════════════════════════════
 let scoreCache     = {};
 let liveHalfCache  = new Set();
@@ -301,9 +302,10 @@ async function fetchLiveScores() {
                 // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
                 if (isFinal && pts > 0) {
                   if (HARDCODED_OVERRIDES[name] !== undefined) {
-                    // Hardcoded player finished a new round — store in memory cache.
-                    // This persists their score until server restarts (between rounds).
+                    // Hardcoded player finished a new round — persist to file.
+                    // Survives server restarts. Cleared between rounds via admin button.
                     completedTodayCache[name] = pts;
+                    writeJSON(COMPLETED_F, completedTodayCache);
                   } else {
                     // Non-hardcoded player — save to file.
                     savedOverrides[name] = pts;
@@ -1060,8 +1062,8 @@ function buildBlankBracket() {
         { id:'e12', date:'Sun Mar 23', status:'STATUS_FINAL', t1:{seed:7,name:'UCLA',score:57,won:false},          t2:{seed:2,name:'UConn',score:73,won:true} }
       ],
       r16:  [
-        { id:'e13', date:'Fri Mar 28', time:'9:45 PM ET', tv:'CBS',    t1:{seed:1,name:'Duke'},          t2:{seed:5,name:"St. John's"} },
-        { id:'e14', date:'Fri Mar 28', time:'7:10 PM ET', tv:'CBS',    t1:{seed:3,name:'Michigan St'},   t2:{seed:2,name:'UConn'} }
+        { id:'e13', date:'Fri Mar 28', time:'7:10 PM ET', tv:'CBS',    t1:{seed:5,name:"St. John's"}, t2:{seed:1,name:'Duke'} },
+        { id:'e14', date:'Fri Mar 28', time:'9:45 PM ET', tv:'CBS',    t1:{seed:3,name:'Michigan St'},   t2:{seed:2,name:'UConn'} }
       ],
       r8:   [{ id:'e15',t1:tbd(),t2:tbd() }]
     },
@@ -1083,8 +1085,8 @@ function buildBlankBracket() {
         { id:'w12', date:'Sun Mar 23', status:'STATUS_FINAL', t1:{seed:7,name:'Miami FL',score:69,won:false},     t2:{seed:2,name:'Purdue',score:79,won:true} }
       ],
       r16:  [
-        { id:'w13', date:'Thu Mar 27', time:'9:45 PM ET', tv:'CBS',   t1:{seed:1,name:'Arizona'},    t2:{seed:4,name:'Arkansas'} },
-        { id:'w14', date:'Thu Mar 27', time:'7:10 PM ET', tv:'TBS',   t1:{seed:11,name:'Texas'},     t2:{seed:2,name:'Purdue'} }
+        { id:'w13', date:'Thu Mar 27', time:'7:10 PM ET', tv:'CBS',   t1:{seed:11,name:'Texas'},     t2:{seed:2,name:'Purdue'} },
+        { id:'w14', date:'Thu Mar 27', time:'9:45 PM ET', tv:'CBS',   t1:{seed:4,name:'Arkansas'},   t2:{seed:1,name:'Arizona'} }
       ],
       r8:   [{ id:'w15',t1:tbd(),t2:tbd() }]
     },
@@ -1106,8 +1108,8 @@ function buildBlankBracket() {
         { id:'s12', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:10,name:'Texas A&M',score:57,won:false},  t2:{seed:2,name:'Houston',score:88,won:true} }
       ],
       r16:  [
-        { id:'s13', date:'Thu Mar 27', time:'7:35 PM ET', tv:'TNT',   t1:{seed:9,name:'Iowa'},       t2:{seed:4,name:'Nebraska'} },
-        { id:'s14', date:'Thu Mar 27', time:'2:45 PM ET', tv:'TNT',   t1:{seed:3,name:'Illinois'},   t2:{seed:2,name:'Houston'} }
+        { id:'s13', date:'Thu Mar 27', time:'7:30 PM ET', tv:'TBS, truTV', t1:{seed:9,name:'Iowa'},     t2:{seed:4,name:'Nebraska'} },
+        { id:'s14', date:'Thu Mar 27', time:'10:05 PM ET', tv:'TBS, truTV', t1:{seed:3,name:'Illinois'}, t2:{seed:2,name:'Houston'} }
       ],
       r8:   [{ id:'s15',t1:tbd(),t2:tbd() }]
     },
@@ -1129,8 +1131,8 @@ function buildBlankBracket() {
         { id:'m12', date:'Sun Mar 23', status:'STATUS_FINAL', t1:{seed:7,name:'Kentucky',score:63,won:false},     t2:{seed:2,name:'Iowa State',score:82,won:true} }
       ],
       r16:  [
-        { id:'m13', date:'Fri Mar 28', time:'7:35 PM ET', tv:'TBS',   t1:{seed:1,name:'Michigan'},    t2:{seed:4,name:'Alabama'} },
-        { id:'m14', date:'Fri Mar 28', time:'10:10 PM ET', tv:'TBS',  t1:{seed:6,name:'Tennessee'},   t2:{seed:2,name:'Iowa State'} }
+        { id:'m13', date:'Fri Mar 28', time:'7:35 PM ET', tv:'TBS, truTV', t1:{seed:4,name:'Alabama'},   t2:{seed:1,name:'Michigan'} },
+        { id:'m14', date:'Fri Mar 28', time:'10:10 PM ET', tv:'TBS, truTV', t1:{seed:6,name:'Tennessee'}, t2:{seed:2,name:'Iowa State'} }
       ],
       r8:   [{ id:'m15',t1:tbd(),t2:tbd() }]
     },
@@ -2631,7 +2633,9 @@ app.post('/api/admin/override', requireAdmin, (req, res) => {
 
 app.post('/api/admin/clear-overrides', requireAdmin, (req, res) => {
   writeJSON(OVERRIDE_F, {});
-  res.json({ ok: true, message: 'overrides.json cleared — ready for next round' });
+  writeJSON(COMPLETED_F, {});
+  completedTodayCache = {};
+  res.json({ ok: true, message: 'Round data cleared — ready for next round' });
 });
 
 app.delete('/api/admin/override/:playerName', requireAdmin, (req, res) => {
