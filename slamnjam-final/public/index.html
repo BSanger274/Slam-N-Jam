@@ -2807,18 +2807,23 @@ function refreshTicker() {
   const MONTH_NUM = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
   allMatchups.forEach(m => {
     if (!m?.t1||!m?.t2) return;
+    // Skip TBD matchups — teams not yet determined
+    const t1name = m.t1?.name||''; const t2name = m.t2?.name||'';
+    if (!t1name||t1name==='TBD'||!t2name||t2name==='TBD') return;
     const hasScore = m.t1.score!=null||m.t2.score!=null;
-    const hasFinal = m.t1.won!=null;
-    if (hasScore&&hasFinal) {
-      // Skip finals older than 1 day — keeps ticker clean between rounds
-      const dp = (m.date||'').split(' ');
-      const gMo = MONTH_NUM[dp[1]]||0, gDy = parseInt(dp[2])||0;
-      const daysDiff = (todayMo - gMo) * 30 + (todayDy - gDy);
+    const hasFinal = m.status==='STATUS_FINAL'||m.t1.won!=null;
+    // Determine game date parts for age check
+    const dp = (m.date||'').split(' ');
+    const gMo = MONTH_NUM[dp[1]]||0, gDy = parseInt(dp[2])||0;
+    const daysDiff = (todayMo - gMo) * 30 + (todayDy - gDy);
+    if (hasFinal) {
+      // Only show finals from last 24h — drop completed R64/R32 games
       if (daysDiff <= 1) finalItems.push(buildTickerItem(m,'final'));
     } else if (hasScore) {
       liveItems.push(buildTickerItem(m,'live'));
     } else {
-      upcomingItems.push(buildTickerItem(m,'upcoming'));
+      // Only show upcoming games scheduled for today or future
+      if (daysDiff <= 0) upcomingItems.push(buildTickerItem(m,'upcoming'));
     }
   });
 
