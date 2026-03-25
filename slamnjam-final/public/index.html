@@ -557,6 +557,11 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
     <button id="prd-14" class="prd-btn" onclick="fpRound(14)">Rd 14</button>
     <button id="prd-15" class="prd-btn" onclick="fpRound(15)">Rd 15</button>
   </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Sort:</span>
+    <button id="psort-pick" class="prd-btn prd-active" onclick="fpSort('pick')" title="Sort by overall draft pick number">By Pick #</button>
+    <button id="psort-pts" class="prd-btn" onclick="fpSort('pts')" title="Sort by total points scored">By Points</button>
+  </div>
   <div class="card">
     <table class="tbl"><thead><tr><th>#</th><th>Player</th><th>School</th><th>Draft Team</th><th style="text-align:center;color:var(--muted);font-size:11px">PICK</th><th class="r">Pts</th><th class="r">Status</th></tr></thead>
     <tbody id="players-body"></tbody></table>
@@ -795,7 +800,7 @@ let BRACKET  = null;
 let GAME_LOG = {};
 let HISTORY  = [];
 let adminTok = localStorage.getItem('snj_adm') || null;
-let pTxt = '', pSta = 'all', pRound = 0;  // pRound: 0=all, 1-15=draft round
+let pTxt = '', pSta = 'all', pRound = 0, pSort = 'pick';  // pSort: 'pick' or 'pts'
 let prevFrom = 'teams'; // for back button
 // FIX: Default to firstfour — it's Mar 17-18 (play-in days)
 let currentRegion = 'firstfour';
@@ -1105,7 +1110,7 @@ function playerRow(p, rankLabel) {
     <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px"><span style="display:inline-flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend)}</span></td>
     <td style="color:var(--muted);font-size:12px">${p.school}</td>
     <td><span class="tn" onclick="viewTeam('${esc(p.teamName)}','players')" style="font-size:12px">${p.teamName}</span></td>
-    <td style="text-align:center"><span style="font-size:11px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.06);border-radius:4px;padding:2px 6px">${p.round?'Rd '+p.round:'–'}</span></td>
+    <td style="text-align:center"><span style="font-size:11px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.06);border-radius:4px;padding:2px 6px" title="Round ${p.round||'–'}">${p.overallPick?'#'+p.overallPick:(p.round?'Rd '+p.round:'–')}</span></td>
     <td class="pts" style="font-size:18px">${p.pts}</td>
     <td style="text-align:right"><span class="chip ${p.active?'':'out'}">${p.active?'<span class="status-check">✓ </span>Active':'✗ Out'}</span></td>
   </tr>`;
@@ -1125,14 +1130,15 @@ function renderPlayers() {
     // Group by round, sorted by pts within each round
     let html = '';
     for (let rd = 1; rd <= 15; rd++) {
-      const group = allPlayers.filter(p=>p.round===rd).sort((a,b)=>b.pts-a.pts);
+      const group = allPlayers.filter(p=>p.round===rd).sort((a,b)=> pSort==='pts' ? b.pts-a.pts : (a.overallPick||999)-(b.overallPick||999));
       if (!group.length) continue;
       // Round header row
+      const topScorer = [...group].sort((a,b)=>b.pts-a.pts)[0];
       html += `<tr style="background:rgba(255,184,0,.06);pointer-events:none">
         <td colspan="7" style="padding:8px 12px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--gold)">
           ROUND ${rd} PICKS
           <span style="font-size:11px;font-weight:400;letter-spacing:0;color:var(--muted);margin-left:8px;font-family:inherit">
-            — top scorer: ${group[0].name} (${group[0].pts} pts)
+            — top scorer: ${topScorer.name} (${topScorer.pts} pts · ${topScorer.teamName})
           </span>
         </td>
       </tr>`;
@@ -1143,7 +1149,7 @@ function renderPlayers() {
     // Standard view — filter by specific round or show all, sorted by pts
     const filtered = allPlayers
       .filter(p => pRound===0 || p.round===pRound)
-      .sort((a,b)=>b.pts-a.pts);
+      .sort((a,b)=> pSort==='pts' ? b.pts-a.pts : (a.overallPick||999)-(b.overallPick||999));
     tbody.innerHTML = filtered.map((p,i) => playerRow(p, i+1)).join('');
   }
 }
@@ -2130,6 +2136,13 @@ function filterStandings(v){ renderStandings([...TEAMS].sort((a,b)=>b.totalPts-a
 function filterTCards(v){ renderTCards([...TEAMS].sort((a,b)=>b.totalPts-a.totalPts),v); }
 function fpTxt(v){ pTxt=v.toLowerCase(); renderPlayers(); }
 function fpSta(v){ pSta=v; renderPlayers(); }
+function fpSort(v){
+  pSort=v;
+  document.querySelectorAll('[id^="psort-"]').forEach(b=>b.classList.remove('prd-active'));
+  const btn=document.getElementById('psort-'+v);
+  if(btn) btn.classList.add('prd-active');
+  renderPlayers();
+}
 function fpRound(v){
   pRound=v;
   // Update active button styling
