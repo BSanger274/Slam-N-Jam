@@ -1868,13 +1868,13 @@ const GAME_LOG = {
   "Devin McGlockton":     [{ round:"R64", opp:"McNeese St",  pts:15 }, { round:"R32", opp:"Nebraska",     pts:0  }],
   "Jalen Washington":     [{ round:"R64", opp:"McNeese St",  pts:4  }, { round:"R32", opp:"Nebraska",     pts:6  }],
   "AK Okereke":           [{ round:"R64", opp:"McNeese St",  pts:16 }, { round:"R32", opp:"Nebraska",     pts:0  }],
-  "Tyler Nickel":         [{ round:"R64", opp:"McNeese St",  pts:28 }, { round:"R32", opp:"Nebraska",     pts:0  }],
+  "Tyler Nickel":         [{ round:"R64", opp:"McNeese St",  pts:12 }, { round:"R32", opp:"Nebraska",     pts:16 }],
   // Nebraska
   "Pryce Sandfort":       [{ round:"R64", opp:"Troy",        pts:23 }, { round:"R32", opp:"Vanderbilt",   pts:15 }],
   "Brice Williams":       [{ round:"R64", opp:"Troy",        pts:22 }, { round:"R32", opp:"Vanderbilt",   pts:0  }],
   "Juwan Gary":           [{ round:"R64", opp:"Troy",        pts:24 }, { round:"R32", opp:"Vanderbilt",   pts:0  }],
   "Sam Hoiberg":          [{ round:"R64", opp:"Troy",        pts:12 }, { round:"R32", opp:"Vanderbilt",   pts:0  }],
-  "Braden Frager":        [{ round:"R64", opp:"Troy",        pts:28 }, { round:"R32", opp:"Vanderbilt",   pts:0  }],
+  "Braden Frager":        [{ round:"R64", opp:"Troy",        pts:13 }, { round:"R32", opp:"Vanderbilt",   pts:15 }],
   // VCU (eliminated R32)
   "Terrence Hill Jr.":    [{ round:"R64", opp:"N Carolina",  pts:34 }, { round:"R32", opp:"Illinois",     pts:17 }],
   "Jadrian Tracey":       [{ round:"R64", opp:"N Carolina",  pts:0  }, { round:"R32", opp:"Illinois",     pts:7  }],
@@ -2038,6 +2038,11 @@ const GAME_LOG = {
   "TJ Burch":            [{ round:"R64", opp:"Virginia",    pts:15 }],
 
   "Cruz Davis":          [{ round:"R64", opp:"Alabama",     pts:14 }],
+
+  "Blue Cain":            [{ round:"R64", opp:"St Louis",    pts:6  }],
+  "Robert Wright III":    [{ round:"R64", opp:"Texas",       pts:14 }],
+  "Marcus Millender":     [{ round:"R64", opp:"St Louis",    pts:13 }],
+  "Victor Valdes":        [{ round:"R64", opp:"Nebraska",    pts:14 }],
 
 };
 
