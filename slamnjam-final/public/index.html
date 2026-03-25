@@ -2800,16 +2800,32 @@ function refreshTicker() {
   allMatchups.sort((a,b)=>sortKey(a)-sortKey(b));
 
   const liveItems=[], finalItems=[], upcomingItems=[];
+  // Use a simple cutoff: today's date parts for comparison
+  const todayDate = new Date();
+  const todayMo = todayDate.getMonth()+1;
+  const todayDy = todayDate.getDate();
+  const MONTH_NUM = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
   allMatchups.forEach(m => {
     if (!m?.t1||!m?.t2) return;
     const hasScore = m.t1.score!=null||m.t2.score!=null;
     const hasFinal = m.t1.won!=null;
-    if (hasScore&&hasFinal) finalItems.push(buildTickerItem(m,'final'));
-    else if (hasScore)      liveItems.push(buildTickerItem(m,'live'));
-    else                    upcomingItems.push(buildTickerItem(m,'upcoming'));
+    if (hasScore&&hasFinal) {
+      // Skip finals older than 1 day — keeps ticker clean between rounds
+      const dp = (m.date||'').split(' ');
+      const gMo = MONTH_NUM[dp[1]]||0, gDy = parseInt(dp[2])||0;
+      const daysDiff = (todayMo - gMo) * 30 + (todayDy - gDy);
+      if (daysDiff <= 1) finalItems.push(buildTickerItem(m,'final'));
+    } else if (hasScore) {
+      liveItems.push(buildTickerItem(m,'live'));
+    } else {
+      upcomingItems.push(buildTickerItem(m,'upcoming'));
+    }
   });
 
-  const allItems = [...liveItems,...finalItems,...upcomingItems];
+  // Upcoming first (between rounds), then live, then recent finals
+  const allItems = liveItems.length
+    ? [...liveItems, ...upcomingItems, ...finalItems]
+    : [...upcomingItems, ...finalItems];
   if (!allItems.length) return;
 
   const spacer = '<span style="display:inline-block;width:80px;flex-shrink:0"></span>';
