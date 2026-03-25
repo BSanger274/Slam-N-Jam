@@ -2811,18 +2811,16 @@ function refreshTicker() {
     const t1name = m.t1?.name||''; const t2name = m.t2?.name||'';
     if (!t1name||t1name==='TBD'||!t2name||t2name==='TBD') return;
     const hasScore = m.t1.score!=null||m.t2.score!=null;
-    const hasFinal = m.status==='STATUS_FINAL'||m.t1.won!=null;
-    // Determine game date parts for age check
-    const dp = (m.date||'').split(' ');
-    const gMo = MONTH_NUM[dp[1]]||0, gDy = parseInt(dp[2])||0;
-    const daysDiff = (todayMo - gMo) * 30 + (todayDy - gDy);
-    if (hasFinal) {
-      // Only show finals from last 24h — drop completed R64/R32 games
-      if (daysDiff <= 1) finalItems.push(buildTickerItem(m,'final'));
-    } else if (hasScore) {
+    const hasFinal = m.status==='STATUS_FINAL'||m.t1.won!=null||m.t2.won!=null;
+    // Drop all completed games from ticker — only show live and upcoming
+    if (hasFinal) return;
+    if (hasScore && !hasFinal) {
       liveItems.push(buildTickerItem(m,'live'));
     } else {
       // Only show upcoming games scheduled for today or future
+      const dp = (m.date||'').split(' ');
+      const gMo = MONTH_NUM[dp[1]]||0, gDy = parseInt(dp[2])||0;
+      const daysDiff = (todayMo - gMo) * 30 + (todayDy - gDy);
       if (daysDiff <= 0) upcomingItems.push(buildTickerItem(m,'upcoming'));
     }
   });
