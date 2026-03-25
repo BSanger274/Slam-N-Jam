@@ -1245,6 +1245,7 @@ const HARDCODED_OVERRIDES = {
   // VCU eliminated in R32 — final totals:
   "Terrence Hill Jr.": 51,   // VCU (34 R64 + 17 R32) ELIM
   "Jadrian Tracey":         7,  // VCU (7 R32 vs Illinois) ELIM
+  "B.J. Edwards":           0,  // SMU (0 pts FF vs Miami OH) ELIM
   "Terrence Hill":         51,  // VCU (17 R64 vs N Carolina + 34 R32 vs Illinois) ELIM
   "Lazar Djokovic":    17,   // VCU (15 R64 vs N Carolina + 2 R32 vs Illinois) ELIM
   "Henri Veesaar":     26,   // UNC (eliminated R64)
@@ -2043,6 +2044,14 @@ const GAME_LOG = {
   "Robert Wright III":    [{ round:"R64", opp:"Texas",       pts:14 }],
   "Marcus Millender":     [{ round:"R64", opp:"St Louis",    pts:13 }],
   "Victor Valdes":        [{ round:"R64", opp:"Nebraska",    pts:14 }],
+
+  "Nasir Whitlock":       [{ round:"FF",  opp:"Prairie View", pts:5  }],
+  "Derek Dixon":          [{ round:"R64", opp:"VCU",          pts:11 }],
+  "AJ Dybantsa":          [{ round:"R64", opp:"Texas",        pts:35 }],
+  "Nick Boyd":            [{ round:"R64", opp:"High Point",   pts:27 }],
+  "Jeremiah Wilkinson":   [{ round:"R64", opp:"St Louis",     pts:30 }],
+  "B.J. Edwards":         [{ round:"FF",  opp:"Miami OH",     pts:0  }],
+  "TJ Power":             [{ round:"R64", opp:"Illinois",     pts:6  }],
 
 };
 
