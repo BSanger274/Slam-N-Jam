@@ -641,13 +641,31 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px">
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px">ADMIN PANEL</h2>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-s" onclick="forceRefresh()" title="Force ESPN refresh">⚡ Force Refresh</button>
-        <button class="btn btn-s" onclick="clearOverrides()" title="Clear saved round pts — run AFTER updating server.js HARDCODED between rounds" style="background:rgba(255,80,80,.15);border-color:rgba(255,80,80,.4);color:#ff8080">🗑 Clear Round Data</button>
-        <button class="btn btn-s" onclick="archiveSeason()" style="background:rgba(255,184,0,.15);border-color:rgba(255,184,0,.4);color:var(--gold)">🏆 Archive Season</button>
+        <button class="btn btn-s" onclick="forceRefresh()" title="⚡ Force Refresh&#10;&#10;Manually triggers an immediate ESPN data pull.&#10;Use when scores seem stale or stuck.&#10;Normally runs automatically every 30 seconds.">⚡ Force Refresh</button>
+        <button class="btn btn-s" onclick="clearOverrides()" title="🗑 Clear Round Data&#10;&#10;Clears saved game pts from the current round.&#10;&#10;WHEN TO USE: After each round ends and you have&#10;pushed the updated server.js with new HARDCODED&#10;totals to GitHub. Press this ONCE after the new&#10;deploy goes live to reset the counter cleanly&#10;for the next round.&#10;&#10;DO NOT press mid-round — it will erase pts&#10;scored in the current round." style="background:rgba(255,80,80,.15);border-color:rgba(255,80,80,.4);color:#ff8080">🗑 Clear Round Data</button>
+        <button class="btn btn-s" onclick="toggleAdminHelp()" title="View admin user manual" style="background:rgba(100,160,255,.15);border-color:rgba(100,160,255,.4);color:#7ab4ff">📖 Help</button>
+        <button class="btn btn-s" onclick="archiveSeason()" style="background:rgba(255,184,0,.15);border-color:rgba(255,184,0,.4);color:var(--gold)" title="🏆 Archive Season&#10;&#10;Saves the current season results to history.&#10;Use at the very end of the tournament only.">🏆 Archive Season</button>
         <button class="btn btn-s" onclick="doLogout()">Logout</button>
       </div>
     </div>
     <div id="archive-status" style="font-size:12px;color:var(--muted);padding:6px 0;min-height:20px"></div>
+    <div id="admin-help" style="display:none;background:rgba(100,160,255,.07);border:1px solid rgba(100,160,255,.25);border-radius:12px;padding:18px 20px;margin-bottom:16px;font-size:13px;line-height:1.7">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#7ab4ff;margin-bottom:12px">📖 ADMIN USER MANUAL</div>
+      <div style="display:grid;gap:14px">
+        <div><span style="color:var(--orange);font-weight:700">⚡ Force Refresh</span><br>Manually pulls the latest scores from ESPN. Scores update automatically every 30 seconds — only use this if something looks stuck or stale.</div>
+        <div><span style="color:#ff8080;font-weight:700">🗑 Clear Round Data</span><br>Clears the pts saved from the current/last round. <strong style="color:#fff">Only press this once after:</strong> (1) a round has fully completed, (2) you've sent box scores and Claude updated server.js, and (3) you've pushed to GitHub and the new deploy is live. This resets the counter so the next round starts clean.<br><span style="color:var(--red)">⚠ Never press mid-round — it will erase live pts.</span></div>
+        <div><span style="color:var(--green);font-weight:700">🏆 Archive Season</span><br>Saves final standings to the Hall of Fame history. Use this only at the very end of the tournament after the champion is crowned.</div>
+        <div><span style="color:var(--gold);font-weight:700">Between-Round Workflow</span><br>          <ol style="margin:6px 0 0 16px;padding:0">
+            <li>Games end → site tracks pts live automatically ✓</li>
+            <li>Send Claude the box scores</li>
+            <li>Claude updates server.js HARDCODED totals</li>
+            <li>Push server.js to GitHub → Render redeploys</li>
+            <li>Press <strong>🗑 Clear Round Data</strong> once</li>
+            <li>Done — next round starts clean ✓</li>
+          </ol>
+        </div>
+      </div>
+    </div>
     <div class="tabs">
       <div class="tab active" onclick="admTab('roster')">📋 Roster Upload</div>
       <div class="tab" onclick="admTab('overrides')">✏️ Score Overrides</div>
@@ -1972,6 +1990,11 @@ async function forceRefresh() {
     document.getElementById('lupd').textContent = 'Force refreshed!';
     setTimeout(fetchAll, 500);
   } catch { alert('Server error'); }
+}
+
+function toggleAdminHelp() {
+  const el = document.getElementById('admin-help');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 async function clearOverrides() {
