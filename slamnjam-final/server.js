@@ -1245,8 +1245,8 @@ const HARDCODED_OVERRIDES = {
   // VCU eliminated in R32 — final totals:
   "Terrence Hill Jr.": 51,   // VCU (34 R64 + 17 R32) ELIM
   "Jadrian Tracey":         7,  // VCU (7 R32 vs Illinois) ELIM
-  "Terrence Hill":         34,  // VCU (17 R64 vs N Carolina + 17 R32 vs Illinois) ELIM
-  "Lazar Djokovic":    19,   // VCU (17 R64 vs N Carolina + 2 R32 vs Illinois) ELIM
+  "Terrence Hill":         51,  // VCU (17 R64 vs N Carolina + 34 R32 vs Illinois) ELIM
+  "Lazar Djokovic":    17,   // VCU (15 R64 vs N Carolina + 2 R32 vs Illinois) ELIM
   "Henri Veesaar":     26,   // UNC (eliminated R64)
   "Seth Trimble":      15,   // UNC (eliminated R64)
   "Derek Dixon":       11,   // UNC (eliminated R64)
@@ -1616,9 +1616,9 @@ const GAME_LOG = {
   // VCU (eliminated R32)
   "Terrence Hill Jr.":    [{ round:"R64", opp:"N Carolina",  pts:34 }, { round:"R32", opp:"Illinois",     pts:17 }],
   "Jadrian Tracey":       [{ round:"R64", opp:"N Carolina",  pts:0  }, { round:"R32", opp:"Illinois",     pts:7  }],
-  "Terrence Hill":        [{ round:"R64", opp:"N Carolina",  pts:17 }, { round:"R32", opp:"Illinois",     pts:17 }],
+  "Terrence Hill":        [{ round:"R64", opp:"N Carolina",  pts:17 }, { round:"R32", opp:"Illinois",     pts:34 }],
   "Jarin Stevenson":      [{ round:"R64", opp:"VCU",         pts:11 }],
-  "Lazar Djokovic":       [{ round:"R64", opp:"N Carolina",  pts:17 }, { round:"R32", opp:"Illinois",     pts:2  }],
+  "Lazar Djokovic":       [{ round:"R64", opp:"N Carolina",  pts:15 }, { round:"R32", opp:"Illinois",     pts:2  }],
   // Illinois
   "David Mirkovic":       [{ round:"R64", opp:"Penn",        pts:29 }, { round:"R32", opp:"VCU",          pts:7  }],
   "Keaton Wagler":        [{ round:"R64", opp:"Penn",        pts:18 }, { round:"R32", opp:"VCU",          pts:14 }],
