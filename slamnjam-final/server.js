@@ -130,15 +130,30 @@ let completedTodayCache = (() => {
   return saved;
 })();
 
-// ── AUTO-TOTALS: persistent player pts — loaded from totals.json (committed to repo) ──
+// ── AUTO-TOTALS: persistent player pts — loaded from totals.json, seeded from HARDCODED ──
 // Auto-updated by ESPN feed when games go final. Single source of truth for player pts.
 let playerTotals = readJSON(TOTALS_F, {});
 console.log('[Totals] Loaded ' + Object.keys(playerTotals).length + ' player totals');
+function ensureTotals() {
+  if (Object.keys(playerTotals).length === 0 && Object.keys(HARDCODED_OVERRIDES).length > 0) {
+    console.log('[Totals] totals.json empty — seeding from HARDCODED_OVERRIDES (' + Object.keys(HARDCODED_OVERRIDES).length + ' players)');
+    playerTotals = { ...HARDCODED_OVERRIDES };
+    writeJSON(TOTALS_F, playerTotals);
+  }
+}
 
-// ── AUTO-GAMELOG: persistent game log — loaded from gamelog.json (committed to repo) ──
+// ── AUTO-GAMELOG: persistent game log — loaded from gamelog.json, seeded from GAME_LOG ──
 // Auto-updated by ESPN feed when games go final.
+// GAME_LOG is defined later in this file — seeding happens at first API call via ensureGameLog()
 let playerGameLog = readJSON(GAMELOG_F, {});
 console.log('[GameLog] Loaded ' + Object.keys(playerGameLog).length + ' player game logs');
+function ensureGameLog() {
+  if (Object.keys(playerGameLog).length === 0 && Object.keys(GAME_LOG).length > 0) {
+    console.log('[GameLog] gamelog.json empty — seeding from GAME_LOG constant (' + Object.keys(GAME_LOG).length + ' players)');
+    playerGameLog = JSON.parse(JSON.stringify(GAME_LOG));
+    writeJSON(GAMELOG_F, playerGameLog);
+  }
+}
 
 // Track which ESPN game IDs we've already fully processed (game went final + pts saved)
 let processedGames = readJSON(PROCESSED_F, {});
@@ -2230,6 +2245,7 @@ app.get('/api/gamelog', (req, res) => {
 
 
 async function getMergedScores() {
+  ensureTotals();   // seed from HARDCODED_OVERRIDES if totals.json was empty
   const { scores: live } = await getLiveScores();
   const fileOverrides = readJSON(OVERRIDE_F, {});
   const rosters = readJSON(ROSTER_F, { teams: [] });
@@ -2684,7 +2700,8 @@ app.get('/api/scores', async (req, res) => {
 
 // Game log — auto-accumulated from ESPN, used by player drawer
 app.get('/api/gamelog', (req, res) => {
-  // Merge static GAME_LOG with auto-accumulated playerGameLog
+  ensureGameLog(); // seed from GAME_LOG constant if gamelog.json was empty
+  // Merge static GAME_LOG (base) with auto-accumulated playerGameLog (takes priority)
   const merged = { ...GAME_LOG };
   for (const [name, entries] of Object.entries(playerGameLog)) {
     merged[name] = entries;
