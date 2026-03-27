@@ -112,7 +112,21 @@ function fetchURL(url) {
 //  ESPN SCORING CACHE
 // Completed-game pts for hardcoded players — persisted to file so server restarts don't lose data.
 // Cleared manually via admin button between rounds after HARDCODED is updated.
-let completedTodayCache = readJSON(COMPLETED_F, {});
+// Load completed cache but discard any entries that predate today
+// (prevents R64/R32 stale data from persisting into Sweet 16)
+let completedTodayCache = (() => {
+  const saved = readJSON(COMPLETED_F, {});
+  const meta  = readJSON(COMPLETED_F + '.meta', {});
+  const todayStr = new Date().toDateString();
+  if (meta.date && meta.date !== todayStr) {
+    console.log('[Cache] completedTodayCache is from ' + meta.date + ' — clearing stale data');
+    writeJSON(COMPLETED_F, {});
+    writeJSON(COMPLETED_F + '.meta', { date: todayStr });
+    return {};
+  }
+  writeJSON(COMPLETED_F + '.meta', { date: todayStr });
+  return saved;
+})();
 // ════════════════════════════════════════════════════════
 let scoreCache     = {};
 let liveHalfCache  = new Set();
@@ -301,11 +315,16 @@ async function fetchLiveScores() {
                 if (pts > 0) scores[name] = pts;
                 // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
                 if (isFinal && pts > 0) {
+                  // Only auto-save games from today (prevents stale R64/R32 data polluting cache)
+                  const evDate = ev.date ? new Date(ev.date).toDateString() : null;
+                  const todayStr = new Date().toDateString();
+                  const isToday = !evDate || evDate === todayStr;
                   if (HARDCODED_OVERRIDES[name] !== undefined) {
-                    // Hardcoded player finished a new round — persist to file.
-                    // Survives server restarts. Cleared between rounds via admin button.
-                    completedTodayCache[name] = pts;
-                    writeJSON(COMPLETED_F, completedTodayCache);
+                    // Only persist Sweet 16+ pts scored TODAY
+                    if (isToday) {
+                      completedTodayCache[name] = pts;
+                      writeJSON(COMPLETED_F, completedTodayCache);
+                    }
                   } else {
                     // Non-hardcoded player — save to file.
                     savedOverrides[name] = pts;
