@@ -1234,8 +1234,8 @@ function buildBlankBracket() {
         { id:'w12', date:'Sun Mar 23', status:'STATUS_FINAL', t1:{seed:7,name:'Miami FL',score:69,won:false},     t2:{seed:2,name:'Purdue',score:79,won:true} }
       ],
       r16:  [
-        { id:'w14', date:'Thu Mar 27', time:'9:45 PM ET', tv:'CBS',   t1:{seed:4,name:'Arkansas'},   t2:{seed:1,name:'Arizona'} },
-        { id:'w13', date:'Thu Mar 27', time:'7:10 PM ET', tv:'CBS',   t1:{seed:11,name:'Texas'},     t2:{seed:2,name:'Purdue'} }
+        { id:'w14', date:'Thu Mar 27', time:'9:45 PM ET', tv:'CBS',   status:'STATUS_FINAL', t1:{seed:4,name:'Arkansas',score:77,won:false}, t2:{seed:1,name:'Arizona',score:88,won:true} },
+        { id:'w13', date:'Thu Mar 27', time:'7:10 PM ET', tv:'CBS',   status:'STATUS_FINAL', t1:{seed:11,name:'Texas',score:77,won:false},    t2:{seed:2,name:'Purdue',score:87,won:true} }
       ],
       r8:   [{ id:'w15',t1:tbd(),t2:tbd() }]
     },
@@ -1257,8 +1257,8 @@ function buildBlankBracket() {
         { id:'s12', date:'Sat Mar 22', status:'STATUS_FINAL', t1:{seed:10,name:'Texas A&M',score:57,won:false},  t2:{seed:2,name:'Houston',score:88,won:true} }
       ],
       r16:  [
-        { id:'s13', date:'Thu Mar 27', time:'7:30 PM ET', tv:'TBS, truTV', t1:{seed:9,name:'Iowa'},     t2:{seed:4,name:'Nebraska'} },
-        { id:'s14', date:'Thu Mar 27', time:'10:05 PM ET', tv:'TBS, truTV', t1:{seed:3,name:'Illinois'}, t2:{seed:2,name:'Houston'} }
+        { id:'s13', date:'Thu Mar 27', time:'7:30 PM ET', tv:'TBS, truTV', status:'STATUS_FINAL', t1:{seed:9,name:'Iowa',score:89,won:true},  t2:{seed:4,name:'Nebraska',score:72,won:false} },
+        { id:'s14', date:'Thu Mar 27', time:'10:05 PM ET', tv:'TBS, truTV', status:'STATUS_FINAL', t1:{seed:3,name:'Illinois',score:65,won:true}, t2:{seed:2,name:'Houston',score:54,won:false} }
       ],
       r8:   [{ id:'s15',t1:tbd(),t2:tbd() }]
     },
