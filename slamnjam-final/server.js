@@ -130,35 +130,15 @@ let completedTodayCache = (() => {
   return saved;
 })();
 
-// ── AUTO-TOTALS: persistent player pts that accumulate automatically ──
-// Seeded from HARDCODED_OVERRIDES on first run, then auto-updated by ESPN feed.
-// This is the single source of truth for player pts going forward.
-let playerTotals = (() => {
-  const saved = readJSON(TOTALS_F, null);
-  if (saved && Object.keys(saved).length > 0) {
-    console.log('[Totals] Loaded ' + Object.keys(saved).length + ' player totals from file');
-    return saved;
-  }
-  // First run — seed from HARDCODED_OVERRIDES
-  console.log('[Totals] Seeding totals from HARDCODED_OVERRIDES (' + Object.keys(HARDCODED_OVERRIDES).length + ' players)');
-  const seeded = { ...HARDCODED_OVERRIDES };
-  writeJSON(TOTALS_F, seeded);
-  return seeded;
-})();
+// ── AUTO-TOTALS: persistent player pts — loaded from totals.json (committed to repo) ──
+// Auto-updated by ESPN feed when games go final. Single source of truth for player pts.
+let playerTotals = readJSON(TOTALS_F, {});
+console.log('[Totals] Loaded ' + Object.keys(playerTotals).length + ' player totals');
 
-// ── AUTO-GAMELOG: persistent game log that accumulates automatically ──
-let playerGameLog = (() => {
-  const saved = readJSON(GAMELOG_F, null);
-  if (saved && Object.keys(saved).length > 0) {
-    console.log('[GameLog] Loaded ' + Object.keys(saved).length + ' player logs from file');
-    return saved;
-  }
-  // First run — seed from GAME_LOG constant
-  console.log('[GameLog] Seeding game log from GAME_LOG constant');
-  const seeded = JSON.parse(JSON.stringify(GAME_LOG));
-  writeJSON(GAMELOG_F, seeded);
-  return seeded;
-})();
+// ── AUTO-GAMELOG: persistent game log — loaded from gamelog.json (committed to repo) ──
+// Auto-updated by ESPN feed when games go final.
+let playerGameLog = readJSON(GAMELOG_F, {});
+console.log('[GameLog] Loaded ' + Object.keys(playerGameLog).length + ' player game logs');
 
 // Track which ESPN game IDs we've already fully processed (game went final + pts saved)
 let processedGames = readJSON(PROCESSED_F, {});
