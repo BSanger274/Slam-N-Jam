@@ -1234,8 +1234,8 @@ function buildBlankBracket() {
         { id:'w12', date:'Sun Mar 23', status:'STATUS_FINAL', t1:{seed:7,name:'Miami FL',score:69,won:false},     t2:{seed:2,name:'Purdue',score:79,won:true} }
       ],
       r16:  [
-        { id:'w13', date:'Thu Mar 27', time:'7:10 PM ET', tv:'CBS',   t1:{seed:11,name:'Texas'},     t2:{seed:2,name:'Purdue'} },
-        { id:'w14', date:'Thu Mar 27', time:'9:45 PM ET', tv:'CBS',   t1:{seed:4,name:'Arkansas'},   t2:{seed:1,name:'Arizona'} }
+        { id:'w14', date:'Thu Mar 27', time:'9:45 PM ET', tv:'CBS',   t1:{seed:4,name:'Arkansas'},   t2:{seed:1,name:'Arizona'} },
+        { id:'w13', date:'Thu Mar 27', time:'7:10 PM ET', tv:'CBS',   t1:{seed:11,name:'Texas'},     t2:{seed:2,name:'Purdue'} }
       ],
       r8:   [{ id:'w15',t1:tbd(),t2:tbd() }]
     },
