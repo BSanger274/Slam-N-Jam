@@ -816,12 +816,12 @@ async function fetchAll() {
       fetch(`${API}/api/teams`).then(r=>r.json()),
       fetch(`${API}/api/bracket`).then(r=>r.json()),
       HISTORY.length ? Promise.resolve(null) : fetch(`${API}/api/history`).then(r=>r.json()),
-      Object.keys(GAME_LOG).length ? Promise.resolve(null) : fetch(`${API}/api/gamelog`).then(r=>r.json()).catch(()=>null)
+      fetch(`${API}/api/gamelog`).then(r=>r.json()).catch(()=>null)
     ]);
     if (tRes?.teams) TEAMS = tRes.teams;
     if (bRes?.bracket) BRACKET = bRes.bracket;
     if (hRes?.winners) HISTORY = hRes.winners;
-    if (gRes?.gamelog) GAME_LOG = gRes.gamelog;
+    if (gRes && typeof gRes === 'object' && !gRes.error) GAME_LOG = gRes;
 
     const t = new Date(tRes?.lastFetch || Date.now());
     document.getElementById('lupd').textContent = 'Updated ' + t.toLocaleTimeString();
@@ -3011,16 +3011,31 @@ function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
     statusEl.innerHTML = '<span style="color:var(--red)">✗ ELIMINATED</span>';
   }
 
-  // Render game log
-  const log = GAME_LOG[name];
+  // Render game log — including live row if player is currently playing
+  const log = GAME_LOG[name] || [];
   const logEl = document.getElementById('pd-gamelog');
   const noLogEl = document.getElementById('pd-nolog');
 
-  if (log && log.length > 0) {
+  // Check if player is live right now using TEAMS data
+  const liveScore = (() => {
+    for (const t of TEAMS) {
+      const p = t.players.find(p => p.name === name);
+      if (p && p.liveNow && p.livePts > 0) return p.livePts;
+    }
+    return null;
+  })();
+
+  const roundLabels = { 'FF':'First Four', 'R64':'Round of 64', 'R32':'Round of 32',
+    'S16':'Sweet 16', 'E8':'Elite Eight', 'F4':'Final Four', 'NC':'Championship' };
+
+  const baseTotal = log.reduce((s, g) => s + (g.pts || 0), 0);
+
+  if (log.length > 0 || liveScore !== null) {
     logEl.style.display = 'block';
     noLogEl.style.display = 'none';
-    const roundLabels = { 'FF':'First Four', 'R64':'Round of 64', 'R32':'Round of 32', 'S16':'Sweet 16', 'E8':'Elite Eight', 'F4':'Final Four', 'NC':'Championship' };
-    logEl.innerHTML = log.map(g => {
+
+    // Historical entries
+    let rows = log.map(g => {
       const label = roundLabels[g.round] || g.round;
       const ptsClass = (!g.pts || g.pts === 0) ? 'zero' : '';
       return `<div class="game-log-row">
@@ -3031,11 +3046,26 @@ function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
         </div>
         <div class="game-log-pts ${ptsClass}">${g.pts ?? 0}</div>
       </div>`;
-    }).join('') +
-    `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;border-top:2px solid var(--border);margin-top:4px">
+    }).join('');
+
+    // Live row — shown when player is actively in a game
+    if (liveScore !== null) {
+      rows += `<div class="game-log-row" style="border-left:3px solid #00e676;padding-left:8px;animation:pulse 1.5s infinite">
+        <div class="game-log-round" style="background:#00e676;color:#000">LIVE</div>
+        <div class="game-log-opp">
+          <div style="font-size:11px;font-weight:500;color:#00e676">In Progress</div>
+          <div style="color:#00e676">Tonight</div>
+        </div>
+        <div class="game-log-pts" style="color:#00e676">${liveScore}</div>
+      </div>`;
+    }
+
+    const displayTotal = liveScore !== null ? baseTotal + liveScore : pts;
+    rows += `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;border-top:2px solid var(--border);margin-top:4px">
       <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Tournament Total</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange)">${pts ?? 0}</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange)">${displayTotal ?? 0}</div>
     </div>`;
+    logEl.innerHTML = rows;
   } else {
     logEl.style.display = 'none';
     noLogEl.style.display = 'block';
