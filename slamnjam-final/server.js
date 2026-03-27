@@ -334,14 +334,18 @@ async function fetchLiveScores() {
       // Determine NCAA tournament round from bracket cache
       ev._slnjRound = 'Unknown';
       ev._slnjOpp   = {};  // map: school -> opponent school
-      if (bracketCache) {
+      if (bracketCache && evTeams.length >= 2) {
+        const e1 = (evTeams[0]||'').toLowerCase(), e2 = (evTeams[1]||'').toLowerCase();
+        const teamsMatch = (n1, n2) =>
+          ((n1.includes(e1)||e1.includes(n1)) && (n2.includes(e2)||e2.includes(n2))) ||
+          ((n1.includes(e2)||e2.includes(n1)) && (n2.includes(e1)||e1.includes(n2)));
+
         const roundLabels = { r64:'R64', r32:'R32', r16:'S16', r8:'E8', r4:'F4', rfinal:'NC' };
         for (const region of ['east','west','south','midwest']) {
           for (const [rkey, rlabel] of Object.entries(roundLabels)) {
             for (const m of (bracketCache[region]?.[rkey] || [])) {
               const n1 = (m.t1?.name||'').toLowerCase(), n2 = (m.t2?.name||'').toLowerCase();
-              const e1 = (evTeams[0]||'').toLowerCase(), e2 = (evTeams[1]||'').toLowerCase();
-              if ((n1.includes(e1)||e1.includes(n1)) || (n1.includes(e2)||e2.includes(n1))) {
+              if (teamsMatch(n1, n2)) {
                 ev._slnjRound = rlabel;
                 ev._slnjOpp[evTeams[0]] = evTeams[1];
                 ev._slnjOpp[evTeams[1]] = evTeams[0];
@@ -351,8 +355,7 @@ async function fetchLiveScores() {
         }
         for (const ff of (bracketCache._firstFour || [])) {
           const n1 = (ff.t1?.name||'').toLowerCase(), n2 = (ff.t2?.name||'').toLowerCase();
-          const e1 = (evTeams[0]||'').toLowerCase(), e2 = (evTeams[1]||'').toLowerCase();
-          if ((n1.includes(e1)||e1.includes(n1)) || (n1.includes(e2)||e2.includes(n1))) {
+          if (teamsMatch(n1, n2)) {
             ev._slnjRound = 'FF';
             ev._slnjOpp[evTeams[0]] = evTeams[1];
             ev._slnjOpp[evTeams[1]] = evTeams[0];
