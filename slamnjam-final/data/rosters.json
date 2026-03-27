@@ -632,7 +632,7 @@
           "name": "Dre Bullock",
           "school": "Hawaii",
           "pts": 0,
-          "active": true,
+          "active": false,
           "round": 15,
           "overallPick": 244
         }
