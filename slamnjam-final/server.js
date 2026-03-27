@@ -40,6 +40,9 @@ const DATA       = path.join(__dirname, 'data');
 const ROSTER_F   = path.join(DATA, 'rosters.json');
 const OVERRIDE_F   = path.join(DATA, 'overrides.json');
 const COMPLETED_F  = path.join(DATA, 'completed.json');  // persists new-round pts across restarts
+const TOTALS_F     = path.join(DATA, 'totals.json');      // auto-accumulated player pts (replaces HARDCODED_OVERRIDES)
+const GAMELOG_F    = path.join(DATA, 'gamelog.json');     // auto-saved game log entries
+const PROCESSED_F  = path.join(DATA, 'processed.json');   // tracks which ESPN game IDs already processed
 const BRACKET_F  = path.join(DATA, 'bracket.json');
 const HISTORY_F  = path.join(DATA, 'history.json');
 const AVERAGES_F = path.join(__dirname, 'data', 'averages.json');
@@ -113,7 +116,6 @@ function fetchURL(url) {
 // Completed-game pts for hardcoded players — persisted to file so server restarts don't lose data.
 // Cleared manually via admin button between rounds after HARDCODED is updated.
 // Load completed cache but discard any entries that predate today
-// (prevents R64/R32 stale data from persisting into Sweet 16)
 let completedTodayCache = (() => {
   const saved = readJSON(COMPLETED_F, {});
   const meta  = readJSON(COMPLETED_F + '.meta', {});
@@ -127,6 +129,39 @@ let completedTodayCache = (() => {
   writeJSON(COMPLETED_F + '.meta', { date: todayStr });
   return saved;
 })();
+
+// ── AUTO-TOTALS: persistent player pts that accumulate automatically ──
+// Seeded from HARDCODED_OVERRIDES on first run, then auto-updated by ESPN feed.
+// This is the single source of truth for player pts going forward.
+let playerTotals = (() => {
+  const saved = readJSON(TOTALS_F, null);
+  if (saved && Object.keys(saved).length > 0) {
+    console.log('[Totals] Loaded ' + Object.keys(saved).length + ' player totals from file');
+    return saved;
+  }
+  // First run — seed from HARDCODED_OVERRIDES
+  console.log('[Totals] Seeding totals from HARDCODED_OVERRIDES (' + Object.keys(HARDCODED_OVERRIDES).length + ' players)');
+  const seeded = { ...HARDCODED_OVERRIDES };
+  writeJSON(TOTALS_F, seeded);
+  return seeded;
+})();
+
+// ── AUTO-GAMELOG: persistent game log that accumulates automatically ──
+let playerGameLog = (() => {
+  const saved = readJSON(GAMELOG_F, null);
+  if (saved && Object.keys(saved).length > 0) {
+    console.log('[GameLog] Loaded ' + Object.keys(saved).length + ' player logs from file');
+    return saved;
+  }
+  // First run — seed from GAME_LOG constant
+  console.log('[GameLog] Seeding game log from GAME_LOG constant');
+  const seeded = JSON.parse(JSON.stringify(GAME_LOG));
+  writeJSON(GAMELOG_F, seeded);
+  return seeded;
+})();
+
+// Track which ESPN game IDs we've already fully processed (game went final + pts saved)
+let processedGames = readJSON(PROCESSED_F, {});
 // ════════════════════════════════════════════════════════
 let scoreCache     = {};
 let liveHalfCache  = new Set();
@@ -283,6 +318,41 @@ async function fetchLiveScores() {
     await Promise.all(activeEvents.slice(0, 15).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
       const isFinal  = evStatus === 'STATUS_FINAL';
+
+      // Determine round label and team names for game log
+      const evTeams = (ev.competitions?.[0]?.competitors || []).map(c =>
+        c.team?.shortDisplayName || c.team?.displayName || '');
+      ev._slnjTeams = evTeams;
+
+      // Determine NCAA tournament round from bracket cache
+      ev._slnjRound = 'Unknown';
+      ev._slnjOpp   = {};  // map: school -> opponent school
+      if (bracketCache) {
+        const roundLabels = { r64:'R64', r32:'R32', r16:'S16', r8:'E8', r4:'F4', rfinal:'NC' };
+        for (const region of ['east','west','south','midwest']) {
+          for (const [rkey, rlabel] of Object.entries(roundLabels)) {
+            for (const m of (bracketCache[region]?.[rkey] || [])) {
+              const n1 = (m.t1?.name||'').toLowerCase(), n2 = (m.t2?.name||'').toLowerCase();
+              const e1 = (evTeams[0]||'').toLowerCase(), e2 = (evTeams[1]||'').toLowerCase();
+              if ((n1.includes(e1)||e1.includes(n1)) || (n1.includes(e2)||e2.includes(n1))) {
+                ev._slnjRound = rlabel;
+                ev._slnjOpp[evTeams[0]] = evTeams[1];
+                ev._slnjOpp[evTeams[1]] = evTeams[0];
+              }
+            }
+          }
+        }
+        for (const ff of (bracketCache._firstFour || [])) {
+          const n1 = (ff.t1?.name||'').toLowerCase(), n2 = (ff.t2?.name||'').toLowerCase();
+          const e1 = (evTeams[0]||'').toLowerCase(), e2 = (evTeams[1]||'').toLowerCase();
+          if ((n1.includes(e1)||e1.includes(n1)) || (n1.includes(e2)||e2.includes(n1))) {
+            ev._slnjRound = 'FF';
+            ev._slnjOpp[evTeams[0]] = evTeams[1];
+            ev._slnjOpp[evTeams[1]] = evTeams[0];
+          }
+        }
+      }
+
       try {
         const summary = await fetchURL(`https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=${ev.id}`);
         // Get game clock for pace calculation
@@ -315,18 +385,36 @@ async function fetchLiveScores() {
                 if (pts > 0) scores[name] = pts;
                 // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
                 if (isFinal && pts > 0) {
-                  // Only auto-save games from today (prevents stale R64/R32 data polluting cache)
-                  const evDate = ev.date ? new Date(ev.date).toDateString() : null;
-                  const todayStr = new Date().toDateString();
-                  const isToday = !evDate || evDate === todayStr;
-                  if (HARDCODED_OVERRIDES[name] !== undefined) {
-                    // Only persist Sweet 16+ pts scored TODAY
-                    if (isToday) {
-                      completedTodayCache[name] = pts;
-                      writeJSON(COMPLETED_F, completedTodayCache);
+                  // AUTO-ACCUMULATE: only process each game once using processedGames tracker
+                  // This prevents double-counting if ESPN returns the same final game multiple times
+                  if (!processedGames[ev.id]) {
+                    const currentTotal = playerTotals[name] || 0;
+                    playerTotals[name] = currentTotal + pts;
+
+                    // Add game log entry
+                    if (!playerGameLog[name]) playerGameLog[name] = [];
+                    const roundLabel = ev._slnjRound || 'S16';
+                    // Get this player's team to find their opponent
+                    const playerTeamName = (() => {
+                      for (const td of (summary.boxscore?.players || [])) {
+                        for (const sg of (td.statistics || [])) {
+                          for (const ath of (sg.athletes || [])) {
+                            if (ath.athlete?.displayName === name) {
+                              return td.team?.shortDisplayName || td.team?.displayName || '';
+                            }
+                          }
+                        }
+                      }
+                      return '';
+                    })();
+                    const oppName = ev._slnjOpp?.[playerTeamName] || (ev._slnjTeams?.find(t => t !== playerTeamName)) || 'Unknown';
+                    const alreadyHasEntry = playerGameLog[name].some(e => e.round === roundLabel && e.opp === oppName);
+                    if (!alreadyHasEntry) {
+                      playerGameLog[name].push({ round: roundLabel, opp: oppName, pts });
                     }
-                  } else {
-                    // Non-hardcoded player — save to file.
+                  }
+                  // Legacy: keep non-totals players in savedOverrides too
+                  if (HARDCODED_OVERRIDES[name] === undefined && playerTotals[name] === undefined) {
                     savedOverrides[name] = pts;
                   }
                 }
@@ -341,6 +429,38 @@ async function fetchLiveScores() {
         }
       } catch(e) {}
     }));
+    // Mark fully processed games and persist all accumulated data
+    for (const ev of activeEvents) {
+      if ((ev.status?.type?.name || '') === 'STATUS_FINAL' && ev.id && !processedGames[ev.id]) {
+        processedGames[ev.id] = { date: new Date().toISOString(), teams: ev._slnjTeams, round: ev._slnjRound };
+        // Auto-eliminate losing school from rosters
+        if (ev._slnjTeams && ev._slnjTeams.length >= 2) {
+          const comps = (ev.competitions?.[0]?.competitors || []);
+          const loser = comps.find(c => c.winner === false);
+          if (loser) {
+            const loserName = (loser.team?.shortDisplayName || loser.team?.displayName || '').toLowerCase();
+            const rosters = readJSON(ROSTER_F, { teams: [] });
+            let updated = false;
+            for (const team of rosters.teams) {
+              for (const p of team.players) {
+                const school = (p.school || '').toLowerCase();
+                if (school && (loserName.includes(school) || school.includes(loserName)) && p.active !== false) {
+                  p.active = false;
+                  updated = true;
+                }
+              }
+            }
+            if (updated) {
+              writeJSON(ROSTER_F, rosters);
+              console.log('[AutoElim] Marked ' + loserName + ' players as eliminated');
+            }
+          }
+        }
+      }
+    }
+    writeJSON(PROCESSED_F, processedGames);
+    writeJSON(TOTALS_F, playerTotals);
+    writeJSON(GAMELOG_F, playerGameLog);
     // Persist auto-saved scores
     writeJSON(OVERRIDE_F, savedOverrides);
     // Update minutesCache — only keep players from currently LIVE games
@@ -2139,38 +2259,34 @@ async function getMergedScores() {
     (rosters.teams || []).flatMap(t => t.players.filter(p => p.active !== false).map(p => p.name))
   );
 
-  const merged = { ...live };
-  for (const [name, basePts] of Object.entries(HARDCODED_OVERRIDES)) {
+  // playerTotals is the single source of truth — accumulated automatically from ESPN
+  // Falls back to HARDCODED_OVERRIDES for any player not yet in playerTotals
+  const allTotals = { ...HARDCODED_OVERRIDES, ...playerTotals };
+
+  const merged = {};
+
+  // For every player with a known total, set their score
+  for (const [name, basePts] of Object.entries(allTotals)) {
     const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
     if (playingNow) {
-      // Player is actively in a live game right now — add base + live pts
-      merged[name] = (live[name] || 0) + basePts;
+      // Live right now — base total + current live pts from ESPN
+      merged[name] = basePts + (live[name] || 0);
     } else {
-      // Not currently playing (eliminated OR between games) — hardcoded is their total
+      // Not live — show accumulated total
       merged[name] = basePts;
     }
   }
-  // In-memory completed-today scores for hardcoded players (new round pts)
-  for (const [name, todayPts] of Object.entries(completedTodayCache)) {
-    const basePts = HARDCODED_OVERRIDES[name];
-    const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
-    if (basePts !== undefined && !playingNow) {
-      // Only apply completed cache if NOT currently live — live branch already handled above
-      merged[name] = basePts + todayPts;
-    }
+
+  // Non-roster players seen live (e.g. players not in our draft but ESPN returns them)
+  for (const [name, pts] of Object.entries(live)) {
+    if (merged[name] === undefined) merged[name] = pts;
   }
-  // File overrides: auto-saved completed game scores + admin manual corrections
-  // For active players with a hardcoded base (e.g. Miami OH), add today's saved pts on top
+
+  // Manual admin overrides take highest priority
   for (const [name, pts] of Object.entries(fileOverrides)) {
-    const hardcodedBase = HARDCODED_OVERRIDES[name];
-    const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
-    if (hardcodedBase !== undefined && !playingNow) {
-      // Hardcoded total wins — ignore file override to prevent double-counting.
-      // Sweet 16+ pts are captured live via the playingNow branch above.
-    } else {
-      merged[name] = pts;
-    }
+    merged[name] = pts;
   }
+
   return merged;
 }
 
@@ -2399,6 +2515,8 @@ app.get('/api/teams', async (req, res) => {
       // ── OPTION 1 (ACTIVE): Pace-adjusted trend ──
       const GAME_MINUTES = 40;
       const minsPlayed = fuzzyLookup(minutesCache) || 0;
+      const liveNow = minsPlayed > 0;
+      const livePts = liveNow ? (scores[p.name] || 0) : 0;
 
       // Today's live pts only (not cumulative) — for live/just-finished game comparison
       const livePtsOnly = (scores[p.name] !== undefined ? scores[p.name]
@@ -2580,7 +2698,18 @@ app.get('/api/scores', async (req, res) => {
   const { scores: live } = await getLiveScores();
   const fileOverrides = readJSON(OVERRIDE_F, {});
   const merged = await getMergedScores();
-  res.json({ live, overrides: fileOverrides, merged, liveCount: Object.keys(live).length });
+  res.json({ live, overrides: fileOverrides, merged, liveCount: Object.keys(live).length,
+             minutesCache, processedGames: Object.keys(processedGames).length });
+});
+
+// Game log — auto-accumulated from ESPN, used by player drawer
+app.get('/api/gamelog', (req, res) => {
+  // Merge static GAME_LOG with auto-accumulated playerGameLog
+  const merged = { ...GAME_LOG };
+  for (const [name, entries] of Object.entries(playerGameLog)) {
+    merged[name] = entries;
+  }
+  res.json(merged);
 });
 
 // History — always returns data even after restarts
@@ -2655,6 +2784,10 @@ app.post('/api/admin/clear-overrides', requireAdmin, (req, res) => {
   writeJSON(OVERRIDE_F, {});
   writeJSON(COMPLETED_F, {});
   completedTodayCache = {};
+  // Note: we do NOT clear totals.json or gamelog.json — those are cumulative all season
+  // We DO clear processedGames so the next round's game IDs get processed fresh
+  processedGames = {};
+  writeJSON(PROCESSED_F, {});
   res.json({ ok: true, message: 'Round data cleared — ready for next round' });
 });
 
