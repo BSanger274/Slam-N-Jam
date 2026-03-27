@@ -142,6 +142,18 @@ function ensureTotals() {
   }
 }
 
+// Clear any stale completed.json entries that conflict with playerTotals
+// This runs once on startup to prevent old cached R64/R32 data from poisoning scores
+(function clearStaleOverrides() {
+  const overrides = readJSON(OVERRIDE_F, {});
+  const staleKeys = Object.keys(overrides).filter(name => playerTotals[name] !== undefined);
+  if (staleKeys.length > 0) {
+    staleKeys.forEach(k => delete overrides[k]);
+    writeJSON(OVERRIDE_F, overrides);
+    console.log('[Startup] Cleared ' + staleKeys.length + ' stale override entries that conflict with playerTotals');
+  }
+})();
+
 // ── AUTO-GAMELOG: persistent game log — loaded from gamelog.json, seeded from GAME_LOG ──
 // Auto-updated by ESPN feed when games go final.
 // GAME_LOG is defined later in this file — seeding happens at first API call via ensureGameLog()
@@ -2238,10 +2250,6 @@ const GAME_LOG = {
 
 };
 
-// API endpoint for game log
-app.get('/api/gamelog', (req, res) => {
-  res.json({ gamelog: GAME_LOG });
-});
 
 
 async function getMergedScores() {
@@ -2278,9 +2286,12 @@ async function getMergedScores() {
     if (merged[name] === undefined) merged[name] = pts;
   }
 
-  // Manual admin overrides take highest priority
+  // Manual admin overrides — only apply to players NOT already in allTotals
+  // (prevents stale completed.json data from overwriting correct accumulated totals)
   for (const [name, pts] of Object.entries(fileOverrides)) {
-    merged[name] = pts;
+    if (allTotals[name] === undefined) {
+      merged[name] = pts;
+    }
   }
 
   return merged;
