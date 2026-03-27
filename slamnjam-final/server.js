@@ -2134,8 +2134,9 @@ async function getMergedScores() {
   // In-memory completed-today scores for hardcoded players (new round pts)
   for (const [name, todayPts] of Object.entries(completedTodayCache)) {
     const basePts = HARDCODED_OVERRIDES[name];
-    if (basePts !== undefined) {
-      // Add today's completed game pts on top of historical hardcoded base
+    const playingNow = activePlayers.has(name) && minutesCache[name] > 0;
+    if (basePts !== undefined && !playingNow) {
+      // Only apply completed cache if NOT currently live — live branch already handled above
       merged[name] = basePts + todayPts;
     }
   }
