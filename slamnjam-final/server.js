@@ -1646,7 +1646,7 @@ const HARDCODED_OVERRIDES = {
   // ── Sun Mar 23 — Alabama 90, Texas Tech 65 ── (Alabama advancing)
   "Amari Allen":           27,  // Alabama (11 R64 vs Hofstra + 12 R32 vs Texas Tech)
   "Aiden Sherrell":        35,  // Alabama (15 R64 vs Hofstra + 10 R32 vs Texas Tech)
-  "Labaron Philon":        38,  // Alabama (29 R64 vs Hofstra + 9 R32 vs Texas Tech)
+  "Labaron Philon":        73,  // Alabama (29 R64 vs Hofstra + 9 R32 vs Texas Tech)
   "Latrell Wrightsell":    50,  // Alabama (11 R64 vs Hofstra + 24 R32 vs Texas Tech)
   // Texas Tech eliminated:
   "Jaylen Petty":          33,  // Tx Tech (24 R64 vs Akron + 9 R32 vs Alabama) ELIM
