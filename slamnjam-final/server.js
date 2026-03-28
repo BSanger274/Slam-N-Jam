@@ -397,7 +397,11 @@ async function fetchLiveScores() {
                 if (isFinal && pts > 0) {
                   // AUTO-ACCUMULATE: only process each game once using processedGames tracker
                   // This prevents double-counting if ESPN returns the same final game multiple times
-                  if (!processedGames[ev.id]) {
+                  // Only accumulate pts from games played TODAY — prevents
+                  // double-counting when processedGames resets after a deploy
+                  const evDateStr = ev.date ? new Date(ev.date).toDateString() : null;
+                  const isToday = !evDateStr || evDateStr === new Date().toDateString();
+                  if (!processedGames[ev.id] && isToday) {
                     const currentTotal = playerTotals[name] || 0;
                     playerTotals[name] = currentTotal + pts;
 
@@ -2815,10 +2819,8 @@ app.post('/api/admin/clear-overrides', requireAdmin, (req, res) => {
   writeJSON(OVERRIDE_F, {});
   writeJSON(COMPLETED_F, {});
   completedTodayCache = {};
-  // Note: we do NOT clear totals.json or gamelog.json — those are cumulative all season
-  // We DO clear processedGames so the next round's game IDs get processed fresh
-  processedGames = {};
-  writeJSON(PROCESSED_F, {});
+  // Note: we do NOT clear totals.json, gamelog.json, or processedGames
+  // processedGames must persist to prevent double-counting when server restarts
   res.json({ ok: true, message: 'Round data cleared — ready for next round' });
 });
 
