@@ -1239,7 +1239,7 @@ function buildBlankBracket() {
         { id:'e13', date:'Fri Mar 28', time:'7:10 PM ET', tv:'CBS',    status:'STATUS_FINAL', t1:{seed:5,name:"St. John's",score:58,won:false}, t2:{seed:1,name:'Duke',score:63,won:true} },
         { id:'e14', date:'Fri Mar 28', time:'9:45 PM ET', tv:'CBS',    status:'STATUS_FINAL', t1:{seed:3,name:'Michigan St',score:61,won:false}, t2:{seed:2,name:'UConn',score:77,won:true} }
       ],
-      r8:   [{ id:'e15',t1:tbd(),t2:tbd() }]
+      r8:   [{ id:'e15', status:'STATUS_FINAL', t1:{seed:1,name:'Duke',score:71,won:false}, t2:{seed:2,name:'UConn',score:77,won:true} }]
     },
     west: {
       r64: [
@@ -1262,7 +1262,7 @@ function buildBlankBracket() {
         { id:'w14', date:'Thu Mar 27', time:'9:45 PM ET', tv:'CBS',   status:'STATUS_FINAL', t1:{seed:4,name:'Arkansas',score:77,won:false}, t2:{seed:1,name:'Arizona',score:88,won:true} },
         { id:'w13', date:'Thu Mar 27', time:'7:10 PM ET', tv:'CBS',   status:'STATUS_FINAL', t1:{seed:11,name:'Texas',score:77,won:false},    t2:{seed:2,name:'Purdue',score:87,won:true} }
       ],
-      r8:   [{ id:'w15',t1:tbd(),t2:tbd() }]
+      r8:   [{ id:'w15', status:'STATUS_FINAL', t1:{seed:1,name:'Arizona',score:89,won:true}, t2:{seed:2,name:'Purdue',score:76,won:false} }]
     },
     south: {
       r64: [
@@ -1285,7 +1285,7 @@ function buildBlankBracket() {
         { id:'s13', date:'Thu Mar 27', time:'7:30 PM ET', tv:'TBS, truTV', status:'STATUS_FINAL', t1:{seed:9,name:'Iowa',score:89,won:true},  t2:{seed:4,name:'Nebraska',score:72,won:false} },
         { id:'s14', date:'Thu Mar 27', time:'10:05 PM ET', tv:'TBS, truTV', status:'STATUS_FINAL', t1:{seed:3,name:'Illinois',score:65,won:true}, t2:{seed:2,name:'Houston',score:54,won:false} }
       ],
-      r8:   [{ id:'s15',t1:tbd(),t2:tbd() }]
+      r8:   [{ id:'s15', status:'STATUS_FINAL', t1:{seed:9,name:'Iowa',score:67,won:false}, t2:{seed:3,name:'Illinois',score:79,won:true} }]
     },
     midwest: {
       r64: [
@@ -1308,7 +1308,7 @@ function buildBlankBracket() {
         { id:'m13', date:'Fri Mar 28', time:'7:35 PM ET', tv:'TBS, truTV', status:'STATUS_FINAL', t1:{seed:4,name:'Alabama',score:68,won:false}, t2:{seed:1,name:'Michigan',score:72,won:true} },
         { id:'m14', date:'Fri Mar 28', time:'10:10 PM ET', tv:'TBS, truTV', status:'STATUS_FINAL', t1:{seed:6,name:'Tennessee',score:78,won:true}, t2:{seed:2,name:'Iowa State',score:70,won:false} }
       ],
-      r8:   [{ id:'m15',t1:tbd(),t2:tbd() }]
+      r8:   [{ id:'m15', status:'STATUS_FINAL', t1:{seed:1,name:'Michigan',score:82,won:true}, t2:{seed:6,name:'Tennessee',score:74,won:false} }]
     },
     final4: {
       sf: [
