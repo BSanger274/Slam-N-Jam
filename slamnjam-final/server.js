@@ -399,9 +399,9 @@ async function fetchLiveScores() {
                   // This prevents double-counting if ESPN returns the same final game multiple times
                   // Only accumulate pts from games played TODAY — prevents
                   // double-counting when processedGames resets after a deploy
-                  // Allow games from today OR yesterday (covers late-night games)
+                  // Allow games from last 72 hours (covers late-night games + day-after deploys)
                   const evMs = ev.date ? new Date(ev.date).getTime() : Date.now();
-                  const isRecent = (Date.now() - evMs) < 36 * 60 * 60 * 1000; // within 36 hours
+                  const isRecent = (Date.now() - evMs) < 72 * 60 * 60 * 1000; // within 72 hours
                   if (!processedGames[ev.id] && isRecent) {
                     const currentTotal = playerTotals[name] || 0;
                     playerTotals[name] = currentTotal + pts;
@@ -1312,8 +1312,8 @@ function buildBlankBracket() {
     },
     final4: {
       sf: [
-        { id:'f1', t1:team(null,'East Winner'),  t2:team(null,'South Winner')   },
-        { id:'f2', t1:team(null,'West Winner'),  t2:team(null,'Midwest Winner') }
+        { id:'f1', t1:{seed:2,name:'UConn',score:null,won:null},     t2:{seed:3,name:'Illinois',score:null,won:null} },
+        { id:'f2', t1:{seed:1,name:'Arizona',score:null,won:null},   t2:{seed:1,name:'Michigan',score:null,won:null} }
       ],
       final:    [{ id:'f3', t1:tbd(), t2:tbd() }],
       champion: 'TBD'
