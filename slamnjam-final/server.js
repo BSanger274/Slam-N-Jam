@@ -399,9 +399,10 @@ async function fetchLiveScores() {
                   // This prevents double-counting if ESPN returns the same final game multiple times
                   // Only accumulate pts from games played TODAY — prevents
                   // double-counting when processedGames resets after a deploy
-                  const evDateStr = ev.date ? new Date(ev.date).toDateString() : null;
-                  const isToday = !evDateStr || evDateStr === new Date().toDateString();
-                  if (!processedGames[ev.id] && isToday) {
+                  // Allow games from today OR yesterday (covers late-night games)
+                  const evMs = ev.date ? new Date(ev.date).getTime() : Date.now();
+                  const isRecent = (Date.now() - evMs) < 36 * 60 * 60 * 1000; // within 36 hours
+                  if (!processedGames[ev.id] && isRecent) {
                     const currentTotal = playerTotals[name] || 0;
                     playerTotals[name] = currentTotal + pts;
 
