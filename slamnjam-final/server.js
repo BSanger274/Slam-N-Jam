@@ -322,6 +322,7 @@ async function fetchLiveScores() {
       return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL';
     });
     const freshMinutes = {}; // player -> minutes played this game
+    const accumulatedGameIds = new Set(); // games where at least one player's pts were accumulated
     await Promise.all(activeEvents.slice(0, 15).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
       const isFinal  = evStatus === 'STATUS_FINAL';
@@ -380,7 +381,9 @@ async function fetchLiveScores() {
         for (const teamData of (summary.boxscore?.players || [])) {
           for (const statGroup of (teamData.statistics || [])) {
             const labels = statGroup.labels || [];
-            const iPts = labels.indexOf('PTS') >= 0 ? labels.indexOf('PTS') : 13;
+            const iPtsIdx = labels.indexOf('PTS');
+            if (iPtsIdx < 0 && labels.length > 0) console.warn('[Scores] ESPN stats: PTS label not found in', JSON.stringify(labels));
+            const iPts = iPtsIdx >= 0 ? iPtsIdx : 1; // ESPN has PTS at index 1 (verified 2026 tournament)
             const iMin = labels.indexOf('MIN') >= 0 ? labels.indexOf('MIN') : 0;
             for (const athlete of (statGroup.athletes || [])) {
               if (athlete.didNotPlay) continue;
@@ -405,6 +408,7 @@ async function fetchLiveScores() {
                   if (!processedGames[ev.id] && isRecent) {
                     const currentTotal = playerTotals[name] || 0;
                     playerTotals[name] = currentTotal + pts;
+                    accumulatedGameIds.add(ev.id);
 
                     // Add game log entry
                     if (!playerGameLog[name]) playerGameLog[name] = [];
@@ -442,11 +446,13 @@ async function fetchLiveScores() {
             }
           }
         }
-      } catch(e) {}
+      } catch(e) { console.warn('[Scores] Summary fetch failed for event', ev.id, ':', e.message); }
     }));
     // Mark fully processed games and persist all accumulated data
+    // Only mark a game as processed if accumulation actually succeeded (accumulatedGameIds guard).
+    // Without this, a transient ESPN API failure would permanently lock the game out of future accumulation.
     for (const ev of activeEvents) {
-      if ((ev.status?.type?.name || '') === 'STATUS_FINAL' && ev.id && !processedGames[ev.id]) {
+      if ((ev.status?.type?.name || '') === 'STATUS_FINAL' && ev.id && !processedGames[ev.id] && accumulatedGameIds.has(ev.id)) {
         processedGames[ev.id] = { date: new Date().toISOString(), teams: ev._slnjTeams, round: ev._slnjRound };
         // Auto-eliminate losing school from rosters
         if (ev._slnjTeams && ev._slnjTeams.length >= 2) {
