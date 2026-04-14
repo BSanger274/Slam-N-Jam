@@ -6,7 +6,7 @@
         {
           "name": "Jeremy Fears",
           "school": "Mich St",
-          "pts": 0,
+          "pts": 32,
           "active": false,
           "round": 1,
           "jersey": "1",
@@ -15,7 +15,7 @@
         {
           "name": "Darryn Peterson",
           "school": "Kansas",
-          "pts": 0,
+          "pts": 49,
           "active": false,
           "round": 2,
           "overallPick": 18
@@ -23,7 +23,7 @@
         {
           "name": "Cayden Boozer",
           "school": "Duke",
-          "pts": 0,
+          "pts": 50,
           "active": false,
           "round": 3,
           "overallPick": 51
@@ -31,7 +31,7 @@
         {
           "name": "Jaxon Kohler",
           "school": "Mich St",
-          "pts": 0,
+          "pts": 34,
           "active": false,
           "round": 4,
           "overallPick": 52
@@ -39,7 +39,7 @@
         {
           "name": "Coen Carr",
           "school": "Mich St",
-          "pts": 0,
+          "pts": 51,
           "active": false,
           "round": 5,
           "overallPick": 85
@@ -47,7 +47,7 @@
         {
           "name": "Jaron Pierre Jr.",
           "school": "SMU",
-          "pts": 0,
+          "pts": 18,
           "active": false,
           "round": 6,
           "overallPick": 86
@@ -55,7 +55,7 @@
         {
           "name": "MJ Collins",
           "school": "Utah St",
-          "pts": 0,
+          "pts": 32,
           "active": false,
           "round": 7,
           "jersey": "2",
@@ -64,7 +64,7 @@
         {
           "name": "AK Okereke",
           "school": "Vandy",
-          "pts": 0,
+          "pts": 16,
           "active": false,
           "round": 8,
           "overallPick": 120
@@ -72,7 +72,7 @@
         {
           "name": "David Punch",
           "school": "TCU",
-          "pts": 0,
+          "pts": 20,
           "active": false,
           "round": 9,
           "overallPick": 153
@@ -80,7 +80,7 @@
         {
           "name": "Rashaun Agee",
           "school": "Texas A&M",
-          "pts": 0,
+          "pts": 29,
           "active": false,
           "round": 10,
           "overallPick": 154
@@ -88,7 +88,7 @@
         {
           "name": "Davis Fogle",
           "school": "Gonzaga",
-          "pts": 0,
+          "pts": 23,
           "active": false,
           "round": 11,
           "overallPick": 187
@@ -96,7 +96,7 @@
         {
           "name": "Thomas Dowd",
           "school": "Troy",
-          "pts": 0,
+          "pts": 4,
           "active": true,
           "round": 12,
           "overallPick": 188
@@ -104,7 +104,7 @@
         {
           "name": "Daniel Jacobsen",
           "school": "Purdue",
-          "pts": 0,
+          "pts": 4,
           "active": false,
           "round": 13,
           "overallPick": 221
@@ -112,7 +112,7 @@
         {
           "name": "Marcus Hill",
           "school": "Texas A&M",
-          "pts": 0,
+          "pts": 4,
           "active": false,
           "round": 14,
           "overallPick": 222
@@ -120,7 +120,7 @@
         {
           "name": "Joseph Omojafo",
           "school": "So Florida",
-          "pts": 0,
+          "pts": 6,
           "active": false,
           "round": 15,
           "jersey": "8",
@@ -134,7 +134,7 @@
         {
           "name": "Cameron Boozer",
           "school": "Duke",
-          "pts": 0,
+          "pts": 90,
           "active": false,
           "round": 1,
           "overallPick": 1
@@ -142,15 +142,15 @@
         {
           "name": "Ivan Kharchenkov",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 62,
+          "active": false,
           "round": 2,
           "overallPick": 34
         },
         {
           "name": "Duke Miles",
           "school": "Vandy",
-          "pts": 0,
+          "pts": 22,
           "active": false,
           "round": 3,
           "overallPick": 35
@@ -158,7 +158,7 @@
         {
           "name": "Oscar Cluff",
           "school": "Purdue",
-          "pts": 0,
+          "pts": 42,
           "active": false,
           "round": 4,
           "overallPick": 68
@@ -166,7 +166,7 @@
         {
           "name": "Wes Enis",
           "school": "So Florida",
-          "pts": 0,
+          "pts": 4,
           "active": false,
           "round": 5,
           "overallPick": 69
@@ -174,7 +174,7 @@
         {
           "name": "Paulius Murauskas",
           "school": "St Marys",
-          "pts": 0,
+          "pts": 4,
           "active": false,
           "round": 6,
           "overallPick": 102
@@ -190,7 +190,7 @@
         {
           "name": "Blake Buchanan",
           "school": "Iowa St",
-          "pts": 0,
+          "pts": 28,
           "active": false,
           "round": 8,
           "overallPick": 136
@@ -206,7 +206,7 @@
         {
           "name": "Jaylen Petty",
           "school": "Tx Tech",
-          "pts": 0,
+          "pts": 33,
           "active": false,
           "round": 10,
           "overallPick": 170
@@ -214,7 +214,7 @@
         {
           "name": "Cooper Koch",
           "school": "Iowa",
-          "pts": 0,
+          "pts": 37,
           "active": false,
           "round": 11,
           "overallPick": 171
@@ -222,7 +222,7 @@
         {
           "name": "Cruz Davis",
           "school": "Hofstra",
-          "pts": 0,
+          "pts": 14,
           "active": true,
           "round": 12,
           "overallPick": 204
@@ -230,7 +230,7 @@
         {
           "name": "TJ Burch",
           "school": "Wright St",
-          "pts": 0,
+          "pts": 15,
           "active": true,
           "round": 13,
           "overallPick": 205
@@ -246,7 +246,7 @@
         {
           "name": "Pop Isaacs",
           "school": "Texas A&M",
-          "pts": 0,
+          "pts": 11,
           "active": false,
           "round": 15,
           "overallPick": 239
@@ -259,7 +259,7 @@
         {
           "name": "Zuby Ejiofor",
           "school": "St. John's",
-          "pts": 0,
+          "pts": 49,
           "active": false,
           "round": 1,
           "jersey": "24",
@@ -268,7 +268,7 @@
         {
           "name": "Thijs De Ridder",
           "school": "Virginia",
-          "pts": 0,
+          "pts": 32,
           "active": false,
           "round": 2,
           "overallPick": 33
@@ -276,7 +276,7 @@
         {
           "name": "Bryce Hopkins",
           "school": "St. John's",
-          "pts": 0,
+          "pts": 46,
           "active": false,
           "round": 3,
           "jersey": "23",
@@ -285,7 +285,7 @@
         {
           "name": "Seth Trimble",
           "school": "UNC",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 4,
           "overallPick": 67
@@ -293,7 +293,7 @@
         {
           "name": "Oziyah Sellers",
           "school": "St. John's",
-          "pts": 0,
+          "pts": 19,
           "active": false,
           "round": 5,
           "jersey": "4",
@@ -302,7 +302,7 @@
         {
           "name": "Dillon Mitchell",
           "school": "St. John's",
-          "pts": 0,
+          "pts": 28,
           "active": false,
           "round": 6,
           "overallPick": 101
@@ -310,7 +310,7 @@
         {
           "name": "Ian Jackson",
           "school": "St. John's",
-          "pts": 0,
+          "pts": 24,
           "active": false,
           "round": 7,
           "jersey": "11",
@@ -319,7 +319,7 @@
         {
           "name": "Jacari White",
           "school": "Virginia",
-          "pts": 0,
+          "pts": 36,
           "active": false,
           "round": 8,
           "overallPick": 135
@@ -327,7 +327,7 @@
         {
           "name": "Devin McGlockton",
           "school": "Vandy",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 9,
           "overallPick": 138
@@ -335,7 +335,7 @@
         {
           "name": "Ugonna Onyenso",
           "school": "Virginia",
-          "pts": 0,
+          "pts": 6,
           "active": false,
           "round": 10,
           "overallPick": 169
@@ -343,7 +343,7 @@
         {
           "name": "Braeden Carrington",
           "school": "Wisc",
-          "pts": 0,
+          "pts": 5,
           "active": false,
           "round": 11,
           "overallPick": 172
@@ -359,7 +359,7 @@
         {
           "name": "Dallin Hall",
           "school": "Virginia",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 13,
           "overallPick": 206
@@ -367,7 +367,7 @@
         {
           "name": "Jamarques Lawrence",
           "school": "Nebraska",
-          "pts": 0,
+          "pts": 31,
           "active": false,
           "round": 14,
           "overallPick": 237
@@ -375,7 +375,7 @@
         {
           "name": "Michael Cooper",
           "school": "Wright St",
-          "pts": 0,
+          "pts": 13,
           "active": true,
           "round": 15,
           "overallPick": 240
@@ -388,7 +388,7 @@
         {
           "name": "Kingston Flemings",
           "school": "Houston",
-          "pts": 0,
+          "pts": 38,
           "active": false,
           "round": 1,
           "jersey": "4",
@@ -397,7 +397,7 @@
         {
           "name": "Boogie Fland",
           "school": "Florida",
-          "pts": 0,
+          "pts": 23,
           "active": false,
           "round": 2,
           "overallPick": 28
@@ -405,7 +405,7 @@
         {
           "name": "Trevon Brazile",
           "school": "Arkansas",
-          "pts": 0,
+          "pts": 34,
           "active": false,
           "round": 3,
           "overallPick": 41
@@ -413,7 +413,7 @@
         {
           "name": "Braylon Mullins",
           "school": "UConn",
-          "pts": 0,
+          "pts": 62,
           "active": true,
           "round": 4,
           "overallPick": 62
@@ -421,7 +421,7 @@
         {
           "name": "Latrell Wrightsell",
           "school": "Alabama",
-          "pts": 0,
+          "pts": 50,
           "active": false,
           "round": 5,
           "overallPick": 75
@@ -429,7 +429,7 @@
         {
           "name": "D.J. Wagner",
           "school": "Arkansas",
-          "pts": 0,
+          "pts": 16,
           "active": false,
           "round": 6,
           "jersey": "21",
@@ -438,7 +438,7 @@
         {
           "name": "Izaiyah Nelson",
           "school": "So Florida",
-          "pts": 0,
+          "pts": 22,
           "active": false,
           "round": 7,
           "overallPick": 109
@@ -446,7 +446,7 @@
         {
           "name": "Tru Washington",
           "school": "Miami FL",
-          "pts": 0,
+          "pts": 20,
           "active": false,
           "round": 8,
           "overallPick": 130
@@ -462,7 +462,7 @@
         {
           "name": "Tramon Mark",
           "school": "Texas",
-          "pts": 17,
+          "pts": 71,
           "active": false,
           "round": 10,
           "overallPick": 164
@@ -479,7 +479,7 @@
         {
           "name": "Jalen Washington",
           "school": "Vandy",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 12,
           "overallPick": 198
@@ -487,7 +487,7 @@
         {
           "name": "Chase McCarty",
           "school": "Houston",
-          "pts": 0,
+          "pts": 17,
           "active": false,
           "round": 13,
           "overallPick": 211
@@ -495,7 +495,7 @@
         {
           "name": "Jordan Scott",
           "school": "Mich St",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 14,
           "overallPick": 232
@@ -503,7 +503,7 @@
         {
           "name": "Felix Okpara",
           "school": "Tenn",
-          "pts": 0,
+          "pts": 41,
           "active": false,
           "round": 15,
           "overallPick": 245
@@ -516,7 +516,7 @@
         {
           "name": "Alex Condon",
           "school": "Florida",
-          "pts": 0,
+          "pts": 34,
           "active": false,
           "round": 1,
           "overallPick": 6
@@ -524,7 +524,7 @@
         {
           "name": "Fletcher Loyer",
           "school": "Purdue",
-          "pts": 0,
+          "pts": 64,
           "active": false,
           "round": 2,
           "overallPick": 29
@@ -532,7 +532,7 @@
         {
           "name": "Christian Anderson",
           "school": "Tx Tech",
-          "pts": 0,
+          "pts": 25,
           "active": false,
           "round": 3,
           "overallPick": 40
@@ -540,7 +540,7 @@
         {
           "name": "Milos Uzan",
           "school": "Houston",
-          "pts": 0,
+          "pts": 33,
           "active": false,
           "round": 4,
           "overallPick": 63
@@ -548,7 +548,7 @@
         {
           "name": "Trey McKenney",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 63,
           "active": true,
           "round": 5,
           "jersey": "1",
@@ -557,7 +557,7 @@
         {
           "name": "C.J. Cox",
           "school": "Purdue",
-          "pts": 0,
+          "pts": 39,
           "active": false,
           "round": 6,
           "jersey": "0",
@@ -566,7 +566,7 @@
         {
           "name": "Nasir Whitlock",
           "school": "Lehigh",
-          "pts": 0,
+          "pts": 5,
           "active": false,
           "round": 7,
           "jersey": "1",
@@ -575,7 +575,7 @@
         {
           "name": "Rienk Mast",
           "school": "Nebraska",
-          "pts": 0,
+          "pts": 33,
           "active": false,
           "round": 8,
           "overallPick": 131
@@ -583,7 +583,7 @@
         {
           "name": "Xavier Edmonds",
           "school": "TCU",
-          "pts": 0,
+          "pts": 28,
           "active": false,
           "round": 9,
           "overallPick": 142
@@ -591,7 +591,7 @@
         {
           "name": "Jordan Pope",
           "school": "Texas",
-          "pts": 5,
+          "pts": 45,
           "active": false,
           "round": 10,
           "overallPick": 165
@@ -599,7 +599,7 @@
         {
           "name": "Duke Brennan",
           "school": "Villanova",
-          "pts": 0,
+          "pts": 15,
           "active": true,
           "round": 11,
           "overallPick": 176
@@ -607,7 +607,7 @@
         {
           "name": "Derek Dixon",
           "school": "UNC",
-          "pts": 0,
+          "pts": 11,
           "active": false,
           "round": 12,
           "overallPick": 199
@@ -615,7 +615,7 @@
         {
           "name": "Rylan Griffen",
           "school": "Texas A&M",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 13,
           "overallPick": 210
@@ -623,7 +623,7 @@
         {
           "name": "Mouhamed Dioubate",
           "school": "Kentucky",
-          "pts": 0,
+          "pts": 21,
           "active": false,
           "round": 14,
           "overallPick": 233
@@ -631,7 +631,7 @@
         {
           "name": "Dre Bullock",
           "school": "Hawaii",
-          "pts": 0,
+          "pts": 21,
           "active": false,
           "round": 15,
           "overallPick": 244
@@ -644,7 +644,7 @@
         {
           "name": "Yaxel Lendeborg",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 95,
           "active": true,
           "round": 1,
           "overallPick": 5
@@ -652,7 +652,7 @@
         {
           "name": "Solo Ball",
           "school": "UConn",
-          "pts": 0,
+          "pts": 44,
           "active": true,
           "round": 2,
           "overallPick": 30
@@ -660,7 +660,7 @@
         {
           "name": "Tarris Reed Jr.",
           "school": "UConn",
-          "pts": 0,
+          "pts": 104,
           "active": true,
           "round": 3,
           "jersey": "5",
@@ -669,7 +669,7 @@
         {
           "name": "Ja'Kobi Gillespie",
           "school": "Tenn",
-          "pts": 0,
+          "pts": 87,
           "active": false,
           "round": 4,
           "jersey": "0",
@@ -678,7 +678,7 @@
         {
           "name": "Malik Reneau",
           "school": "Miami FL",
-          "pts": 0,
+          "pts": 40,
           "active": false,
           "round": 5,
           "overallPick": 73
@@ -686,7 +686,7 @@
         {
           "name": "Flory Bidunga",
           "school": "Kansas",
-          "pts": 0,
+          "pts": 18,
           "active": false,
           "round": 6,
           "overallPick": 98
@@ -694,7 +694,7 @@
         {
           "name": "Amari Allen",
           "school": "Alabama",
-          "pts": 0,
+          "pts": 27,
           "active": false,
           "round": 7,
           "overallPick": 107
@@ -702,7 +702,7 @@
         {
           "name": "Mason Falslev",
           "school": "Utah St",
-          "pts": 0,
+          "pts": 30,
           "active": false,
           "round": 8,
           "jersey": "12",
@@ -711,7 +711,7 @@
         {
           "name": "Blue Cain",
           "school": "Georgia",
-          "pts": 0,
+          "pts": 6,
           "active": false,
           "round": 9,
           "overallPick": 141
@@ -719,7 +719,7 @@
         {
           "name": "Skyy Clark",
           "school": "UCLA",
-          "pts": 0,
+          "pts": 19,
           "active": false,
           "round": 10,
           "overallPick": 166
@@ -727,7 +727,7 @@
         {
           "name": "Acaden Lewis",
           "school": "Villanova",
-          "pts": 0,
+          "pts": 7,
           "active": true,
           "round": 11,
           "overallPick": 175
@@ -735,7 +735,7 @@
         {
           "name": "Braden Frager",
           "school": "Nebraska",
-          "pts": 0,
+          "pts": 44,
           "active": false,
           "round": 12,
           "overallPick": 200
@@ -743,7 +743,7 @@
         {
           "name": "Collin Chandler",
           "school": "Kentucky",
-          "pts": 0,
+          "pts": 11,
           "active": false,
           "round": 13,
           "jersey": "5",
@@ -752,7 +752,7 @@
         {
           "name": "Adam Miller",
           "school": "Gonzaga",
-          "pts": 0,
+          "pts": 4,
           "active": false,
           "round": 14,
           "overallPick": 234
@@ -760,7 +760,7 @@
         {
           "name": "Tavion Banks",
           "school": "Iowa",
-          "pts": 0,
+          "pts": 33,
           "active": false,
           "round": 15,
           "overallPick": 243
@@ -773,7 +773,7 @@
         {
           "name": "Thomas Haugh",
           "school": "Florida",
-          "pts": 0,
+          "pts": 33,
           "active": false,
           "round": 1,
           "jersey": "10",
@@ -782,7 +782,7 @@
         {
           "name": "Alex Karaban",
           "school": "UConn",
-          "pts": 0,
+          "pts": 80,
           "active": true,
           "round": 2,
           "overallPick": 31
@@ -790,7 +790,7 @@
         {
           "name": "Malik Thomas",
           "school": "Virginia",
-          "pts": 0,
+          "pts": 23,
           "active": false,
           "round": 3,
           "overallPick": 38
@@ -798,15 +798,15 @@
         {
           "name": "Motiejus Krivas",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 51,
+          "active": false,
           "round": 4,
           "overallPick": 65
         },
         {
           "name": "Chris Cenac",
           "school": "Houston",
-          "pts": 0,
+          "pts": 30,
           "active": false,
           "round": 5,
           "jersey": "5",
@@ -815,7 +815,7 @@
         {
           "name": "Tavari Johnson",
           "school": "Akron",
-          "pts": 0,
+          "pts": 4,
           "active": true,
           "round": 6,
           "overallPick": 99
@@ -823,7 +823,7 @@
         {
           "name": "Nikolas Khamenia",
           "school": "Duke",
-          "pts": 0,
+          "pts": 20,
           "active": false,
           "round": 7,
           "overallPick": 106
@@ -831,7 +831,7 @@
         {
           "name": "Chance Mallory",
           "school": "Virginia",
-          "pts": 0,
+          "pts": 12,
           "active": false,
           "round": 8,
           "overallPick": 133
@@ -839,7 +839,7 @@
         {
           "name": "Mario Saint-Supery",
           "school": "Gonzaga",
-          "pts": 0,
+          "pts": 16,
           "active": false,
           "round": 9,
           "jersey": "17",
@@ -848,7 +848,7 @@
         {
           "name": "Austin Rapp",
           "school": "Wisc",
-          "pts": 0,
+          "pts": 12,
           "active": false,
           "round": 10,
           "overallPick": 167
@@ -856,7 +856,7 @@
         {
           "name": "Bryson Tiller",
           "school": "Kansas",
-          "pts": 0,
+          "pts": 6,
           "active": false,
           "round": 11,
           "overallPick": 174
@@ -864,7 +864,7 @@
         {
           "name": "Omer Mayer",
           "school": "Purdue",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 12,
           "jersey": "17",
@@ -873,7 +873,7 @@
         {
           "name": "Isaiah Brown",
           "school": "Florida",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 13,
           "overallPick": 208
@@ -881,7 +881,7 @@
         {
           "name": "Caleb Foster",
           "school": "Duke",
-          "pts": 0,
+          "pts": 11,
           "active": false,
           "round": 14,
           "overallPick": 235
@@ -889,7 +889,7 @@
         {
           "name": "Xavier Booker",
           "school": "UCLA",
-          "pts": 0,
+          "pts": 28,
           "active": false,
           "round": 15,
           "overallPick": 242
@@ -902,15 +902,15 @@
         {
           "name": "Brayden Burries",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 84,
+          "active": false,
           "round": 1,
           "overallPick": 3
         },
         {
           "name": "Xaivian Lee",
           "school": "Florida",
-          "pts": 0,
+          "pts": 27,
           "active": false,
           "round": 2,
           "overallPick": 32
@@ -918,7 +918,7 @@
         {
           "name": "Patrick Ngongba",
           "school": "Duke",
-          "pts": 0,
+          "pts": 13,
           "active": false,
           "round": 3,
           "jersey": "21",
@@ -927,7 +927,7 @@
         {
           "name": "Boopie Miller",
           "school": "SMU",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 4,
           "overallPick": 66
@@ -935,7 +935,7 @@
         {
           "name": "Ace Buckner",
           "school": "Clemson",
-          "pts": 0,
+          "pts": 5,
           "active": true,
           "round": 5,
           "overallPick": 71
@@ -943,7 +943,7 @@
         {
           "name": "Urban Klavzar",
           "school": "Florida",
-          "pts": 0,
+          "pts": 16,
           "active": false,
           "round": 6,
           "jersey": "7",
@@ -952,7 +952,7 @@
         {
           "name": "Aiden Sherrell",
           "school": "Alabama",
-          "pts": 0,
+          "pts": 35,
           "active": false,
           "round": 7,
           "jersey": "22",
@@ -961,7 +961,7 @@
         {
           "name": "Kur Teng",
           "school": "Mich St",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 8,
           "overallPick": 134
@@ -969,7 +969,7 @@
         {
           "name": "Sam Hoiberg",
           "school": "Nebraska",
-          "pts": 0,
+          "pts": 18,
           "active": false,
           "round": 9,
           "overallPick": 139
@@ -977,7 +977,7 @@
         {
           "name": "Cedric Taylor",
           "school": "Howard",
-          "pts": 0,
+          "pts": 19,
           "active": false,
           "round": 10,
           "jersey": "12",
@@ -986,7 +986,7 @@
         {
           "name": "Kennard Davis",
           "school": "BYU",
-          "pts": 0,
+          "pts": 9,
           "active": false,
           "round": 11,
           "jersey": "30",
@@ -995,15 +995,15 @@
         {
           "name": "Dwayne Aristode",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 7,
+          "active": false,
           "round": 12,
           "overallPick": 202
         },
         {
           "name": "Micah Handlogten",
           "school": "Florida",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 13,
           "jersey": "3",
@@ -1034,7 +1034,7 @@
         {
           "name": "Isaiah Evans",
           "school": "Duke",
-          "pts": 0,
+          "pts": 65,
           "active": false,
           "round": 1,
           "overallPick": 8
@@ -1042,7 +1042,7 @@
         {
           "name": "Trey Kaufman-Renn",
           "school": "Purdue",
-          "pts": 0,
+          "pts": 74,
           "active": false,
           "round": 2,
           "jersey": "4",
@@ -1051,15 +1051,15 @@
         {
           "name": "Andrej Stojakovic",
           "school": "Illinois",
-          "pts": 0,
-          "active": true,
+          "pts": 69,
+          "active": false,
           "round": 3,
           "overallPick": 42
         },
         {
           "name": "Nate Ament",
           "school": "Tenn",
-          "pts": 0,
+          "pts": 41,
           "active": false,
           "round": 4,
           "overallPick": 61
@@ -1067,7 +1067,7 @@
         {
           "name": "Robert Wright III",
           "school": "BYU",
-          "pts": 0,
+          "pts": 14,
           "active": false,
           "round": 5,
           "overallPick": 76
@@ -1075,7 +1075,7 @@
         {
           "name": "Donovan Atwell",
           "school": "Tx Tech",
-          "pts": 0,
+          "pts": 27,
           "active": false,
           "round": 6,
           "overallPick": 95
@@ -1083,7 +1083,7 @@
         {
           "name": "Donovan Dent",
           "school": "UCLA",
-          "pts": 0,
+          "pts": 21,
           "active": false,
           "round": 7,
           "overallPick": 110
@@ -1091,7 +1091,7 @@
         {
           "name": "Nolan Winter",
           "school": "Wisc",
-          "pts": 0,
+          "pts": 8,
           "active": false,
           "round": 8,
           "overallPick": 129
@@ -1099,7 +1099,7 @@
         {
           "name": "Jayden Stone",
           "school": "Missouri",
-          "pts": 0,
+          "pts": 21,
           "active": true,
           "round": 9,
           "overallPick": 144
@@ -1107,7 +1107,7 @@
         {
           "name": "Marcus Millender",
           "school": "Georgia",
-          "pts": 0,
+          "pts": 13,
           "active": false,
           "round": 10,
           "jersey": "4",
@@ -1116,7 +1116,7 @@
         {
           "name": "Jamarion Batemon",
           "school": "Iowa St",
-          "pts": 0,
+          "pts": 13,
           "active": false,
           "round": 11,
           "overallPick": 178
@@ -1124,7 +1124,7 @@
         {
           "name": "Victor Valdes",
           "school": "Troy",
-          "pts": 0,
+          "pts": 14,
           "active": true,
           "round": 12,
           "overallPick": 197
@@ -1132,7 +1132,7 @@
         {
           "name": "Alex Wilkins",
           "school": "Furman",
-          "pts": 0,
+          "pts": 21,
           "active": true,
           "round": 13,
           "jersey": "10",
@@ -1141,7 +1141,7 @@
         {
           "name": "Eian Elmer",
           "school": "Miami OH",
-          "pts": 0,
+          "pts": 27,
           "active": false,
           "round": 14,
           "overallPick": 231
@@ -1149,7 +1149,7 @@
         {
           "name": "Micah Robinson",
           "school": "TCU",
-          "pts": 0,
+          "pts": 36,
           "active": false,
           "round": 15,
           "overallPick": 246
@@ -1162,15 +1162,15 @@
         {
           "name": "Jaden Bradley",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 66,
+          "active": false,
           "round": 1,
           "overallPick": 9
         },
         {
           "name": "Elliot Cadeau",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 55,
           "active": true,
           "round": 2,
           "overallPick": 26
@@ -1178,7 +1178,7 @@
         {
           "name": "Rueben Chinyelu",
           "school": "Florida",
-          "pts": 0,
+          "pts": 14,
           "active": false,
           "round": 3,
           "overallPick": 43
@@ -1186,23 +1186,23 @@
         {
           "name": "Kylan Boswell",
           "school": "Illinois",
-          "pts": 0,
-          "active": true,
+          "pts": 39,
+          "active": false,
           "round": 4,
           "overallPick": 60
         },
         {
           "name": "Tobe Awaka",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 41,
+          "active": false,
           "round": 5,
           "overallPick": 77
         },
         {
           "name": "Roddy Gale",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 54,
           "active": true,
           "round": 6,
           "jersey": "11",
@@ -1211,7 +1211,7 @@
         {
           "name": "Tre Donaldson",
           "school": "Miami FL",
-          "pts": 0,
+          "pts": 30,
           "active": false,
           "round": 7,
           "overallPick": 111
@@ -1219,7 +1219,7 @@
         {
           "name": "Dominique Daniels",
           "school": "Cal Baptist",
-          "pts": 0,
+          "pts": 25,
           "active": true,
           "round": 8,
           "jersey": "1",
@@ -1228,7 +1228,7 @@
         {
           "name": "Devin Royal",
           "school": "Ohio St",
-          "pts": 0,
+          "pts": 14,
           "active": false,
           "round": 9,
           "overallPick": 145
@@ -1236,7 +1236,7 @@
         {
           "name": "Larry Johnson",
           "school": "McNeese St",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 10,
           "overallPick": 162
@@ -1244,7 +1244,7 @@
         {
           "name": "Rob Martin",
           "school": "High Point",
-          "pts": 0,
+          "pts": 53,
           "active": false,
           "round": 11,
           "jersey": "3",
@@ -1253,7 +1253,7 @@
         {
           "name": "Tyshawn Archie",
           "school": "McNeese St",
-          "pts": 0,
+          "pts": 13,
           "active": false,
           "round": 12,
           "overallPick": 196
@@ -1261,15 +1261,15 @@
         {
           "name": "Zvonimir Ivisic",
           "school": "Illinois",
-          "pts": 0,
-          "active": true,
+          "pts": 14,
+          "active": false,
           "round": 13,
           "overallPick": 213
         },
         {
           "name": "Shammah Scott",
           "school": "Akron",
-          "pts": 0,
+          "pts": 20,
           "active": true,
           "round": 14,
           "overallPick": 230
@@ -1277,7 +1277,7 @@
         {
           "name": "Travis Harper II",
           "school": "Tenn St",
-          "pts": 0,
+          "pts": 13,
           "active": true,
           "round": 15,
           "jersey": "2",
@@ -1291,15 +1291,15 @@
         {
           "name": "Koa Peat",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 86,
+          "active": false,
           "round": 1,
           "overallPick": 10
         },
         {
           "name": "Tyler Tanner",
           "school": "Vandy",
-          "pts": 0,
+          "pts": 53,
           "active": false,
           "round": 2,
           "overallPick": 25
@@ -1307,15 +1307,15 @@
         {
           "name": "David Mirkovic",
           "school": "Illinois",
-          "pts": 0,
-          "active": true,
+          "pts": 65,
+          "active": false,
           "round": 3,
           "overallPick": 44
         },
         {
           "name": "Joseph Tugler",
           "school": "Houston",
-          "pts": 0,
+          "pts": 25,
           "active": false,
           "round": 4,
           "overallPick": 59
@@ -1323,7 +1323,7 @@
         {
           "name": "Carson Cooper",
           "school": "Mich St",
-          "pts": 0,
+          "pts": 43,
           "active": false,
           "round": 5,
           "overallPick": 78
@@ -1331,7 +1331,7 @@
         {
           "name": "Sam Lewis",
           "school": "Virginia",
-          "pts": 0,
+          "pts": 17,
           "active": false,
           "round": 6,
           "overallPick": 93
@@ -1339,7 +1339,7 @@
         {
           "name": "Dailyn Swain",
           "school": "Texas",
-          "pts": 13,
+          "pts": 53,
           "active": false,
           "round": 7,
           "overallPick": 112
@@ -1347,7 +1347,7 @@
         {
           "name": "Dontae Horne",
           "school": "Prairie View A&M",
-          "pts": 0,
+          "pts": 37,
           "active": true,
           "round": 8,
           "overallPick": 127
@@ -1355,7 +1355,7 @@
         {
           "name": "Dame Sarr",
           "school": "Duke",
-          "pts": 0,
+          "pts": 31,
           "active": false,
           "round": 9,
           "overallPick": 146
@@ -1363,7 +1363,7 @@
         {
           "name": "Eric Dailey",
           "school": "UCLA",
-          "pts": 0,
+          "pts": 32,
           "active": false,
           "round": 10,
           "jersey": "3",
@@ -1372,7 +1372,7 @@
         {
           "name": "Amani Lyles",
           "school": "Akron",
-          "pts": 0,
+          "pts": 26,
           "active": true,
           "round": 11,
           "overallPick": 180
@@ -1380,7 +1380,7 @@
         {
           "name": "Preston Edmead",
           "school": "Hofstra",
-          "pts": 0,
+          "pts": 24,
           "active": true,
           "round": 12,
           "jersey": "1",
@@ -1389,7 +1389,7 @@
         {
           "name": "J.P. Estrella",
           "school": "Tenn",
-          "pts": 0,
+          "pts": 37,
           "active": false,
           "round": 13,
           "jersey": "13",
@@ -1398,7 +1398,7 @@
         {
           "name": "Hank Alvey",
           "school": "Lehigh",
-          "pts": 0,
+          "pts": 23,
           "active": false,
           "round": 14,
           "overallPick": 229
@@ -1406,7 +1406,7 @@
         {
           "name": "Aaron Nkrumah",
           "school": "Tenn St",
-          "pts": 0,
+          "pts": 21,
           "active": true,
           "round": 15,
           "overallPick": 248
@@ -1419,7 +1419,7 @@
         {
           "name": "Morez Johnson",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 77,
           "active": true,
           "round": 1,
           "jersey": "21",
@@ -1428,7 +1428,7 @@
         {
           "name": "Aday Mara",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 80,
           "active": true,
           "round": 2,
           "overallPick": 24
@@ -1436,7 +1436,7 @@
         {
           "name": "Billy Richmond III",
           "school": "Arkansas",
-          "pts": 0,
+          "pts": 38,
           "active": false,
           "round": 3,
           "overallPick": 45
@@ -1444,7 +1444,7 @@
         {
           "name": "Nimari Burnett",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 44,
           "active": true,
           "round": 4,
           "overallPick": 58
@@ -1452,7 +1452,7 @@
         {
           "name": "Henri Veesaar",
           "school": "UNC",
-          "pts": 0,
+          "pts": 26,
           "active": false,
           "round": 5,
           "overallPick": 79
@@ -1460,7 +1460,7 @@
         {
           "name": "Malique Ewin",
           "school": "Arkansas",
-          "pts": 0,
+          "pts": 38,
           "active": false,
           "round": 6,
           "overallPick": 92
@@ -1468,7 +1468,7 @@
         {
           "name": "Corey Washington",
           "school": "SMU",
-          "pts": 0,
+          "pts": 13,
           "active": false,
           "round": 7,
           "overallPick": 113
@@ -1476,7 +1476,7 @@
         {
           "name": "Joson Sanon",
           "school": "St. John's",
-          "pts": 0,
+          "pts": 9,
           "active": false,
           "round": 8,
           "jersey": "3",
@@ -1485,7 +1485,7 @@
         {
           "name": "Christin Hammond",
           "school": "Santa Clara",
-          "pts": 0,
+          "pts": 9,
           "active": true,
           "round": 9,
           "overallPick": 147
@@ -1493,7 +1493,7 @@
         {
           "name": "Themus Fulks",
           "school": "UCF",
-          "pts": 0,
+          "pts": 10,
           "active": true,
           "round": 10,
           "overallPick": 160
@@ -1501,7 +1501,7 @@
         {
           "name": "Terry Anderson",
           "school": "High Point",
-          "pts": 0,
+          "pts": 30,
           "active": false,
           "round": 11,
           "jersey": "5",
@@ -1510,7 +1510,7 @@
         {
           "name": "Samet Yigitoglu",
           "school": "SMU",
-          "pts": 0,
+          "pts": 8,
           "active": false,
           "round": 12,
           "overallPick": 194
@@ -1518,7 +1518,7 @@
         {
           "name": "Nick Pringle",
           "school": "Arkansas",
-          "pts": 0,
+          "pts": 6,
           "active": false,
           "round": 13,
           "overallPick": 215
@@ -1526,7 +1526,7 @@
         {
           "name": "RJ Godfrey",
           "school": "Clemson",
-          "pts": 0,
+          "pts": 15,
           "active": true,
           "round": 14,
           "overallPick": 228
@@ -1534,7 +1534,7 @@
         {
           "name": "Will Tschetter",
           "school": "Michigan",
-          "pts": 0,
+          "pts": 10,
           "active": true,
           "round": 15,
           "overallPick": 249
@@ -1547,7 +1547,7 @@
         {
           "name": "Darius Acuff",
           "school": "Arkansas",
-          "pts": 0,
+          "pts": 88,
           "active": false,
           "round": 1,
           "overallPick": 12
@@ -1555,7 +1555,7 @@
         {
           "name": "Braden Smith",
           "school": "Purdue",
-          "pts": 0,
+          "pts": 67,
           "active": false,
           "round": 2,
           "overallPick": 23
@@ -1570,8 +1570,8 @@
         },
         {
           "name": "Maliq Brown",
-          "school": "Louisville",
-          "pts": 0,
+          "school": "Duke",
+          "pts": 24,
           "active": false,
           "round": 4,
           "overallPick": 57
@@ -1579,7 +1579,7 @@
         {
           "name": "Bennett Stirtz",
           "school": "Iowa",
-          "pts": 0,
+          "pts": 73,
           "active": false,
           "round": 5,
           "overallPick": 80
@@ -1587,7 +1587,7 @@
         {
           "name": "Tre White",
           "school": "Kansas",
-          "pts": 0,
+          "pts": 16,
           "active": false,
           "round": 6,
           "overallPick": 91
@@ -1595,7 +1595,7 @@
         {
           "name": "J'Vonne Hadley",
           "school": "Louisville",
-          "pts": 0,
+          "pts": 14,
           "active": false,
           "round": 7,
           "overallPick": 114
@@ -1603,7 +1603,7 @@
         {
           "name": "Killyan Toure",
           "school": "Iowa St",
-          "pts": 0,
+          "pts": 44,
           "active": false,
           "round": 8,
           "overallPick": 125
@@ -1611,7 +1611,7 @@
         {
           "name": "Darrion Williams",
           "school": "NC St",
-          "pts": 21,
+          "pts": 0,
           "active": false,
           "round": 9,
           "overallPick": 148
@@ -1643,7 +1643,7 @@
         {
           "name": "Eric Reibe",
           "school": "UConn",
-          "pts": 0,
+          "pts": 6,
           "active": true,
           "round": 13,
           "overallPick": 216
@@ -1651,7 +1651,7 @@
         {
           "name": "Luka Bogavac",
           "school": "UNC",
-          "pts": 0,
+          "pts": 8,
           "active": false,
           "round": 14,
           "overallPick": 227
@@ -1659,7 +1659,7 @@
         {
           "name": "Nate Heise",
           "school": "Iowa St",
-          "pts": 0,
+          "pts": 52,
           "active": false,
           "round": 15,
           "overallPick": 250
@@ -1672,7 +1672,7 @@
         {
           "name": "Milan Momcilovic",
           "school": "Iowa St",
-          "pts": 0,
+          "pts": 43,
           "active": false,
           "round": 1,
           "overallPick": 16
@@ -1680,7 +1680,7 @@
         {
           "name": "Graham Ike",
           "school": "Gonzaga",
-          "pts": 0,
+          "pts": 44,
           "active": false,
           "round": 2,
           "overallPick": 19
@@ -1688,7 +1688,7 @@
         {
           "name": "Ryan Conwell",
           "school": "Louisville",
-          "pts": 0,
+          "pts": 39,
           "active": false,
           "round": 3,
           "overallPick": 50
@@ -1696,7 +1696,7 @@
         {
           "name": "Silas Demary",
           "school": "UConn",
-          "pts": 0,
+          "pts": 24,
           "active": true,
           "round": 4,
           "jersey": "2",
@@ -1705,7 +1705,7 @@
         {
           "name": "Tyler Nickel",
           "school": "Vandy",
-          "pts": 0,
+          "pts": 28,
           "active": false,
           "round": 5,
           "jersey": "5",
@@ -1714,7 +1714,7 @@
         {
           "name": "Tyon Grant-Foster",
           "school": "Gonzaga",
-          "pts": 0,
+          "pts": 16,
           "active": false,
           "round": 6,
           "jersey": "7",
@@ -1723,7 +1723,7 @@
         {
           "name": "LeJuan Watts",
           "school": "Tx Tech",
-          "pts": 0,
+          "pts": 30,
           "active": false,
           "round": 7,
           "overallPick": 118
@@ -1731,7 +1731,7 @@
         {
           "name": "Matas Vokietaitis",
           "school": "Texas",
-          "pts": 15,
+          "pts": 64,
           "active": false,
           "round": 8,
           "overallPick": 121
@@ -1739,8 +1739,8 @@
         {
           "name": "Tomislav Ivisic",
           "school": "Illinois",
-          "pts": 0,
-          "active": true,
+          "pts": 64,
+          "active": false,
           "round": 9,
           "jersey": "13",
           "overallPick": 152
@@ -1748,7 +1748,7 @@
         {
           "name": "Isaac McKneely",
           "school": "Louisville",
-          "pts": 0,
+          "pts": 32,
           "active": false,
           "round": 10,
           "overallPick": 155
@@ -1756,7 +1756,7 @@
         {
           "name": "Jordan Burks",
           "school": "UCF",
-          "pts": 0,
+          "pts": 22,
           "active": true,
           "round": 11,
           "overallPick": 186
@@ -1764,7 +1764,7 @@
         {
           "name": "Tai Reon Joseph",
           "school": "Prairie View A&M",
-          "pts": 0,
+          "pts": 21,
           "active": true,
           "round": 12,
           "overallPick": 189
@@ -1772,7 +1772,7 @@
         {
           "name": "Elijah Mahi",
           "school": "Santa Clara",
-          "pts": 0,
+          "pts": 20,
           "active": true,
           "round": 13,
           "jersey": "8",
@@ -1789,7 +1789,7 @@
         {
           "name": "Gavin Doty",
           "school": "Siena",
-          "pts": 0,
+          "pts": 21,
           "active": false,
           "round": 15,
           "overallPick": 254
@@ -1802,7 +1802,7 @@
         {
           "name": "AJ Dybantsa",
           "school": "BYU",
-          "pts": 0,
+          "pts": 35,
           "active": false,
           "round": 1,
           "overallPick": 15
@@ -1810,7 +1810,7 @@
         {
           "name": "Emanuel Sharp",
           "school": "Houston",
-          "pts": 0,
+          "pts": 51,
           "active": false,
           "round": 2,
           "overallPick": 20
@@ -1818,7 +1818,7 @@
         {
           "name": "Nick Boyd",
           "school": "Wisc",
-          "pts": 0,
+          "pts": 27,
           "active": false,
           "round": 3,
           "overallPick": 49
@@ -1826,7 +1826,7 @@
         {
           "name": "Jeremiah Wilkinson",
           "school": "Georgia",
-          "pts": 0,
+          "pts": 30,
           "active": false,
           "round": 4,
           "jersey": "5",
@@ -1835,7 +1835,7 @@
         {
           "name": "Otega Oweh",
           "school": "Kentucky",
-          "pts": 0,
+          "pts": 53,
           "active": false,
           "round": 5,
           "overallPick": 83
@@ -1843,7 +1843,7 @@
         {
           "name": "Melvin Council Jr.",
           "school": "Kansas",
-          "pts": 0,
+          "pts": 19,
           "active": false,
           "round": 6,
           "jersey": "14",
@@ -1852,7 +1852,7 @@
         {
           "name": "Terrence Hill",
           "school": "VCU",
-          "pts": 0,
+          "pts": 51,
           "active": false,
           "round": 7,
           "jersey": "6",
@@ -1870,7 +1870,7 @@
         {
           "name": "Tyler Perkins",
           "school": "Villanova",
-          "pts": 0,
+          "pts": 15,
           "active": true,
           "round": 9,
           "overallPick": 151
@@ -1878,7 +1878,7 @@
         {
           "name": "Riley Kugel",
           "school": "UCF",
-          "pts": 0,
+          "pts": 13,
           "active": true,
           "round": 10,
           "jersey": "2",
@@ -1887,7 +1887,7 @@
         {
           "name": "Lazar Djokovic",
           "school": "VCU",
-          "pts": 0,
+          "pts": 17,
           "active": false,
           "round": 11,
           "overallPick": 185
@@ -1895,7 +1895,7 @@
         {
           "name": "TJ Power",
           "school": "Penn",
-          "pts": 0,
+          "pts": 6,
           "active": false,
           "round": 12,
           "overallPick": 190
@@ -1903,7 +1903,7 @@
         {
           "name": "Jadrian Tracey",
           "school": "VCU",
-          "pts": 0,
+          "pts": 7,
           "active": false,
           "round": 13,
           "overallPick": 219
@@ -1911,7 +1911,7 @@
         {
           "name": "Jayden Pierre",
           "school": "TCU",
-          "pts": 0,
+          "pts": 8,
           "active": false,
           "round": 14,
           "overallPick": 224
@@ -1919,7 +1919,7 @@
         {
           "name": "Cole Bowser",
           "school": "Furman",
-          "pts": 0,
+          "pts": 9,
           "active": true,
           "round": 15,
           "overallPick": 253
@@ -1932,7 +1932,7 @@
         {
           "name": "Joshua Jefferson",
           "school": "Iowa St",
-          "pts": 0,
+          "pts": 2,
           "active": false,
           "round": 1,
           "overallPick": 14
@@ -1940,7 +1940,7 @@
         {
           "name": "Tamin Lipsey",
           "school": "Iowa St",
-          "pts": 0,
+          "pts": 47,
           "active": false,
           "round": 2,
           "overallPick": 21
@@ -1948,7 +1948,7 @@
         {
           "name": "Meleek Thomas",
           "school": "Arkansas",
-          "pts": 0,
+          "pts": 57,
           "active": false,
           "round": 3,
           "overallPick": 48
@@ -1956,7 +1956,7 @@
         {
           "name": "Pryce Sandfort",
           "school": "Nebraska",
-          "pts": 0,
+          "pts": 63,
           "active": false,
           "round": 4,
           "overallPick": 55
@@ -1972,7 +1972,7 @@
         {
           "name": "Malachi Moreno",
           "school": "Kentucky",
-          "pts": 0,
+          "pts": 7,
           "active": false,
           "round": 6,
           "jersey": "24",
@@ -1981,7 +1981,7 @@
         {
           "name": "John Mobley Jr.",
           "school": "Ohio St",
-          "pts": 0,
+          "pts": 15,
           "active": false,
           "round": 7,
           "jersey": "0",
@@ -1990,7 +1990,7 @@
         {
           "name": "Joshua Dent",
           "school": "St Marys",
-          "pts": 0,
+          "pts": 18,
           "active": false,
           "round": 8,
           "overallPick": 123
@@ -1998,7 +1998,7 @@
         {
           "name": "Shelton Henderson",
           "school": "Miami FL",
-          "pts": 0,
+          "pts": 33,
           "active": false,
           "round": 9,
           "overallPick": 150
@@ -2006,7 +2006,7 @@
         {
           "name": "Amare Bynum",
           "school": "Ohio St",
-          "pts": 0,
+          "pts": 12,
           "active": false,
           "round": 10,
           "jersey": "1",
@@ -2015,7 +2015,7 @@
         {
           "name": "Joseph Pinion",
           "school": "So Florida",
-          "pts": 0,
+          "pts": 27,
           "active": false,
           "round": 11,
           "overallPick": 184
@@ -2023,7 +2023,7 @@
         {
           "name": "Christoph Tilly",
           "school": "Ohio St",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 12,
           "overallPick": 191
@@ -2031,7 +2031,7 @@
         {
           "name": "Brant Byers",
           "school": "Miami OH",
-          "pts": 0,
+          "pts": 28,
           "active": false,
           "round": 13,
           "overallPick": 218
@@ -2039,7 +2039,7 @@
         {
           "name": "Bryce Lindsay",
           "school": "Villanova",
-          "pts": 0,
+          "pts": 25,
           "active": true,
           "round": 14,
           "overallPick": 225
@@ -2047,7 +2047,7 @@
         {
           "name": "Cam'Ron Fletcher",
           "school": "High Point",
-          "pts": 0,
+          "pts": 39,
           "active": false,
           "round": 15,
           "jersey": "11",
@@ -2061,15 +2061,15 @@
         {
           "name": "Keaton Wagler",
           "school": "Illinois",
-          "pts": 0,
-          "active": true,
+          "pts": 90,
+          "active": false,
           "round": 1,
           "overallPick": 13
         },
         {
           "name": "Labaron Philon",
           "school": "Alabama",
-          "pts": 0,
+          "pts": 73,
           "active": false,
           "round": 2,
           "jersey": "0",
@@ -2078,7 +2078,7 @@
         {
           "name": "John Blackwell",
           "school": "Wisc",
-          "pts": 0,
+          "pts": 22,
           "active": false,
           "round": 3,
           "overallPick": 47
@@ -2086,8 +2086,8 @@
         {
           "name": "Anthony Dell'Orso",
           "school": "Arizona",
-          "pts": 0,
-          "active": true,
+          "pts": 25,
+          "active": false,
           "round": 4,
           "jersey": "3",
           "overallPick": 56
@@ -2095,7 +2095,7 @@
         {
           "name": "Bruce Thornton",
           "school": "Ohio St",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 5,
           "overallPick": 81
@@ -2103,7 +2103,7 @@
         {
           "name": "Mark Mitchell",
           "school": "Missouri",
-          "pts": 0,
+          "pts": 19,
           "active": true,
           "round": 6,
           "overallPick": 90
@@ -2111,7 +2111,7 @@
         {
           "name": "Mikey Lewis",
           "school": "St Marys",
-          "pts": 0,
+          "pts": 5,
           "active": false,
           "round": 7,
           "overallPick": 115
@@ -2119,7 +2119,7 @@
         {
           "name": "Trent Perry",
           "school": "UCLA",
-          "pts": 0,
+          "pts": 20,
           "active": false,
           "round": 8,
           "overallPick": 124
@@ -2127,7 +2127,7 @@
         {
           "name": "Denzel Aberdeen",
           "school": "Kentucky",
-          "pts": 0,
+          "pts": 36,
           "active": false,
           "round": 9,
           "overallPick": 149
@@ -2135,7 +2135,7 @@
         {
           "name": "Robbie Avila",
           "school": "St Louis",
-          "pts": 0,
+          "pts": 21,
           "active": false,
           "round": 10,
           "overallPick": 158
@@ -2143,7 +2143,7 @@
         {
           "name": "Peter Suder",
           "school": "Miami OH",
-          "pts": 0,
+          "pts": 34,
           "active": false,
           "round": 11,
           "overallPick": 183
@@ -2151,7 +2151,7 @@
         {
           "name": "Jarin Stevenson",
           "school": "UNC",
-          "pts": 0,
+          "pts": 11,
           "active": false,
           "round": 12,
           "overallPick": 192
@@ -2159,7 +2159,7 @@
         {
           "name": "Dylan Darling",
           "school": "St. John's",
-          "pts": 0,
+          "pts": 16,
           "active": false,
           "round": 13,
           "jersey": "0",
@@ -2168,7 +2168,7 @@
         {
           "name": "Liutauras Lelevicius",
           "school": "TCU",
-          "pts": 0,
+          "pts": 5,
           "active": false,
           "round": 14,
           "overallPick": 226
@@ -2176,7 +2176,7 @@
         {
           "name": "Javohn Garcia",
           "school": "McNeese St",
-          "pts": 0,
+          "pts": 10,
           "active": false,
           "round": 15,
           "overallPick": 251
@@ -2184,5 +2184,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-03-18T00:00:00.000Z"
+  "updatedAt": "2026-04-05T00:00:00.000Z"
 }

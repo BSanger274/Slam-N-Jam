@@ -322,7 +322,6 @@ async function fetchLiveScores() {
       return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL';
     });
     const freshMinutes = {}; // player -> minutes played this game
-    const accumulatedGameIds = new Set(); // games where at least one player's pts were accumulated
     await Promise.all(activeEvents.slice(0, 15).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
       const isFinal  = evStatus === 'STATUS_FINAL';
@@ -381,9 +380,7 @@ async function fetchLiveScores() {
         for (const teamData of (summary.boxscore?.players || [])) {
           for (const statGroup of (teamData.statistics || [])) {
             const labels = statGroup.labels || [];
-            const iPtsIdx = labels.indexOf('PTS');
-            if (iPtsIdx < 0 && labels.length > 0) console.warn('[Scores] ESPN stats: PTS label not found in', JSON.stringify(labels));
-            const iPts = iPtsIdx >= 0 ? iPtsIdx : 1; // ESPN has PTS at index 1 (verified 2026 tournament)
+            const iPts = labels.indexOf('PTS') >= 0 ? labels.indexOf('PTS') : 13;
             const iMin = labels.indexOf('MIN') >= 0 ? labels.indexOf('MIN') : 0;
             for (const athlete of (statGroup.athletes || [])) {
               if (athlete.didNotPlay) continue;
@@ -408,7 +405,6 @@ async function fetchLiveScores() {
                   if (!processedGames[ev.id] && isRecent) {
                     const currentTotal = playerTotals[name] || 0;
                     playerTotals[name] = currentTotal + pts;
-                    accumulatedGameIds.add(ev.id);
 
                     // Add game log entry
                     if (!playerGameLog[name]) playerGameLog[name] = [];
@@ -446,13 +442,11 @@ async function fetchLiveScores() {
             }
           }
         }
-      } catch(e) { console.warn('[Scores] Summary fetch failed for event', ev.id, ':', e.message); }
+      } catch(e) {}
     }));
     // Mark fully processed games and persist all accumulated data
-    // Only mark a game as processed if accumulation actually succeeded (accumulatedGameIds guard).
-    // Without this, a transient ESPN API failure would permanently lock the game out of future accumulation.
     for (const ev of activeEvents) {
-      if ((ev.status?.type?.name || '') === 'STATUS_FINAL' && ev.id && !processedGames[ev.id] && accumulatedGameIds.has(ev.id)) {
+      if ((ev.status?.type?.name || '') === 'STATUS_FINAL' && ev.id && !processedGames[ev.id]) {
         processedGames[ev.id] = { date: new Date().toISOString(), teams: ev._slnjTeams, round: ev._slnjRound };
         // Auto-eliminate losing school from rosters
         if (ev._slnjTeams && ev._slnjTeams.length >= 2) {
@@ -1349,11 +1343,11 @@ const HARDCODED_OVERRIDES = {
   // ── R64 Thu Mar 19 — Duke 71, Siena 65 ──
   // ── R32 Sat Mar 22 — Duke 81, TCU 58 ──
   "Gavin Doty":            21,  // Siena (21 R64 vs Duke) ELIM
-  "Cameron Boozer":    63,   // Duke  (22 R64 + 19 R32)
-  "Cayden Boozer":     35,   // Duke  (19 R64 +  9 R32)
-  "Isaiah Evans":      58,   // Duke  (16 R64 + 17 R32)
-  "Nikolas Khamenia":   13,   // Duke (3 R64 vs Siena + 6 R32 vs TCU)
-  "Dame Sarr":         21,   // Duke  ( 5 R64 + 14 R32)
+  "Cameron Boozer":    90,   // Duke  (22 R64 + 19 R32)
+  "Cayden Boozer":     50,   // Duke  (19 R64 +  9 R32)
+  "Isaiah Evans":      65,   // Duke  (16 R64 + 17 R32)
+  "Nikolas Khamenia":   20,   // Duke (3 R64 vs Siena + 6 R32 vs TCU)
+  "Dame Sarr":         31,   // Duke  ( 5 R64 + 14 R32)
   "Gavin Doty":        21,   // Siena (eliminated R64)
   // TCU eliminated in R32 — final totals:
   "Micah Robinson":    36,   // TCU (18 R64 + 18 R32) ELIM
@@ -1416,13 +1410,13 @@ const HARDCODED_OVERRIDES = {
 
   // ── R64 Thu Mar 19 — Illinois 105, Penn 70 ──
   // ── R32 Sat Mar 22 — Illinois 76, VCU 55 ──
-  "David Mirkovic":    50,   // Illinois (29 R64 +  7 R32)
+  "David Mirkovic":    65,   // Illinois (29 R64 +  7 R32)
   "Ben Humrichous":        18,  // Illinois (12 R64 vs Penn + 3 R32 vs VCU)
-  "Keaton Wagler":     45,   // Illinois (18 R64 + 14 R32)
-  "Kylan Boswell":     31,   // Illinois (13 R64 + 12 R32)
-  "Tomislav Ivisic":   35,   // Illinois (14 R64 vs Penn + 12 R32 vs VCU)
-  "Andrej Stojakovic": 43,   // Illinois (9 R64 vs Penn + 21 R32 vs VCU)
-  "Zvonimir Ivisic":    10,   // Illinois ( 6 R64 +  2 R32)
+  "Keaton Wagler":     90,   // Illinois (18 R64 + 14 R32)
+  "Kylan Boswell":     39,   // Illinois (13 R64 + 12 R32)
+  "Tomislav Ivisic":   64,   // Illinois (14 R64 vs Penn + 12 R32 vs VCU)
+  "Andrej Stojakovic": 69,   // Illinois (9 R64 vs Penn + 21 R32 vs VCU)
+  "Zvonimir Ivisic":    14,   // Illinois ( 6 R64 +  2 R32)
   "TJ Power":           6,   // Penn (eliminated R64)
   // VCU eliminated in R32 — final totals:
   "Terrence Hill Jr.": 51,   // VCU (34 R64 + 17 R32) ELIM
@@ -1441,7 +1435,7 @@ const HARDCODED_OVERRIDES = {
   "Carson Cooper":     43,   // Mich St (20 R64 +  9 R32)
   "Coen Carr":         51,   // Mich St (17 R64 + 21 R32)
   "Jaxon Kohler":      34,   // Mich St (12 R64 + 10 R32)
-  "Jeremy Fears":      19,   // Mich St ( 7 R64 + 12 R32)
+  "Jeremy Fears":      32,   // Mich St ( 7 R64 + 12 R32)
   "Jordan Scott":      15,   // Mich St ( 6 R64 +  4 R32)
   "Kur Teng":          10,   // Mich St ( 3 R64 +  7 R32)
   // Louisville eliminated in R32 — final totals:
@@ -1466,15 +1460,15 @@ const HARDCODED_OVERRIDES = {
 
   // ── R64 Thu Mar 19 — Michigan 101, Howard 80 ──
   // ── R32 Sat Mar 22 — Michigan 95, Saint Louis 72 ──
-  "Yaxel Lendeborg":   57,   // Michigan
-  "Morez Johnson":     36,   // Michigan (15 R64 vs Howard + 21 R32 vs St Louis)
-  "Aday Mara":         43,   // Michigan (19 R64 vs Howard + 16 R32 vs St Louis)
-  "Elliot Cadeau":     34,   // Michigan (5 R64 vs Howard + 12 R32 vs St Louis)
-  "Nimari Burnett":    28,   // Michigan (11 R64 vs Howard + 15 R32 vs St Louis)
-  "Will Tschetter":     8,   // Michigan (2 R64 vs Howard + 6 R32 vs St Louis)
+  "Yaxel Lendeborg":   95,   // Michigan
+  "Morez Johnson":     77,   // Michigan (15 R64 vs Howard + 21 R32 vs St Louis)
+  "Aday Mara":         80,   // Michigan (19 R64 vs Howard + 16 R32 vs St Louis)
+  "Elliot Cadeau":     55,   // Michigan (5 R64 vs Howard + 12 R32 vs St Louis)
+  "Nimari Burnett":    44,   // Michigan (11 R64 vs Howard + 15 R32 vs St Louis)
+  "Will Tschetter":     10,   // Michigan (2 R64 vs Howard + 6 R32 vs St Louis)
   "Roddy Gayle Jr.":   17,   // Michigan (14 R64 vs Howard +  3 R32 vs St Louis)
-  "Roddy Gale":          33,   // Michigan — alias for Roddy Gayle Jr. (roster spelling)
-  "Trey McKenney":     35,   // Michigan (10 R64 vs Howard + 8 R32 vs St Louis)
+  "Roddy Gale":          54,   // Michigan — alias for Roddy Gayle Jr. (roster spelling)
+  "Trey McKenney":     63,   // Michigan (10 R64 vs Howard + 8 R32 vs St Louis)
   "Cedric Taylor":     19,   // Howard (eliminated R64)
 
   // ── R64 Thu Mar 19 — Houston 78, Idaho 47 ──
@@ -1538,25 +1532,25 @@ const HARDCODED_OVERRIDES = {
   "MJ Collins":           32,  // Utah St (20 R64 vs Villanova + 12 R32 vs Arizona) ELIM
   "Mason Falslev":        30,  // Utah St (22 R64 vs Villanova + 8 R32 vs Arizona) ELIM
   "Dwayne Aristode":        7,  // Arizona (4 R64 vs LIU + 3 R32 vs Utah State)
-  "Anthony Dell'Orso":      19,  // Arizona (3 R64 vs LIU + 8 R32 vs Utah State)
-  "Tobe Awaka":            29,  // Arizona (11 R64 vs LIU + 4 R32 vs Utah State)
-  "Ivan Kharchenkov":     38,  // Arizona (14 R64 vs LIU + 9 R32 vs Utah State)
+  "Anthony Dell'Orso":      25,  // Arizona (3 R64 vs LIU + 8 R32 vs Utah State)
+  "Tobe Awaka":            41,  // Arizona (11 R64 vs LIU + 4 R32 vs Utah State)
+  "Ivan Kharchenkov":     62,  // Arizona (14 R64 vs LIU + 9 R32 vs Utah State)
   "Themus Fulks":          10,  // UCF (10 R64 vs UCLA) ELIM
   "Riley Kugel":          13,  // UCF (13 R64 vs UCLA) ELIM
   "Jordan Burks":         22,  // UCF (22 R64 vs UCLA) ELIM
-  "Koa Peat":              50,  // Arizona (15 R64 + 14 R32)
-  "Brayden Burries":       57,  // Arizona (18 R64 + 16 R32)  [also in averages block, no conflict]
-  "Jaden Bradley":         39,  // Arizona ( 7 R64 + 18 R32)
-  "Motiejus Krivas":       34,  // Arizona ( 9 R64 + 11 R32)
+  "Koa Peat":              86,  // Arizona (15 R64 + 14 R32)
+  "Brayden Burries":       84,  // Arizona (18 R64 + 16 R32)  [also in averages block, no conflict]
+  "Jaden Bradley":         66,  // Arizona ( 7 R64 + 18 R32)
+  "Motiejus Krivas":       51,  // Arizona ( 9 R64 + 11 R32)
 
   // ── Sun Mar 23 — Purdue 79, Miami FL 69 ── (Purdue advancing)
-  "Braden Smith":         54,  // Purdue (26 R64 vs Queens + 12 R32 vs Miami FL)
-  "Oscar Cluff":          28,  // Purdue (9 R64 vs Queens + 8 R32 vs Miami FL)
-  "C.J. Cox":              32,  // Purdue (11 R64 vs Queens + 11 R32 vs Miami FL)
-  "Omer Mayer":            11,  // Purdue (9 R64 vs Queens + 0 R32 vs Miami FL)
+  "Braden Smith":         67,  // Purdue (26 R64 vs Queens + 12 R32 vs Miami FL)
+  "Oscar Cluff":          42,  // Purdue (9 R64 vs Queens + 8 R32 vs Miami FL)
+  "C.J. Cox":              39,  // Purdue (11 R64 vs Queens + 11 R32 vs Miami FL)
+  "Omer Mayer":            15,  // Purdue (9 R64 vs Queens + 0 R32 vs Miami FL)
   "Daniel Jacobsen":       4,  // Purdue (4 R64 vs Queens + 0 R32 vs Miami FL)
-  "Fletcher Loyer":        56,  // Purdue (14 R64 vs Queens + 24 R32 vs Miami FL)
-  "Trey Kaufman-Renn":     64,  // Purdue (25 R64 vs Queens + 19 R32 vs Miami FL)
+  "Fletcher Loyer":        64,  // Purdue (14 R64 vs Queens + 24 R32 vs Miami FL)
+  "Trey Kaufman-Renn":     74,  // Purdue (25 R64 vs Queens + 19 R32 vs Miami FL)
   "Malik Reneau":          40,  // Miami FL (24 R64 vs Missouri + 16 R32 vs Purdue) ELIM
   "Shelton Henderson":     33,  // Miami FL (18 R64 vs Missouri + 15 R32 vs Purdue) ELIM
   "Tre Donaldson":         30,  // Miami FL (17 R64 vs Missouri + 13 R32 vs Purdue) ELIM
@@ -1579,14 +1573,14 @@ const HARDCODED_OVERRIDES = {
   "Bryson Tiller":          6,  // Kansas (6 R64 vs Cal Baptist + 0 R32 vs St John's) ELIM (R64+R32 DNP/0) ELIM
 
   // ── Sun Mar 23 — UConn 73, UCLA 57 ── (UConn advancing)
-  "Silas Demary":           2,  // UConn (2 R32 vs UCLA)
-  "Braylon Mullins":      37,  // UConn (12 R64 vs Furman + 17 R32 vs UCLA)
-  "Eric Reibe":            4,  // UConn (4 R32 vs UCLA)
-  "Solo Ball":             21,  // UConn (9 R64 vs Furman + 0 R32 vs UCLA)
-  "Tarris Reed Jr.":      61,  // UConn (31 R64 vs Furman + 10 R32 vs UCLA)
+  "Silas Demary":           24,  // UConn (2 R32 vs UCLA)
+  "Braylon Mullins":      62,  // UConn (12 R64 vs Furman + 17 R32 vs UCLA)
+  "Eric Reibe":            6,  // UConn (4 R32 vs UCLA)
+  "Solo Ball":             44,  // UConn (9 R64 vs Furman + 0 R32 vs UCLA)
+  "Tarris Reed Jr.":      104,  // UConn (31 R64 vs Furman + 10 R32 vs UCLA)
   "Alex Wilkins":          21,  // Furman (21 R64 vs UConn) ELIM
   "Cole Bowser":            9,  // Furman (9 R64 vs UConn) ELIM
-  "Alex Karaban":          66,  // UConn (22 R64 vs Furman + 27 R32)
+  "Alex Karaban":          80,  // UConn (22 R64 vs Furman + 27 R32)
   // UCLA eliminated — final totals:
   "Eric Dailey":           32,  // UCLA (20 R64 vs UCF + 12 R32) ELIM
   "Skyy Clark":            19,  // UCLA (8 R64 vs UCF + 11 R32 vs UConn) ELIM
@@ -1617,21 +1611,21 @@ const HARDCODED_OVERRIDES = {
   "Denzel Aberdeen":       36,  // Kentucky (16 R64 vs Santa Clara + 20 R32 vs Iowa St) ELIM
 
   // ── Sun Mar 23 — Tennessee 79, Virginia 72 ── (Tennessee advancing)
-  "Nate Ament":            34,  // Tennessee (0 R64 vs Miami OH + 16 R32 vs Virginia)
-  "Felix Okpara":          31,  // Tennessee (12 R64 vs Miami OH + 7 R32 vs Virginia)
+  "Nate Ament":            41,  // Tennessee (0 R64 vs Miami OH + 16 R32 vs Virginia)
+  "Felix Okpara":          41,  // Tennessee (12 R64 vs Miami OH + 7 R32 vs Virginia)
   "Bishop Boswell":        18,  // Tennessee (5 R64 vs Miami OH + 13 R32 vs Virginia)
   "Jaylen Carey":          10,  // Tennessee (0 R64 vs Miami OH + 10 R32 vs Virginia)
-  "Ja'Kobi Gillespie":     66,  // Tennessee (29 R64 vs Miami OH + 21 R32)
+  "Ja'Kobi Gillespie":     87,  // Tennessee (29 R64 vs Miami OH + 21 R32)
   // Virginia eliminated — final totals:
-  "Tavion Banks":         28,  // Iowa (6 R64 vs Clemson + 20 R32 vs Florida)
-  "Bennett Stirtz":       31,  // Iowa (16 R64 vs Clemson + 13 R32 vs Florida)
-  "Cooper Koch":          31,  // Iowa (8 R64 vs Clemson + 12 R32 vs Florida)
+  "Tavion Banks":         33,  // Iowa (6 R64 vs Clemson + 20 R32 vs Florida)
+  "Bennett Stirtz":       73,  // Iowa (16 R64 vs Clemson + 13 R32 vs Florida)
+  "Cooper Koch":          37,  // Iowa (8 R64 vs Clemson + 12 R32 vs Florida)
   "Michael Cooper":       13,  // Wright St (13 R64 vs Virginia) ELIM
   "TJ Burch":             15,  // Wright St (15 R64 vs Virginia) ELIM
   "Sam Lewis":            17,  // Virginia (12 R64 vs Wright St + 5 R32 vs Tennessee) ELIM
   "Cruz Davis":           14,  // Hofstra (14 R64 vs Alabama) ELIM
   "Preston Edmead":       24,  // Hofstra (24 R64 vs Alabama) ELIM
-  "J.P. Estrella":        30,  // Tennessee (14 R64 vs Miami OH + 10 R32 vs Virginia)
+  "J.P. Estrella":        37,  // Tennessee (14 R64 vs Miami OH + 10 R32 vs Virginia)
   "Thijs De Ridder":       32,  // Virginia (10 R64 vs Wright St + 22 R32 vs Tennessee) ELIM
   "Chance Mallory":        12,  // Virginia (2 R64 vs Wright St + 10 R32 vs Tennessee) ELIM
   "Malik Thomas":          23,  // Virginia (11 R64 vs Wright St + 12 R32 vs Tennessee) ELIM

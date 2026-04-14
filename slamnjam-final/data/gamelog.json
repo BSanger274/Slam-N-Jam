@@ -473,18 +473,23 @@
     {
       "round": "R64",
       "opp": "So Florida",
-      "pts": 10
+      "pts": 12
     },
     {
       "round": "R32",
       "opp": "Mich St",
-      "pts": 2
+      "pts": 0
+    },
+    {
+      "round": "E8",
+      "opp": "Michigan",
+      "pts": 0
     }
   ],
   "Maliq Brown": [
     {
       "round": "R64",
-      "opp": "Siena",
+      "opp": "So Florida",
       "pts": 6
     },
     {
@@ -496,11 +501,6 @@
       "round": "S16",
       "opp": "St. Johns",
       "pts": 6
-    },
-    {
-      "round": "E8",
-      "opp": "UConn",
-      "pts": 0
     }
   ],
   "Coen Carr": [
@@ -532,7 +532,7 @@
       "pts": 12
     },
     {
-      "round": "S16",
+      "round": "E8",
       "opp": "UConn",
       "pts": 13
     }
@@ -662,14 +662,19 @@
       "pts": 2
     },
     {
-      "round": "S16",
-      "opp": "Mich St",
-      "pts": 2
-    },
-    {
       "round": "E8",
       "opp": "Duke",
-      "pts": 11
+      "pts": 7
+    },
+    {
+      "round": "F4",
+      "opp": "Illinois",
+      "pts": 7
+    },
+    {
+      "round": "CHAMP",
+      "opp": "Michigan",
+      "pts": 8
     }
   ],
   "Braylon Mullins": [
@@ -691,7 +696,17 @@
     {
       "round": "E8",
       "opp": "Duke",
-      "pts": 10
+      "pts": 8
+    },
+    {
+      "round": "F4",
+      "opp": "Illinois",
+      "pts": 8
+    },
+    {
+      "round": "CHAMP",
+      "opp": "Michigan",
+      "pts": 9
     }
   ],
   "Eric Reibe": [
@@ -706,13 +721,18 @@
       "pts": 4
     },
     {
-      "round": "S16",
-      "opp": "Mich St",
+      "round": "E8",
+      "opp": "Duke",
       "pts": 0
     },
     {
-      "round": "E8",
-      "opp": "Duke",
+      "round": "F4",
+      "opp": "Illinois",
+      "pts": 0
+    },
+    {
+      "round": "CHAMP",
+      "opp": "Michigan",
       "pts": 2
     }
   ],
@@ -735,7 +755,17 @@
     {
       "round": "E8",
       "opp": "Duke",
-      "pts": 26
+      "pts": 14
+    },
+    {
+      "round": "F4",
+      "opp": "Illinois",
+      "pts": 14
+    },
+    {
+      "round": "CHAMP",
+      "opp": "Michigan",
+      "pts": 15
     }
   ],
   "Cole Bowser": [
@@ -764,29 +794,17 @@
     {
       "round": "E8",
       "opp": "Duke",
-      "pts": 5
-    }
-  ],
-  "Solo Ball": [
-    {
-      "round": "R64",
-      "opp": "Furman",
-      "pts": 9
+      "pts": 4
     },
     {
-      "round": "R32",
-      "opp": "UCLA",
-      "pts": 0
+      "round": "F4",
+      "opp": "Illinois",
+      "pts": 4
     },
     {
-      "round": "S16",
-      "opp": "Mich St",
-      "pts": 12
-    },
-    {
-      "round": "E8",
-      "opp": "Duke",
-      "pts": 10
+      "round": "CHAMP",
+      "opp": "Michigan",
+      "pts": 6
     }
   ],
   "MJ Collins": [
@@ -845,6 +863,11 @@
       "round": "E8",
       "opp": "Purdue",
       "pts": 3
+    },
+    {
+      "round": "F4",
+      "opp": "Michigan",
+      "pts": 3
     }
   ],
   "Tobe Awaka": [
@@ -866,7 +889,12 @@
     {
       "round": "E8",
       "opp": "Purdue",
-      "pts": 4
+      "pts": 6
+    },
+    {
+      "round": "F4",
+      "opp": "Michigan",
+      "pts": 6
     }
   ],
   "Dwayne Aristode": [
@@ -905,7 +933,12 @@
     {
       "round": "E8",
       "opp": "Purdue",
-      "pts": 18
+      "pts": 12
+    },
+    {
+      "round": "F4",
+      "opp": "Michigan",
+      "pts": 12
     }
   ],
   "Riley Kugel": [
@@ -941,7 +974,12 @@
     {
       "round": "E8",
       "opp": "Purdue",
-      "pts": 20
+      "pts": 18
+    },
+    {
+      "round": "F4",
+      "opp": "Michigan",
+      "pts": 18
     }
   ],
   "Brayden Burries": [
@@ -963,6 +1001,11 @@
     {
       "round": "E8",
       "opp": "Purdue",
+      "pts": 13
+    },
+    {
+      "round": "F4",
+      "opp": "Michigan",
       "pts": 14
     }
   ],
@@ -985,6 +1028,11 @@
     {
       "round": "E8",
       "opp": "Purdue",
+      "pts": 13
+    },
+    {
+      "round": "F4",
+      "opp": "Michigan",
       "pts": 14
     }
   ],
@@ -1007,7 +1055,12 @@
     {
       "round": "E8",
       "opp": "Purdue",
-      "pts": 6
+      "pts": 8
+    },
+    {
+      "round": "F4",
+      "opp": "Michigan",
+      "pts": 9
     }
   ],
   "Austin Rapp": [
@@ -1602,7 +1655,12 @@
     {
       "round": "E8",
       "opp": "Iowa",
-      "pts": 9
+      "pts": 7
+    },
+    {
+      "round": "F4",
+      "opp": "UConn",
+      "pts": 8
     }
   ],
   "Keaton Wagler": [
@@ -1624,7 +1682,12 @@
     {
       "round": "E8",
       "opp": "Iowa",
-      "pts": 25
+      "pts": 22
+    },
+    {
+      "round": "F4",
+      "opp": "UConn",
+      "pts": 23
     }
   ],
   "Will Riley": [
@@ -1658,7 +1721,12 @@
     {
       "round": "E8",
       "opp": "Iowa",
-      "pts": 13
+      "pts": 14
+    },
+    {
+      "round": "F4",
+      "opp": "UConn",
+      "pts": 15
     }
   ],
   "Andrej Stojakovic": [
@@ -1680,7 +1748,12 @@
     {
       "round": "E8",
       "opp": "Iowa",
-      "pts": 17
+      "pts": 13
+    },
+    {
+      "round": "F4",
+      "opp": "UConn",
+      "pts": 13
     }
   ],
   "Zvonimir Ivisic": [
@@ -1702,7 +1775,12 @@
     {
       "round": "E8",
       "opp": "Iowa",
-      "pts": 4
+      "pts": 2
+    },
+    {
+      "round": "F4",
+      "opp": "UConn",
+      "pts": 2
     }
   ],
   "Ben Humrichous": [
@@ -1720,28 +1798,6 @@
       "round": "S16",
       "opp": "Houston",
       "pts": 3
-    }
-  ],
-  "Kylan Boswell": [
-    {
-      "round": "R64",
-      "opp": "Penn",
-      "pts": 13
-    },
-    {
-      "round": "R32",
-      "opp": "VCU",
-      "pts": 12
-    },
-    {
-      "round": "S16",
-      "opp": "Houston",
-      "pts": 6
-    },
-    {
-      "round": "E8",
-      "opp": "Iowa",
-      "pts": 2
     }
   ],
   "Rashaun Agee": [
@@ -1875,6 +1931,11 @@
       "round": "S16",
       "opp": "Illinois",
       "pts": 6
+    },
+    {
+      "round": "S16",
+      "opp": "Unknown",
+      "pts": 6
     }
   ],
   "Yaxel Lendeborg": [
@@ -1896,7 +1957,17 @@
     {
       "round": "E8",
       "opp": "Tennessee",
-      "pts": 27
+      "pts": 12
+    },
+    {
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 12
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
+      "pts": 14
     }
   ],
   "Elliot Cadeau": [
@@ -1918,7 +1989,17 @@
     {
       "round": "E8",
       "opp": "Tennessee",
-      "pts": 8
+      "pts": 7
+    },
+    {
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 7
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
+      "pts": 7
     }
   ],
   "Will Tschetter": [
@@ -1933,13 +2014,18 @@
       "pts": 6
     },
     {
-      "round": "S16",
-      "opp": "Alabama",
+      "round": "E8",
+      "opp": "Tennessee",
       "pts": 0
     },
     {
-      "round": "E8",
-      "opp": "Tennessee",
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 0
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
       "pts": 2
     }
   ],
@@ -1962,7 +2048,17 @@
     {
       "round": "E8",
       "opp": "Tennessee",
-      "pts": 12
+      "pts": 9
+    },
+    {
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 9
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
+      "pts": 10
     }
   ],
   "Braden Smith": [
@@ -2024,6 +2120,11 @@
       "round": "S16",
       "opp": "Texas",
       "pts": 0
+    },
+    {
+      "round": "E8",
+      "opp": "Arizona",
+      "pts": 4
     }
   ],
   "Oscar Cluff": [
@@ -2094,14 +2195,19 @@
       "pts": 21
     },
     {
-      "round": "S16",
-      "opp": "Alabama",
-      "pts": 7
-    },
-    {
       "round": "E8",
       "opp": "Tennessee",
-      "pts": 12
+      "pts": 13
+    },
+    {
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 13
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
+      "pts": 15
     }
   ],
   "Aday Mara": [
@@ -2123,7 +2229,17 @@
     {
       "round": "E8",
       "opp": "Tennessee",
-      "pts": 11
+      "pts": 12
+    },
+    {
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 12
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
+      "pts": 13
     }
   ],
   "Tre Donovan Mara": [
@@ -2136,6 +2252,18 @@
       "round": "R32",
       "opp": "St Louis",
       "pts": 16
+    }
+  ],
+  "Roddy Gayle Jr.": [
+    {
+      "round": "R64",
+      "opp": "Howard",
+      "pts": 14
+    },
+    {
+      "round": "R32",
+      "opp": "St Louis",
+      "pts": 3
     }
   ],
   "Roddy Gale": [
@@ -2157,7 +2285,17 @@
     {
       "round": "E8",
       "opp": "Tennessee",
-      "pts": 8
+      "pts": 7
+    },
+    {
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 7
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
+      "pts": 7
     }
   ],
   "Nimari Burnett": [
@@ -2179,7 +2317,17 @@
     {
       "round": "E8",
       "opp": "Tennessee",
-      "pts": 10
+      "pts": 5
+    },
+    {
+      "round": "F4",
+      "opp": "Arizona",
+      "pts": 5
+    },
+    {
+      "round": "CHAMP",
+      "opp": "UConn",
+      "pts": 6
     }
   ],
   "Danny Wolf": [
@@ -2320,11 +2468,6 @@
       "round": "R32",
       "opp": "Virginia",
       "pts": 10
-    },
-    {
-      "round": "E8",
-      "opp": "Michigan",
-      "pts": 8
     }
   ],
   "Jamarion Batemon": [
@@ -2380,12 +2523,12 @@
     {
       "round": "S16",
       "opp": "Nebraska",
-      "pts": 20
+      "pts": 2
     },
     {
       "round": "E8",
       "opp": "Illinois",
-      "pts": 24
+      "pts": 42
     }
   ],
   "Cooper Koch": [
@@ -2430,28 +2573,6 @@
       "round": "E8",
       "opp": "Michigan",
       "pts": 21
-    }
-  ],
-  "J.P. Estrella": [
-    {
-      "round": "R64",
-      "opp": "Miami OH",
-      "pts": 14
-    },
-    {
-      "round": "R32",
-      "opp": "Virginia",
-      "pts": 10
-    },
-    {
-      "round": "S16",
-      "opp": "Iowa St",
-      "pts": 6
-    },
-    {
-      "round": "E8",
-      "opp": "Michigan",
-      "pts": 7
     }
   ],
   "Thijs De Ridder": [
@@ -3075,6 +3196,28 @@
       "pts": 24
     }
   ],
+  "J.P. Estrella": [
+    {
+      "round": "R64",
+      "opp": "Miami OH",
+      "pts": 14
+    },
+    {
+      "round": "R32",
+      "opp": "Virginia",
+      "pts": 10
+    },
+    {
+      "round": "S16",
+      "opp": "Iowa St",
+      "pts": 6
+    },
+    {
+      "round": "E8",
+      "opp": "Michigan",
+      "pts": 7
+    }
+  ],
   "Matt Able": [
     {
       "round": "R64",
@@ -3115,6 +3258,38 @@
       "round": "R64",
       "opp": "Iowa",
       "pts": 5
+    }
+  ],
+  "Solo Ball": [
+    {
+      "round": "R64",
+      "opp": "Furman",
+      "pts": 9
+    },
+    {
+      "round": "R32",
+      "opp": "UCLA",
+      "pts": 0
+    },
+    {
+      "round": "S16",
+      "opp": "Mich St",
+      "pts": 12
+    },
+    {
+      "round": "E8",
+      "opp": "Duke",
+      "pts": 7
+    },
+    {
+      "round": "F4",
+      "opp": "Illinois",
+      "pts": 7
+    },
+    {
+      "round": "CHAMP",
+      "opp": "Michigan",
+      "pts": 9
     }
   ],
   "Acaden Lewis": [
@@ -3566,14 +3741,9 @@
       "pts": 0
     },
     {
-      "round": "S16",
-      "opp": "St. Johns",
-      "pts": 11
-    },
-    {
       "round": "E8",
       "opp": "UConn",
-      "pts": 0
+      "pts": 11
     }
   ],
   "Patrick Ngongba": [
@@ -3585,17 +3755,12 @@
     {
       "round": "R32",
       "opp": "TCU",
-      "pts": 4
-    },
-    {
-      "round": "S16",
-      "opp": "St. Johns",
-      "pts": 3
+      "pts": 0
     },
     {
       "round": "E8",
       "opp": "UConn",
-      "pts": 6
+      "pts": 13
     }
   ],
   "Cedric Taylor": [
@@ -3643,7 +3808,12 @@
     {
       "round": "E8",
       "opp": "Iowa",
-      "pts": 2
+      "pts": 4
+    },
+    {
+      "round": "F4",
+      "opp": "UConn",
+      "pts": 4
     }
   ],
   "John Mobley Jr.": [
@@ -3726,20 +3896,6 @@
       "round": "R64",
       "opp": "High Point",
       "pts": 22
-    }
-  ],
-  "Gicarri Harris": [
-    {
-      "round": "E8",
-      "opp": "Arizona",
-      "pts": 8
-    }
-  ],
-  "Charlie May": [
-    {
-      "round": "E8",
-      "opp": "Tennessee",
-      "pts": 3
     }
   ]
 }
