@@ -319,12 +319,18 @@ async function fetchLiveScores() {
     const savedOverrides = readJSON(OVERRIDE_F, {});
     const activeEvents = allEvents.filter(ev => {
       const s = ev.status?.type?.name || '';
-      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL';
+      // Also include in-progress games where a winner is already marked (ESPN stale status fix)
+      const comps = ev.competitions?.[0]?.competitors || [];
+      const hasWinner = comps.some(c => c.winner === true);
+      return s === 'STATUS_IN_PROGRESS' || s === 'STATUS_HALFTIME' || s === 'STATUS_FINAL' || hasWinner;
     });
     const freshMinutes = {}; // player -> minutes played this game
     await Promise.all(activeEvents.slice(0, 15).map(async ev => {
       const evStatus = ev.status?.type?.name || '';
-      const isFinal  = evStatus === 'STATUS_FINAL';
+      const evComps  = ev.competitions?.[0]?.competitors || [];
+      const hasWinner = evComps.some(c => c.winner === true);
+      // Treat as final if ESPN says so, OR if a winner is already marked (handles stale ESPN status)
+      const isFinal  = evStatus === 'STATUS_FINAL' || hasWinner;
 
       // Determine round label and team names for game log
       const evTeams = (ev.competitions?.[0]?.competitors || []).map(c =>
@@ -2717,13 +2723,19 @@ app.get('/api/boxscore/:gameId', async (req, res) => {
     }
     const header      = data.header || {};
     const competition = (header.competitions || [])[0] || {};
-    const gameStatus  = competition.status?.type?.description || 'Unknown';
     const competitors = (competition.competitors || []).map(c => ({
       name:   c.team?.displayName || '—',
       score:  c.score || '0',
       winner: c.winner || false,
       record: c.record?.[0]?.summary || ''
     }));
+    let gameStatus = competition.status?.type?.description || 'Unknown';
+    // ESPN sometimes returns stale "In Progress" after a game ends — if a winner
+    // is already marked, the game is definitively over regardless of status string
+    const hasWinner = competitors.some(c => c.winner === true);
+    if (hasWinner && /progress|live/i.test(gameStatus)) {
+      gameStatus = 'Final';
+    }
     res.json({ ok: true, gameStatus, competitors, teams });
   } catch (e) {
     console.error('[BoxScore] fetch failed:', e.message);

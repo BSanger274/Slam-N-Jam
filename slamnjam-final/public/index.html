@@ -2241,9 +2241,11 @@ async function openBoxScore(gameId, team1, team2) {
     const r = await fetch(`${API}/api/boxscore/${gameId}`);
     const d = await r.json();
     if (!d.ok) throw new Error(d.error || 'Failed');
-    const isFinal    = (d.gameStatus||'').toLowerCase().includes('final');
-    const isLive     = (d.gameStatus||'').toLowerCase().includes('live') || (d.gameStatus||'').toLowerCase().includes('progress');
     const c = d.competitors || [];
+    // If any competitor is marked winner, game is definitely over (handles stale ESPN status)
+    const hasWinner  = c.some(comp => comp.winner === true);
+    const isFinal    = hasWinner || (d.gameStatus||'').toLowerCase().includes('final');
+    const isLive     = !isFinal && ((d.gameStatus||'').toLowerCase().includes('live') || (d.gameStatus||'').toLowerCase().includes('progress'));
     const statusColor = isFinal ? 'var(--muted)' :
                         isLive  ? 'var(--green)' : 'var(--blue)';
     scoreRow.innerHTML = `
