@@ -1280,13 +1280,13 @@
           "seed": 2,
           "name": "UConn",
           "score": null,
-          "won": null
+          "won": true
         },
         "t2": {
           "seed": 3,
           "name": "Illinois",
           "score": null,
-          "won": null
+          "won": false
         },
         "status": "STATUS_FINAL"
       },
@@ -1311,16 +1311,16 @@
       {
         "id": "f3",
         "t1": {
+          "seed": 2,
+          "name": "UConn",
+          "score": null,
+          "won": false
+        },
+        "t2": {
           "seed": 1,
           "name": "Michigan",
           "score": null,
           "won": true
-        },
-        "t2": {
-          "seed": null,
-          "name": "TBD",
-          "score": null,
-          "won": null
         },
         "status": "STATUS_FINAL"
       }

@@ -1833,7 +1833,7 @@ function renderFinal4() {
         <line x1="0"        y1="${BOT_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="${LINE_L}" y1="${TOP_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="${LINE_L}" y1="${MID}"   x2="${LINE_L+TBD_L}" y2="${MID}" stroke="var(--border)" stroke-width="1.5"/>
-        <text x="${LINE_L + TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">${fin ? (fin.t2?.score!=null ? fin.t2.name+' '+fin.t2.score+'-'+fin.t1.score+' '+fin.t1.name : fin.t1?.name||'TBD') : 'TBD'}</text>
+        ${(()=>{const lbl=fin?(fin.t1?.score!=null?fin.t1.name+' '+fin.t1.score+'-'+fin.t2.score+' '+fin.t2.name:fin.t1?.name||'TBD'):'TBD';const isChamp=lbl===f4.champion;return `<text x="${LINE_L + TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="${isChamp?'var(--orange)':'rgba(255,255,255,0.4)'}" letter-spacing="1">${lbl}</text>`;})()}
       </svg>
 
       <div style="display:inline-flex;flex-direction:column;align-items:center;flex-shrink:0;white-space:normal;vertical-align:middle">
@@ -1842,10 +1842,10 @@ function renderFinal4() {
           <div class="champ-lbl">2026 Champion</div>
           <div class="champ-name">${f4.champion||'Michigan'}</div>
         </div>
-        ${fin&&(fin.t1?.name&&fin.t1.name!=='TBD')?`
+        ${fin&&(fin.t1?.name&&fin.t1.name!=='TBD')||fin?.t2?.name&&fin.t2.name!=='TBD'?`
           <div style="width:1.5px;height:10px;background:var(--border)"></div>
           <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">Championship · Apr 6</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted)">${fin.t1?.name||''} vs ${fin.t2?.name||''}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted)">${fin?.t1?.name||''} vs <span style="color:var(--orange)">${fin?.t2?.name||''}</span></div>
         `:''}
       </div>
 
@@ -1854,7 +1854,7 @@ function renderFinal4() {
         <line x1="${LINE_L+TBD_L}" y1="${BOT_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="${TBD_L}"        y1="${TOP_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
         <line x1="${TBD_L}"        y1="${MID}"   x2="0"        y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
-        <text x="${TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" letter-spacing="1">TBD</text>
+        ${(()=>{const lbl=fin?(fin.t2?.score!=null?fin.t2.name+' '+fin.t2.score+'-'+fin.t1.score+' '+fin.t1.name:fin.t2?.name||'TBD'):'TBD';const isChamp=lbl===f4.champion;return `<text x="${TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="${isChamp?'var(--orange)':'rgba(255,255,255,0.4)'}" letter-spacing="1">${lbl}</text>`;})()}
       </svg>
 
       <div style="display:inline-flex;flex-direction:column;gap:${GAP}px;align-items:flex-start;white-space:normal;flex-shrink:0;padding-top:16px">
@@ -2490,7 +2490,7 @@ async function openPreGameStats(team1, team2, gameId) {
     const infoBdr   = isFinal ? 'rgba(255,107,0,.25)' : isLive ? 'rgba(0,230,118,.25)' : 'rgba(255,184,0,.2)';
     const infoColor = isFinal ? 'var(--orange)' : isLive ? 'var(--green)' : 'var(--gold)';
     const infoText  = isFinal
-      ? '🏆 Final result · showing each player\'s total tournament points scored'
+      ? '🏆 Final result · PTS = each player\'s cumulative tournament total (all rounds combined)'
       : isLive
       ? '🏀 Game is LIVE — showing real-time points scored in this game'
       : '📋 Showing all drafted players from each team and their season scoring average';
