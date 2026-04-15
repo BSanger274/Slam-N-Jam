@@ -132,6 +132,18 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc-p{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);margin-top:5px}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
 
+/* ── CARD FLIP ── */
+.pc-wrap{perspective:900px;cursor:pointer}
+.pc-wrap .pc-inner{position:relative;transition:transform .42s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.pc-wrap.flipped .pc-inner{transform:rotateY(180deg)}
+.pc-front,.pc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.pc-back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px}
+.pc-wrap.elim .pc-front{opacity:.4}
+.pc-wrap.live .pc-front{border-left:3px solid var(--green)!important}
+.pc-wrap:not(.elim):hover .pc-front{border-color:var(--orange)}
+.pc-back-link{background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;font-weight:700;letter-spacing:1px;border-radius:4px;padding:3px 7px;cursor:pointer;margin-top:auto;align-self:flex-end;transition:border-color .15s,color .15s}
+.pc-back-link:hover{border-color:var(--orange);color:var(--orange)}
+
 /* ── HISTORY ── */
 .hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:9px}
 .hc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 13px;transition:border-color .2s}
@@ -878,6 +890,7 @@ let prevFrom = 'teams'; // for back button
 // FIX: Default to firstfour — it's Mar 17-18 (play-in days)
 let currentRegion = 'firstfour';
 let pollTimer = null;
+let prevTeamPts = {}; // for standings count-up animation
 
 // ═══════════════════════════════════════════════
 // POLLING
@@ -951,19 +964,41 @@ function renderAll() {
   if (document.getElementById('page-players').classList.contains('active')) renderPlayers();
 }
 
+function animateCount(el, from, to, duration=900) {
+  const range = to - from;
+  if (range === 0) return;
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    el.textContent = Math.round(from + range * eased);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
 function renderStandings(sorted, filter='') {
   document.getElementById('standings-body').innerHTML = sorted
     .filter(t=>t.name.toLowerCase().includes(filter.toLowerCase()))
     .map((t,i)=>{
       const rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
       const alive = t.players.filter(p=>p.active).length;
+      const displayPts = prevTeamPts[t.name] ?? t.totalPts;
       return `<tr>
         <td class="rnk ${rc}">${i+1}</td>
         <td><span class="tn" onclick="viewTeam('${esc(t.name)}','dashboard')">${t.name}</span></td>
-        <td class="pts" style="text-align:center">${t.totalPts}</td>
+        <td class="pts" data-team="${esc(t.name)}" data-pts="${t.totalPts}" style="text-align:center">${displayPts}</td>
         <td style="text-align:center"><span class="chip ${alive===0?'out':''}">${alive}</span></td>
       </tr>`;
     }).join('');
+  // Animate any pts that changed since last render
+  document.querySelectorAll('#standings-body td[data-pts]').forEach(el => {
+    const team = el.dataset.team;
+    const target = parseInt(el.dataset.pts);
+    const from = prevTeamPts[team] ?? target;
+    if (from !== target) animateCount(el, from, target);
+    prevTeamPts[team] = target;
+  });
 }
 
 
@@ -1111,13 +1146,35 @@ function viewTeam(name, from) {
     <div style="text-align:right"><div class="dp">${t.totalPts}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px">Total Points</div></div>`;
   document.getElementById('d-alive').textContent = `${alive} active`;
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
-    <div class="pc ${p.active?'':'elim'}${p.isLive?' live':''}" data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerCardClick(this)" style="cursor:pointer">
-      ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
-      <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
-      <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
-      <div style="position:relative;margin-top:2px">
-        <div class="pc-p">${p.pts}</div>
-        ${p.round != null ? '<span style="position:absolute;bottom:2px;right:0;font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase">PICK #' + p.round + '</span>' : ''}
+    <div class="pc-wrap ${p.active?'':'elim'}${p.isLive?' live':''}" data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerCardClick(this)">
+      <div class="pc-inner">
+        <div class="pc pc-front">
+          ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
+          <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
+          <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
+          <div style="position:relative;margin-top:2px">
+            <div class="pc-p">${p.pts}</div>
+            ${p.round != null ? '<span style="position:absolute;bottom:2px;right:0;font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Rd '+p.round+'</span>' : ''}
+          </div>
+        </div>
+        <div class="pc pc-back">
+          <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px">${p.school}</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;flex:1">
+            <div>
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Season Avg</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1.1">${p.seasonAvg||'—'}<span style="font-size:11px;color:var(--muted)"> ppg</span></div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Tournament</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange);line-height:1.1">${p.pts}<span style="font-size:11px;color:var(--muted)"> pts</span></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">
+            <span style="font-size:9px;color:var(--muted);letter-spacing:1px">${p.overallPick ? 'PICK #'+p.overallPick+' · RD '+p.round : ''}</span>
+            <button class="pc-back-link" onclick="event.stopPropagation();openDrawerFromCard('${p.name.replace(/'/g,"\\'")}')">FULL STATS ›</button>
+          </div>
+        </div>
       </div>
     </div>`).join('');
 
@@ -1592,10 +1649,10 @@ function renderBracket(region) {
         const lineH     = botCenter - topCenter;
 
         html += `<svg style="position:absolute;top:${topCenter}px;left:0;overflow:visible;pointer-events:none" width="${CONN_W}" height="${lineH}" viewBox="0 0 ${CONN_W} ${lineH}">
-          <line x1="0" y1="0"           x2="12" y2="0"           stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="12" y1="0"          x2="12" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="0" y1="${lineH}"     x2="12" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="12" y1="${lineH/2}"  x2="${CONN_W}" y2="${lineH/2}" stroke="var(--border)" stroke-width="1.5"/>
+          <line class="bk-line" x1="0" y1="0"           x2="12" y2="0"           stroke="var(--border)" stroke-width="1.5"/>
+          <line class="bk-line" x1="12" y1="0"          x2="12" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
+          <line class="bk-line" x1="0" y1="${lineH}"     x2="12" y2="${lineH}"     stroke="var(--border)" stroke-width="1.5"/>
+          <line class="bk-line" x1="12" y1="${lineH/2}"  x2="${CONN_W}" y2="${lineH/2}" stroke="var(--border)" stroke-width="1.5"/>
         </svg>`;
       }
 
@@ -1605,6 +1662,22 @@ function renderBracket(region) {
 
   html += `</div></div>`;
   document.getElementById('bracket-view').innerHTML = html;
+  animateBracketLines();
+}
+
+function animateBracketLines() {
+  const lines = document.querySelectorAll('.bk-line');
+  lines.forEach((line, i) => {
+    const dx = (line.x2.baseVal.value - line.x1.baseVal.value);
+    const dy = (line.y2.baseVal.value - line.y1.baseVal.value);
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    line.style.strokeDasharray = len;
+    line.style.strokeDashoffset = len;
+    line.style.transition = `stroke-dashoffset 0.25s ease ${i * 0.03}s`;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      line.style.strokeDashoffset = '0';
+    }));
+  });
 }
 
 function renderFirstFour() {
@@ -3041,7 +3114,26 @@ setInterval(refreshTicker, 60000);
 function handlePlayerCardClick(el) {
   const name = el.getAttribute('data-pname');
   if (!name) return;
-  // Find player across all teams
+  // Un-flip any other open cards
+  document.querySelectorAll('.pc-wrap.flipped').forEach(c => { if (c !== el) c.classList.remove('flipped'); });
+  // Toggle flip
+  if (el.classList.contains('flipped')) {
+    el.classList.remove('flipped');
+    return;
+  }
+  el.classList.add('flipped');
+  // Click outside un-flips
+  const unflip = (e) => {
+    if (!el.contains(e.target)) {
+      el.classList.remove('flipped');
+      document.removeEventListener('click', unflip, true);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', unflip, true), 10);
+}
+
+function openDrawerFromCard(name) {
+  document.querySelectorAll('.pc-wrap.flipped').forEach(c => c.classList.remove('flipped'));
   for (const t of TEAMS) {
     for (const p of t.players) {
       if (p.name === name) {
