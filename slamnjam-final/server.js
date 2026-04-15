@@ -203,6 +203,11 @@ async function fetchLiveScores() {
     }
 
     for (const event of allEvents) {
+      // Skip events older than 48 hours — ESPN sometimes returns stale March tournament
+      // games in April scoreboard responses, causing false LIVE indicators
+      const evMs = event.date ? new Date(event.date).getTime() : Date.now();
+      if ((Date.now() - evMs) > 48 * 60 * 60 * 1000) continue;
+
       for (const comp of (event.competitions || [])) {
         // Patch bracket scores from live events
         if (bracketCache) {
