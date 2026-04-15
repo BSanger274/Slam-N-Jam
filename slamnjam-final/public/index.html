@@ -2484,13 +2484,13 @@ async function openPreGameStats(team1, team2, gameId) {
     ]);
 
     const avgs       = avgsRes.averages  || {};
-    const liveScores = scoresRes.merged  || {};
-    // Only show LIVE if players from these specific teams actually have live scores
-    // (avoids false LIVE when ESPN returns stale in-progress data from other games)
+    const liveScores = scoresRes.merged || {};
+    const liveOnly   = scoresRes.live   || {}; // only players from currently in-progress games
+    // Only show LIVE if players from these specific teams are in the live-only cache
     const relevantPlayers = TEAMS.flatMap(t => t.players.filter(p =>
       normSchool(p.school) === normSchool(team1) || normSchool(p.school) === normSchool(team2)
     )).map(p => p.name);
-    const isLive = relevantPlayers.some(name => (liveScores[name] ?? 0) > 0);
+    const isLive = relevantPlayers.some(name => (liveOnly[name] ?? 0) > 0);
 
     const badge = document.getElementById('game-status-badge');
     if (badge) badge.innerHTML = isLive

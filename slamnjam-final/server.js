@@ -258,36 +258,41 @@ async function fetchLiveScores() {
             }
           }
         }
-        // Player points — use linescores/statistics for full box score data
-        // Fall back to leaders array if detailed stats not available
+        // Player points — only populate live scoreCache for ACTUALLY in-progress games.
+        // Final/stale games must NOT go into scores or liveCount will be inflated.
+        const evStatus = event.status?.type?.name || '';
+        const evCompsCheck = comp.competitors || [];
+        const evHasWinner  = evCompsCheck.some(c => c.winner === true);
+        const evIsLive     = evStatus === 'STATUS_IN_PROGRESS' || evStatus === 'STATUS_HALFTIME';
+        const evIsFinished = evStatus === 'STATUS_FINAL' || evHasWinner;
         let gotDetailedStats = false;
-        for (const team of (comp.competitors || [])) {
-          // Try statistics array first (has every player, not just leaders)
-          const teamStats = team.statistics || [];
-          for (const statGroup of teamStats) {
-            if (statGroup.name === 'scoring' || statGroup.abbreviation === 'PTS') {
-              for (const athlete of (statGroup.athletes || [])) {
-                const name = athlete.athlete?.displayName;
-                const pts  = parseFloat(athlete.value) || 0;
-                if (name && pts > 0) {
-                  scores[name] = (scores[name] || 0) + pts;
-                  gotDetailedStats = true;
+        if (evIsLive) { // only add to live scoreCache for genuinely in-progress games
+          for (const team of (comp.competitors || [])) {
+            // Try statistics array first (has every player, not just leaders)
+            const teamStats = team.statistics || [];
+            for (const statGroup of teamStats) {
+              if (statGroup.name === 'scoring' || statGroup.abbreviation === 'PTS') {
+                for (const athlete of (statGroup.athletes || [])) {
+                  const name = athlete.athlete?.displayName;
+                  const pts  = parseFloat(athlete.value) || 0;
+                  if (name && pts > 0) {
+                    scores[name] = (scores[name] || 0) + pts;
+                    gotDetailedStats = true;
+                  }
                 }
               }
             }
-          }
-          // Also check linescores
-          for (const ls of (team.linescores || [])) {
-            const name = ls.athlete?.displayName || ls.displayName;
-            const pts  = parseFloat(ls.value) || 0;
-            if (name && pts > 0) {
-              scores[name] = (scores[name] || 0) + pts;
-              gotDetailedStats = true;
+            // Also check linescores
+            for (const ls of (team.linescores || [])) {
+              const name = ls.athlete?.displayName || ls.displayName;
+              const pts  = parseFloat(ls.value) || 0;
+              if (name && pts > 0) {
+                scores[name] = (scores[name] || 0) + pts;
+                gotDetailedStats = true;
+              }
             }
           }
         }
-        // Track schools in 1st half for Option 2 trend suppression
-        const evStatus = event.status?.type?.name || '';
         const evPeriod = parseInt(event.status?.period || 0);
         // Period 1 = first half in college basketball
         // Also catch halftime status
@@ -299,8 +304,8 @@ async function fetchLiveScores() {
           }
         }
 
-        // Fall back to leaders if no detailed stats found
-        if (!gotDetailedStats) {
+        // Fall back to leaders if no detailed stats found (only for live games)
+        if (evIsLive && !gotDetailedStats) {
           for (const team of (comp.competitors || [])) {
             for (const leader of (team.leaders || [])) {
               if (leader.name === 'points') {
@@ -398,7 +403,8 @@ async function fetchLiveScores() {
                 ? (() => { const [m,s] = minRaw.split(':').map(Number); return m + (s||0)/60; })()
                 : parseFloat(minRaw) || 0;
               if (name) {
-                if (pts > 0) scores[name] = pts;
+                // Only populate live scoreCache for in-progress games; final games use playerTotals
+                if (pts > 0 && !isFinal) scores[name] = pts;
                 // Auto-save completed game scores — skip HARDCODED_OVERRIDES players only
                 if (isFinal && pts > 0) {
                   // AUTO-ACCUMULATE: only process each game once using processedGames tracker
