@@ -262,6 +262,11 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .sseed{font-family:'Bebas Neue',sans-serif;font-size:11px;color:var(--muted);width:13px;flex-shrink:0;text-align:center}
 .sname{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
 .slogo{width:14px;height:14px;object-fit:contain;flex-shrink:0;border-radius:2px}
+/* Bevel disc + orange glow — wraps every team logo img */
+.logo-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 32% 30%,#fff 0%,#e2ddd8 100%);box-shadow:inset 3px 3px 7px rgba(255,255,255,1),inset -3px -3px 7px rgba(0,0,0,.28),0 0 0 2.5px rgba(255,107,0,.88),0 0 22px rgba(255,107,0,.55),0 0 44px rgba(255,107,0,.18),0 5px 16px rgba(0,0,0,.6)}
+.logo-badge-lg{width:62px;height:62px}.logo-badge-lg img{width:42px;height:42px;object-fit:contain}
+.logo-badge-md{width:30px;height:30px}.logo-badge-md img{width:19px;height:19px;object-fit:contain}
+.logo-badge-sm{width:24px;height:24px}.logo-badge-sm img{width:15px;height:15px;object-fit:contain}
 .sscore{font-family:'Bebas Neue',sans-serif;font-size:13px;flex-shrink:0;min-width:18px;text-align:right;color:var(--muted)}
 .sscore.hi{color:var(--orange)}
 .draft-pip{font-size:9px;background:rgba(255,184,0,.18);color:var(--gold);padding:1px 4px;border-radius:3px;font-weight:700;flex-shrink:0;white-space:nowrap}
@@ -1079,7 +1084,7 @@ function renderTopScorers(allP) {
     ? top.map((p,i)=>{
         const logoUrl = TEAM_LOGOS[p.school] || '';
         const logoHtml = logoUrl
-          ? `<img src="${logoUrl}" style="width:22px;height:22px;object-fit:contain;border-radius:3px" onerror="this.style.display='none'" alt="">`
+          ? `<div class="logo-badge logo-badge-md" style="margin-right:2px"><img src="${logoUrl}" onerror="this.parentElement.style.display='none'" alt=""></div>`
           : '';
         return `<div class="pr" onclick="handlePlayerRowClick('${p.name.replace(/'/g,"\\'")}')" style="cursor:pointer" title="View ${p.name}'s game log">
           <div class="pnum">${i+1}</div>
@@ -1724,13 +1729,13 @@ function renderFirstFour() {
       <div class="cbody" style="padding:10px 14px;flex:1;min-height:90px">
         <div style="display:flex;align-items:center;gap:8px;padding:7px 0;min-height:36px;border-bottom:1px solid var(--border);opacity:${t2won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t1.seed}</span>
-          ${TEAM_LOGOS[g.t1.name]?`<img src="${TEAM_LOGOS[g.t1.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+          ${TEAM_LOGOS[g.t1.name]?`<div class="logo-badge logo-badge-sm"><img src="${TEAM_LOGOS[g.t1.name]}" onerror="this.parentElement.style.display='none'"></div>` : ''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t1won?'color:var(--orange)':''}">${g.t1.name}</span>
           ${g.t1.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${t1won?'var(--orange)':'var(--muted)'};min-width:28px;text-align:right">${g.t1.score}</span>`:''}
         </div>
         <div style="display:flex;align-items:center;gap:8px;padding:7px 0;min-height:36px;opacity:${t1won?0.45:1}">
           <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:18px">${g.t2.seed}</span>
-          ${TEAM_LOGOS[g.t2.name]?`<img src="${TEAM_LOGOS[g.t2.name]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+          ${TEAM_LOGOS[g.t2.name]?`<div class="logo-badge logo-badge-sm"><img src="${TEAM_LOGOS[g.t2.name]}" onerror="this.parentElement.style.display='none'"></div>` : ''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;${t2won?'color:var(--orange)':''}">${g.t2.name}</span>
           ${g.t2.score!=null?`<span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${t2won?'var(--orange)':'var(--muted)'};min-width:28px;text-align:right">${g.t2.score}</span>`:''}
         </div>
@@ -1777,7 +1782,7 @@ function renderFinal4() {
       transition:border-color .2s,box-shadow .2s;white-space:nowrap"
       ${onclick?`onclick="${onclick}"`:''} 
       ${canClick?`onmouseenter="this.style.borderColor='rgba(255,107,0,.85)';this.style.boxShadow='0 0 12px rgba(255,107,0,.3)'" onmouseleave="this.style.borderColor='';this.style.boxShadow=''"`:''}>
-      ${!isTbd&&TEAM_LOGOS[name]?`<img src="${TEAM_LOGOS[name]}" style="width:20px;height:20px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:' '}
+      ${!isTbd&&TEAM_LOGOS[name]?`<div class="logo-badge logo-badge-sm"><img src="${TEAM_LOGOS[name]}" onerror="this.parentElement.style.display='none'"></div>`:''}
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;
         color:${won?'var(--orange)':isTbd?'var(--muted)':'var(--text)'};
         font-style:${isTbd?'italic':'normal'}">${name}</span>
@@ -1835,7 +1840,7 @@ function renderFinal4() {
           background:${isC?'rgba(255,107,0,.13)':'var(--surface)'};
           border:1.5px solid ${isC?'var(--orange)':'var(--border)'};
           border-radius:22px;white-space:nowrap;pointer-events:none">
-          ${!isTbd&&TEAM_LOGOS[logoKey]?`<img src="${TEAM_LOGOS[logoKey]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` :''}
+          ${!isTbd&&TEAM_LOGOS[logoKey]?`<div class="logo-badge logo-badge-sm"><img src="${TEAM_LOGOS[logoKey]}" onerror="this.parentElement.style.display='none'"></div>` :''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
             color:${isC?'var(--orange)':'rgba(255,255,255,0.5)'}">${nm}</span>
         </div>`;
@@ -1869,7 +1874,7 @@ function renderFinal4() {
           background:${isC?'rgba(255,107,0,.13)':'var(--surface)'};
           border:1.5px solid ${isC?'var(--orange)':'var(--border)'};
           border-radius:22px;white-space:nowrap;pointer-events:none">
-          ${!isTbd&&TEAM_LOGOS[logoKey]?`<img src="${TEAM_LOGOS[logoKey]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` :''}
+          ${!isTbd&&TEAM_LOGOS[logoKey]?`<div class="logo-badge logo-badge-sm"><img src="${TEAM_LOGOS[logoKey]}" onerror="this.parentElement.style.display='none'"></div>` :''}
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
             color:${isC?'var(--orange)':'rgba(255,255,255,0.5)'}">${nm}</span>
         </div>`;
@@ -2475,7 +2480,7 @@ async function openPreGameStats(team1, team2, gameId) {
 
   scoreRow.innerHTML = `
     <div class="modal-team">
-      ${TEAM_LOGOS[team1]?`<img src="${TEAM_LOGOS[team1]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      ${TEAM_LOGOS[team1]?`<div class="logo-badge logo-badge-lg" style="margin-bottom:10px"><img src="${TEAM_LOGOS[team1]}" onerror="this.parentElement.style.display='none'"></div>` : ''}
       ${mkScore(bt1, bt1?.won===true)}
       <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px">${team1}</div>
     </div>
@@ -2491,7 +2496,7 @@ async function openPreGameStats(team1, team2, gameId) {
       </div>
     </div>
     <div class="modal-team">
-      ${TEAM_LOGOS[team2]?`<img src="${TEAM_LOGOS[team2]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      ${TEAM_LOGOS[team2]?`<div class="logo-badge logo-badge-lg" style="margin-bottom:10px"><img src="${TEAM_LOGOS[team2]}" onerror="this.parentElement.style.display='none'"></div>` : ''}
       ${mkScore(bt2, bt2?.won===true)}
       <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px">${team2}</div>
     </div>`;
