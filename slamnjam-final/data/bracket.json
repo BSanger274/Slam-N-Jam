@@ -263,13 +263,13 @@
         "t1": {
           "seed": 1,
           "name": "Duke",
-          "score": null,
+          "score": 81,
           "won": true
         },
         "t2": {
           "seed": 9,
           "name": "TCU",
-          "score": null,
+          "score": 58,
           "won": false
         }
       },
@@ -280,13 +280,13 @@
         "t1": {
           "seed": 5,
           "name": "St. John's",
-          "score": null,
+          "score": 67,
           "won": true
         },
         "t2": {
           "seed": 4,
           "name": "Kansas",
-          "score": null,
+          "score": 65,
           "won": false
         }
       },
@@ -297,13 +297,13 @@
         "t1": {
           "seed": 6,
           "name": "Louisville",
-          "score": null,
+          "score": 57,
           "won": false
         },
         "t2": {
           "seed": 3,
           "name": "Michigan St",
-          "score": null,
+          "score": 63,
           "won": true
         }
       },
@@ -314,13 +314,13 @@
         "t1": {
           "seed": 7,
           "name": "UCLA",
-          "score": null,
+          "score": 71,
           "won": false
         },
         "t2": {
           "seed": 2,
           "name": "UConn",
-          "score": null,
+          "score": 73,
           "won": true
         }
       }
@@ -372,13 +372,13 @@
         "t1": {
           "seed": 1,
           "name": "Duke",
-          "score": null,
+          "score": 72,
           "won": false
         },
         "t2": {
           "seed": 2,
           "name": "UConn",
-          "score": null,
+          "score": 73,
           "won": true
         }
       }
@@ -559,13 +559,13 @@
         "t1": {
           "seed": 1,
           "name": "Arizona",
-          "score": null,
+          "score": 78,
           "won": true
         },
         "t2": {
           "seed": 9,
           "name": "Utah State",
-          "score": null,
+          "score": 66,
           "won": false
         }
       },
@@ -576,13 +576,13 @@
         "t1": {
           "seed": 12,
           "name": "High Point",
-          "score": null,
+          "score": 88,
           "won": false
         },
         "t2": {
           "seed": 4,
           "name": "Arkansas",
-          "score": null,
+          "score": 94,
           "won": true
         }
       },
@@ -593,13 +593,13 @@
         "t1": {
           "seed": 11,
           "name": "Texas",
-          "score": null,
+          "score": 77,
           "won": true
         },
         "t2": {
           "seed": 3,
           "name": "Gonzaga",
-          "score": null,
+          "score": 68,
           "won": false
         }
       },
@@ -610,13 +610,13 @@
         "t1": {
           "seed": 7,
           "name": "Miami FL",
-          "score": null,
+          "score": 73,
           "won": false
         },
         "t2": {
           "seed": 2,
           "name": "Purdue",
-          "score": null,
+          "score": 79,
           "won": true
         }
       }
@@ -668,13 +668,13 @@
         "t1": {
           "seed": 1,
           "name": "Arizona",
-          "score": null,
+          "score": 79,
           "won": true
         },
         "t2": {
           "seed": 2,
           "name": "Purdue",
-          "score": null,
+          "score": 64,
           "won": false
         }
       }
@@ -853,13 +853,13 @@
         "t1": {
           "seed": 1,
           "name": "Florida",
-          "score": null,
+          "score": 72,
           "won": false
         },
         "t2": {
           "seed": 9,
           "name": "Iowa",
-          "score": null,
+          "score": 73,
           "won": true
         }
       },
@@ -870,13 +870,13 @@
         "t1": {
           "seed": 5,
           "name": "Vanderbilt",
-          "score": null,
+          "score": 72,
           "won": false
         },
         "t2": {
           "seed": 4,
           "name": "Nebraska",
-          "score": null,
+          "score": 74,
           "won": true
         }
       },
@@ -887,13 +887,13 @@
         "t1": {
           "seed": 11,
           "name": "VCU",
-          "score": null,
+          "score": 76,
           "won": false
         },
         "t2": {
           "seed": 3,
           "name": "Illinois",
-          "score": null,
+          "score": 82,
           "won": true
         }
       },
@@ -904,13 +904,13 @@
         "t1": {
           "seed": 10,
           "name": "Texas A&M",
-          "score": null,
+          "score": 57,
           "won": false
         },
         "t2": {
           "seed": 2,
           "name": "Houston",
-          "score": null,
+          "score": 88,
           "won": true
         }
       }
@@ -962,13 +962,13 @@
         "t1": {
           "seed": 9,
           "name": "Iowa",
-          "score": null,
+          "score": 59,
           "won": false
         },
         "t2": {
           "seed": 3,
           "name": "Illinois",
-          "score": null,
+          "score": 71,
           "won": true
         }
       }
@@ -1151,13 +1151,13 @@
         "t1": {
           "seed": 1,
           "name": "Michigan",
-          "score": null,
+          "score": 95,
           "won": true
         },
         "t2": {
           "seed": 9,
           "name": "Saint Louis",
-          "score": null,
+          "score": 72,
           "won": false
         }
       },
@@ -1168,13 +1168,13 @@
         "t1": {
           "seed": 5,
           "name": "Texas Tech",
-          "score": null,
+          "score": 65,
           "won": false
         },
         "t2": {
           "seed": 4,
           "name": "Alabama",
-          "score": null,
+          "score": 78,
           "won": true
         }
       },
@@ -1185,13 +1185,13 @@
         "t1": {
           "seed": 6,
           "name": "Tennessee",
-          "score": null,
+          "score": 79,
           "won": true
         },
         "t2": {
           "seed": 3,
           "name": "Virginia",
-          "score": null,
+          "score": 56,
           "won": false
         }
       },
@@ -1202,13 +1202,13 @@
         "t1": {
           "seed": 7,
           "name": "Kentucky",
-          "score": null,
+          "score": 72,
           "won": false
         },
         "t2": {
           "seed": 2,
           "name": "Iowa State",
-          "score": null,
+          "score": 75,
           "won": true
         }
       }
@@ -1260,13 +1260,13 @@
         "t1": {
           "seed": 1,
           "name": "Michigan",
-          "score": null,
+          "score": 95,
           "won": true
         },
         "t2": {
           "seed": 6,
           "name": "Tennessee",
-          "score": null,
+          "score": 62,
           "won": false
         }
       }
