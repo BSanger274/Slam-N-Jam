@@ -356,8 +356,8 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .bs-tbl{width:100%;border-collapse:collapse;font-size:12px}
 .bs-tbl th{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:6px 8px;text-align:right;border-bottom:1px solid var(--border)}
 .bs-tbl th:first-child{text-align:left}
-.bs-tbl td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.03);text-align:right;color:var(--text)}
-.bs-tbl td:first-child{text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px}
+.bs-tbl td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.03);text-align:right;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bs-tbl td:first-child{text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;white-space:normal}
 .bs-tbl tr:last-child td{border-bottom:none}
 .bs-tbl tr:hover td{background:rgba(255,255,255,.02)}
 .bs-tbl .dnp td{color:var(--muted);font-style:italic}
@@ -2517,10 +2517,11 @@ async function openPreGameStats(team1, team2, gameId) {
           </span>
           <span style="font-size:10px;color:${colColor};letter-spacing:1px">${drafted.length} DRAFTED</span>
         </div>
-        <table class="bs-tbl">
+        <table class="bs-tbl" style="table-layout:fixed">
           <thead><tr>
-            <th style="text-align:left">Player</th><th style="text-align:left">Manager</th>
-            <th style="text-align:right;color:${colColor}">${colLabel}</th>
+            <th style="text-align:left;width:44%">Player</th>
+            <th style="text-align:left;width:36%">Manager</th>
+            <th style="text-align:right;width:20%;color:${colColor}">${colLabel}</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
