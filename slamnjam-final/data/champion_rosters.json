@@ -1,3 +1,770 @@
 {
-  "2026": {}
+  "2015": {
+    "team": "Itchy Ron",
+    "draftPosition": 14,
+    "players": [
+      {
+        "round": 1,
+        "name": "Sam Dekker",
+        "school": "Wisconsin",
+        "pts": 115
+      },
+      {
+        "round": 2,
+        "name": "Demetrius Jackson",
+        "school": "Notre Dame",
+        "pts": 44
+      },
+      {
+        "round": 3,
+        "name": "Delon Wright",
+        "school": "Utah",
+        "pts": 33
+      },
+      {
+        "round": 4,
+        "name": "Jordan Siebert",
+        "school": "Dayton",
+        "pts": 35
+      },
+      {
+        "round": 5,
+        "name": "Aaron White",
+        "school": "Iowa",
+        "pts": 45
+      },
+      {
+        "round": 6,
+        "name": "Norman Powell",
+        "school": "UCLA",
+        "pts": 50
+      },
+      {
+        "round": 7,
+        "name": "Shannon Evans II",
+        "school": "Buffalo",
+        "pts": 15
+      },
+      {
+        "round": 8,
+        "name": "Dallas Moore",
+        "school": "North Florida",
+        "pts": 13
+      },
+      {
+        "round": 9,
+        "name": "Tony Parker",
+        "school": "UCLA",
+        "pts": 47
+      },
+      {
+        "round": 10,
+        "name": "LaDarius White",
+        "school": "Ole Miss",
+        "pts": 21
+      },
+      {
+        "round": 11,
+        "name": "Nate Buss",
+        "school": "Northern Iowa",
+        "pts": 24
+      },
+      {
+        "round": 12,
+        "name": "Xavier Ford",
+        "school": "Buffalo",
+        "pts": 16
+      },
+      {
+        "round": 13,
+        "name": "Isaac Hamilton",
+        "school": "UCLA",
+        "pts": 27
+      },
+      {
+        "round": 14,
+        "name": "Jeremy Morgan",
+        "school": "Northern Iowa",
+        "pts": 0
+      },
+      {
+        "round": 15,
+        "name": "Jon Octeus",
+        "school": "Purdue",
+        "pts": 9
+      }
+    ]
+  },
+  "2018": {
+    "team": "Team McCarty",
+    "draftPosition": 2,
+    "players": [
+      {
+        "round": 1,
+        "name": "Mikal Bridges",
+        "school": "Villanova",
+        "pts": 93
+      },
+      {
+        "round": 2,
+        "name": "Grant Williams",
+        "school": "Tennessee",
+        "pts": 26
+      },
+      {
+        "round": 3,
+        "name": "Mustapha Heron",
+        "school": "Auburn",
+        "pts": 28
+      },
+      {
+        "round": 4,
+        "name": "Jarrett Culver",
+        "school": "Texas Tech",
+        "pts": 30
+      },
+      {
+        "round": 5,
+        "name": "Matt Mobley",
+        "school": "St. Bon",
+        "pts": 24
+      },
+      {
+        "round": 6,
+        "name": "Demontrae Jefferson",
+        "school": "Tx. Southern",
+        "pts": 20
+      },
+      {
+        "round": 7,
+        "name": "Zavier Simpson",
+        "school": "Michigan",
+        "pts": 39
+      },
+      {
+        "round": 8,
+        "name": "Khadeen Carrington",
+        "school": "Seton Hall",
+        "pts": 54
+      },
+      {
+        "round": 9,
+        "name": "Marvin Smith",
+        "school": "UNCG",
+        "pts": 4
+      },
+      {
+        "round": 10,
+        "name": "CJ Massinburg",
+        "school": "Buffalo",
+        "pts": 37
+      },
+      {
+        "round": 11,
+        "name": "Kyle Allman Jr.",
+        "school": "Cal St. Fullerton",
+        "pts": 21
+      },
+      {
+        "round": 12,
+        "name": "A.J. Harris",
+        "school": "New Mexico St",
+        "pts": 2
+      },
+      {
+        "round": 13,
+        "name": "Alex Robinson",
+        "school": "TCU",
+        "pts": 7
+      },
+      {
+        "round": 14,
+        "name": "Xavier Sneed",
+        "school": "Kansas St",
+        "pts": 55
+      },
+      {
+        "round": 15,
+        "name": "AJ Brodeur",
+        "school": "Penn",
+        "pts": 14
+      }
+    ]
+  },
+  "2019": {
+    "team": "One Putt Jackson",
+    "draftPosition": 17,
+    "players": [
+      {
+        "round": 1,
+        "name": "Corey Davis Jr.",
+        "school": "Houston",
+        "pts": 61
+      },
+      {
+        "round": 2,
+        "name": "Jarrett Culver",
+        "school": "Texas Tech",
+        "pts": 111
+      },
+      {
+        "round": 3,
+        "name": "Jeremy Harris",
+        "school": "Buffalo",
+        "pts": 30
+      },
+      {
+        "round": 4,
+        "name": "Xavier Tillman",
+        "school": "Michigan St",
+        "pts": 68
+      },
+      {
+        "round": 5,
+        "name": "Payton Pritchard",
+        "school": "Oregon",
+        "pts": 48
+      },
+      {
+        "round": 6,
+        "name": "Jermaine Samuels Jr.",
+        "school": "Villanova",
+        "pts": 23
+      },
+      {
+        "round": 7,
+        "name": "Cody Martin",
+        "school": "Nevada",
+        "pts": 23
+      },
+      {
+        "round": 8,
+        "name": "Alex Copeland",
+        "school": "Yale",
+        "pts": 24
+      },
+      {
+        "round": 9,
+        "name": "Kristian Doolittle",
+        "school": "Oklahoma",
+        "pts": 27
+      },
+      {
+        "round": 10,
+        "name": "Aaron Henry",
+        "school": "Michigan St",
+        "pts": 52
+      },
+      {
+        "round": 11,
+        "name": "Xavier Green",
+        "school": "ODU",
+        "pts": 7
+      },
+      {
+        "round": 12,
+        "name": "Ivan Aurrecoechea",
+        "school": "New Mexico St",
+        "pts": 13
+      },
+      {
+        "round": 13,
+        "name": "Michale Oguine",
+        "school": "Montana",
+        "pts": 3
+      },
+      {
+        "round": 14,
+        "name": "Keyshawn Woods",
+        "school": "Ohio St",
+        "pts": 29
+      },
+      {
+        "round": 15,
+        "name": "Randy Miller Jr.",
+        "school": "NC Central",
+        "pts": 18
+      }
+    ]
+  },
+  "2022": {
+    "team": "Team McCarty",
+    "draftPosition": 3,
+    "players": [
+      {
+        "round": 1,
+        "name": "Drew Timme",
+        "school": "Gonzaga",
+        "pts": 82
+      },
+      {
+        "round": 2,
+        "name": "David McCormack",
+        "school": "Kansas",
+        "pts": 79
+      },
+      {
+        "round": 3,
+        "name": "Josiah Jordan James",
+        "school": "Tennessee",
+        "pts": 30
+      },
+      {
+        "round": 4,
+        "name": "Tyler Wahl",
+        "school": "Wisconsin",
+        "pts": 23
+      },
+      {
+        "round": 5,
+        "name": "Stanley Umude",
+        "school": "Arkansas",
+        "pts": 50
+      },
+      {
+        "round": 6,
+        "name": "Taz Moore",
+        "school": "Houston",
+        "pts": 48
+      },
+      {
+        "round": 7,
+        "name": "Xavier Johnson",
+        "school": "Indiana",
+        "pts": 21
+      },
+      {
+        "round": 8,
+        "name": "Khalil Shabazz",
+        "school": "San Fran",
+        "pts": 3
+      },
+      {
+        "round": 9,
+        "name": "Keon Ellis",
+        "school": "Alabama",
+        "pts": 16
+      },
+      {
+        "round": 10,
+        "name": "RJ Davis",
+        "school": "UNC",
+        "pts": 88
+      },
+      {
+        "round": 11,
+        "name": "Joe Bryant",
+        "school": "Norfolk St",
+        "pts": 15
+      },
+      {
+        "round": 12,
+        "name": "Eric Hunter",
+        "school": "Purdue",
+        "pts": 15
+      },
+      {
+        "round": 13,
+        "name": "Damion Baugh",
+        "school": "TCU",
+        "pts": 20
+      },
+      {
+        "round": 14,
+        "name": "Michael Jones",
+        "school": "Davidson",
+        "pts": 8
+      },
+      {
+        "round": 15,
+        "name": "Nate Laszewski",
+        "school": "Nor Dame",
+        "pts": 31
+      }
+    ]
+  },
+  "2023": {
+    "team": "Shy Ballers",
+    "draftPosition": 14,
+    "players": [
+      {
+        "round": 1,
+        "name": "Mark Sears",
+        "school": "Alabama",
+        "pts": 37
+      },
+      {
+        "round": 2,
+        "name": "Keyontae Johnson",
+        "school": "Kansas St",
+        "pts": 62
+      },
+      {
+        "round": 3,
+        "name": "Colby Jones",
+        "school": "Xavier",
+        "pts": 37
+      },
+      {
+        "round": 4,
+        "name": "Blake Hinson",
+        "school": "Pitt",
+        "pts": 35
+      },
+      {
+        "round": 5,
+        "name": "Boogie Ellis",
+        "school": "USC",
+        "pts": 6
+      },
+      {
+        "round": 6,
+        "name": "Matt Bradley",
+        "school": "San Diego St",
+        "pts": 64
+      },
+      {
+        "round": 7,
+        "name": "Kobe Brown",
+        "school": "Missouri",
+        "pts": 31
+      },
+      {
+        "round": 8,
+        "name": "Damion Baugh",
+        "school": "TCU",
+        "pts": 26
+      },
+      {
+        "round": 9,
+        "name": "Nelly Cummings",
+        "school": "Pitt",
+        "pts": 37
+      },
+      {
+        "round": 10,
+        "name": "Darrion Trammell",
+        "school": "San Diego St",
+        "pts": 69
+      },
+      {
+        "round": 11,
+        "name": "Jaylin Williams",
+        "school": "Auburn",
+        "pts": 25
+      },
+      {
+        "round": 12,
+        "name": "Wooga Poplar",
+        "school": "Miami",
+        "pts": 40
+      },
+      {
+        "round": 13,
+        "name": "De Andre Gholston",
+        "school": "Missouri",
+        "pts": 0
+      },
+      {
+        "round": 14,
+        "name": "Marques Warrick",
+        "school": "N Kentucky",
+        "pts": 9
+      },
+      {
+        "round": 15,
+        "name": "John Walker",
+        "school": "Tx Southern",
+        "pts": 22
+      }
+    ]
+  },
+  "2024": {
+    "team": "Studio K",
+    "draftPosition": 8,
+    "players": [
+      {
+        "round": 1,
+        "name": "Terrance Shannon",
+        "school": "Illinois",
+        "pts": 93
+      },
+      {
+        "round": 2,
+        "name": "Marcus Domask",
+        "school": "Illinois",
+        "pts": 58
+      },
+      {
+        "round": 3,
+        "name": "AJ Storr",
+        "school": "Wisconsin",
+        "pts": 13
+      },
+      {
+        "round": 4,
+        "name": "DJ Horne",
+        "school": "NC State",
+        "pts": 86
+      },
+      {
+        "round": 5,
+        "name": "DJ Burns",
+        "school": "NC State",
+        "pts": 81
+      },
+      {
+        "round": 6,
+        "name": "Quincy Guerrier",
+        "school": "Illinois",
+        "pts": 22
+      },
+      {
+        "round": 7,
+        "name": "Keisei Tominaga",
+        "school": "Nebraska",
+        "pts": 21
+      },
+      {
+        "round": 8,
+        "name": "Jayden Taylor",
+        "school": "NC State",
+        "pts": 28
+      },
+      {
+        "round": 9,
+        "name": "Chucky Hepburn",
+        "school": "Wisconsin",
+        "pts": 8
+      },
+      {
+        "round": 10,
+        "name": "Brice Williams",
+        "school": "Nebraska",
+        "pts": 24
+      },
+      {
+        "round": 11,
+        "name": "Casey Morsell",
+        "school": "NC State",
+        "pts": 42
+      },
+      {
+        "round": 12,
+        "name": "Rienk Mast",
+        "school": "Nebraska",
+        "pts": 7
+      },
+      {
+        "round": 13,
+        "name": "Michael O'Connell",
+        "school": "NC State",
+        "pts": 29
+      },
+      {
+        "round": 14,
+        "name": "Juwan Gary",
+        "school": "Nebraska",
+        "pts": 9
+      },
+      {
+        "round": 15,
+        "name": "MO DIARRA",
+        "school": "NC State",
+        "pts": 44
+      }
+    ]
+  },
+  "2025": {
+    "team": "Nutty Professor",
+    "draftPosition": 1,
+    "players": [
+      {
+        "round": 1,
+        "name": "Walter Clayton Jr",
+        "school": "Florida",
+        "pts": 134
+      },
+      {
+        "round": 2,
+        "name": "John Blackwell",
+        "school": "Wisconsin",
+        "pts": 40
+      },
+      {
+        "round": 3,
+        "name": "Richie Sanders",
+        "school": "BYU",
+        "pts": 66
+      },
+      {
+        "round": 4,
+        "name": "Tre Holloman",
+        "school": "Mich St",
+        "pts": 40
+      },
+      {
+        "round": 5,
+        "name": "Khalif Battle",
+        "school": "Gonzaga",
+        "pts": 41
+      },
+      {
+        "round": 6,
+        "name": "Dain Dainja",
+        "school": "Memphis",
+        "pts": 22
+      },
+      {
+        "round": 7,
+        "name": "Simeon Wilcher",
+        "school": "St. John's",
+        "pts": 15
+      },
+      {
+        "round": 8,
+        "name": "Jeremiah Fears",
+        "school": "Oklahoma",
+        "pts": 20
+      },
+      {
+        "round": 9,
+        "name": "Ven Allen Lubin",
+        "school": "UNC",
+        "pts": 26
+      },
+      {
+        "round": 10,
+        "name": "Coen Carr",
+        "school": "Mich St",
+        "pts": 45
+      },
+      {
+        "round": 11,
+        "name": "Ben Mbang",
+        "school": "Yale",
+        "pts": 2
+      },
+      {
+        "round": 12,
+        "name": "Robert Wright",
+        "school": "Baylor",
+        "pts": 30
+      },
+      {
+        "round": 13,
+        "name": "JaeLyn Withers",
+        "school": "UNC",
+        "pts": 15
+      },
+      {
+        "round": 14,
+        "name": "Kaden Metheny",
+        "school": "Liberty",
+        "pts": 9
+      },
+      {
+        "round": 15,
+        "name": "Johnell Davis",
+        "school": "Arkansas",
+        "pts": 61
+      }
+    ]
+  },
+  "2026": {
+    "team": "One Legler Up",
+    "draftPosition": 6,
+    "players": [
+      {
+        "round": 1,
+        "name": "Yaxel Lendeborg",
+        "school": "Michigan",
+        "pts": 108
+      },
+      {
+        "round": 2,
+        "name": "Solo Ball",
+        "school": "UConn",
+        "pts": 55
+      },
+      {
+        "round": 3,
+        "name": "Tarris Reed Jr.",
+        "school": "UConn",
+        "pts": 117
+      },
+      {
+        "round": 4,
+        "name": "Ja'Kobi Gillespie",
+        "school": "Tenn",
+        "pts": 87
+      },
+      {
+        "round": 5,
+        "name": "Malik Reneau",
+        "school": "Miami FL",
+        "pts": 40
+      },
+      {
+        "round": 6,
+        "name": "Flory Bidunga",
+        "school": "Kansas",
+        "pts": 18
+      },
+      {
+        "round": 7,
+        "name": "Amari Allen",
+        "school": "Alabama",
+        "pts": 27
+      },
+      {
+        "round": 8,
+        "name": "Mason Falslev",
+        "school": "Utah St",
+        "pts": 30
+      },
+      {
+        "round": 9,
+        "name": "Blue Cain",
+        "school": "Georgia",
+        "pts": 6
+      },
+      {
+        "round": 10,
+        "name": "Skyy Clark",
+        "school": "UCLA",
+        "pts": 19
+      },
+      {
+        "round": 11,
+        "name": "Acaden Lewis",
+        "school": "Villanova",
+        "pts": 7
+      },
+      {
+        "round": 12,
+        "name": "Braden Frager",
+        "school": "Nebraska",
+        "pts": 44
+      },
+      {
+        "round": 13,
+        "name": "Collin Chandler",
+        "school": "Kentucky",
+        "pts": 11
+      },
+      {
+        "round": 14,
+        "name": "Adam Miller",
+        "school": "Gonzaga",
+        "pts": 4
+      },
+      {
+        "round": 15,
+        "name": "Tavion Banks",
+        "school": "Iowa",
+        "pts": 33
+      }
+    ]
+  }
 }
