@@ -965,6 +965,17 @@ async function getJerseys() {
 // ════════════════════════════════════════════════════════
 let bracketCache     = null;
 let bracketCacheTime = 0;
+
+const BRACKET_2026 = {
+  final4: {
+    sf: [
+      { id:'sf1', t1:{seed:1,name:'UConn',score:63,won:false}, t2:{seed:4,name:'Illinois',score:null,won:null}, status:'STATUS_FINAL' },
+      { id:'sf2', t1:{seed:2,name:'Arizona',score:null,won:null}, t2:{seed:11,name:'Michigan',score:null,won:null}, status:'STATUS_FINAL' },
+    ],
+    final: [{ id:'ncg', t1:{seed:1,name:'UConn',score:63,won:false}, t2:{seed:11,name:'Michigan',score:69,won:true}, status:'STATUS_FINAL' }],
+    champion: 'Michigan'
+  }
+};
 const BRACKET_TTL    = 90_000;
 
 const ESPN_TOURNAMENT_IDS = ['22', '23', '24', '20', '19'];
@@ -1105,6 +1116,14 @@ async function updateFirstFourScores(bracket) {
 async function getLiveBracket() {
   if (Date.now() - bracketCacheTime > BRACKET_TTL || !bracketCache) {
     const fresh = await fetchESPNBracket();
+    const snapshot = readJSON(BRACKET_F, null);
+    const espnHasData = fresh && ['east','west','south','midwest'].some(k => fresh[k]?.r64?.length > 0);
+    if (!espnHasData && snapshot && snapshot.east) {
+      console.log('[Bracket] ESPN stale - serving snapshot');
+      bracketCache = snapshot;
+      bracketCacheTime = Date.now() - 60000;
+      return bracketCache;
+    }
     const seed  = buildBlankBracket();
 
     // Always start from seed so bracket is never empty.
@@ -1181,6 +1200,11 @@ async function getLiveBracket() {
 
     await updateFirstFourScores(merged);
 
+    if (BRACKET_2026) {
+      if (!merged.final4.champion || merged.final4.champion === 'TBD') merged.final4.champion = BRACKET_2026.final4.champion;
+      if (!merged.final4.final || !merged.final4.final.length) merged.final4.final = BRACKET_2026.final4.final;
+      if (!merged.final4.sf || !merged.final4.sf.length || !merged.final4.sf[0].t1.name) merged.final4.sf = BRACKET_2026.final4.sf;
+    }
     bracketCache     = merged;
     bracketCacheTime = Date.now();
     writeJSON(BRACKET_F, { ...merged, _cachedAt: new Date().toISOString() });
