@@ -1559,9 +1559,11 @@ function renderMatchup(m) {
   const isTbd = !t1n || t1n==='TBD' || !t2n || t2n==='TBD';
   const clickable = !isTbd && m.id;
   const gameId = m.espnId || m.id;
-  const clickAttr = clickable ? `onclick="${hasScore ? `openBoxScore('${gameId}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`}"` : '';
-  const isLive = m.status === 'STATUS_IN_PROGRESS';
+  const isLive  = m.status === 'STATUS_IN_PROGRESS';
   const isFinal = m.status === 'STATUS_FINAL';
+  // Live games → box score (real-time ESPN data); everything else → unified pts view
+  const clickFn = (isLive && hasScore) ? `openBoxScore('${gameId}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${m.id}')`;
+  const clickAttr = clickable ? `onclick="${clickFn}"` : '';
   const hasInfo = m.date || m.time;
   const schedBar = isLive
     ? `<div style="padding:3px 7px;font-size:10px;color:var(--green);letter-spacing:.5px;border-bottom:1px solid var(--border);font-weight:700">● LIVE${m.clock?' · '+m.clock:''}${m.period?' · '+['','1ST','2ND','OT'][m.period]||'':''} · ${m.tv||''}</div>`
@@ -1571,7 +1573,7 @@ function renderMatchup(m) {
     <span style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.5px">${m.date||''} ${m.time?'· '+m.time:''}</span>
     <span style="font-size:9px;color:var(--muted)">${m.tv||''}</span>
   </div>` : '';
-  const tapBar = clickable ? `<div style="text-align:center;display:flex;align-items:center;justify-content:center;height:22px;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS'}</div>` : '';
+  const tapBar = clickable ? `<div style="text-align:center;display:flex;align-items:center;justify-content:center;height:22px;font-size:9px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border)">${isLive ? 'TAP FOR BOX SCORE' : isFinal ? 'TAP FOR RESULTS' : 'TAP FOR STATS'}</div>` : '';
   return `<div class="mu" ${clickAttr}>${mk(m.t1)}${mk(m.t2)}${schedBar}${tapBar}</div>`;
 }
 
@@ -1703,8 +1705,9 @@ function renderFirstFour() {
     const canClick = t1n && t2n && t1n!=='TBD' && t2n!=='TBD';
     // FIX: use espnId for box score, fall back to seed id only for pre-game stats
     const gameId = g.espnId || g.id;
-    const onclick = canClick ? (hasScore ? `openBoxScore('${gameId}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${g.id}')`) : '';
-    const tapLabel = hasScore ? 'TAP FOR BOX SCORE' : 'TAP FOR STATS';
+    const isGameLive = g.status === 'STATUS_IN_PROGRESS';
+    const onclick = canClick ? ((isGameLive && hasScore) ? `openBoxScore('${gameId}','${t1n}','${t2n}')` : `openPreGameStats('${t1n}','${t2n}','${g.id}')`) : '';
+    const tapLabel = isGameLive ? 'TAP FOR BOX SCORE' : isFinal ? 'TAP FOR RESULTS' : 'TAP FOR STATS';
 
     return `<div class="card" style="cursor:${canClick?'pointer':'default'};transition:border-color .2s,box-shadow .2s"
       ${canClick?`onclick="${onclick}" onmouseenter="this.style.borderColor='rgba(255,107,0,.85)';this.style.boxShadow='0 0 12px rgba(255,107,0,.3)'" onmouseleave="this.style.borderColor='';this.style.boxShadow=''"`:''}>
@@ -1761,7 +1764,8 @@ function renderFinal4() {
     const t2n = (matchup?.t2?.name||'').replace(/'/g,'');
     const canClick = !isTbd && t1n && t2n && t1n!=='TBD' && t2n!=='TBD';
     const hasScore = matchup?.t1?.score!=null||matchup?.t2?.score!=null;
-    const onclick = canClick?(hasScore?`openBoxScore('${matchup.id}','${t1n}','${t2n}')`:`openPreGameStats('${t1n}','${t2n}','${matchup.id}')`):'';
+    const isMatchupLive = matchup?.status === 'STATUS_IN_PROGRESS';
+    const onclick = canClick?((isMatchupLive&&hasScore)?`openBoxScore('${matchup.id}','${t1n}','${t2n}')`:`openPreGameStats('${t1n}','${t2n}','${matchup.id}')`):'';
     return `<div style="display:inline-flex;align-items:center;gap:7px;padding:7px 16px;
       background:${won?'rgba(255,107,0,.12)':'var(--surface)'};
       border:1.5px solid ${won?'var(--orange)':'var(--border)'};
@@ -2390,49 +2394,10 @@ async function openBoxScore(gameId, team1, team2) {
     body.innerHTML = d.teams.map(team => fullBoxSection(team)).join('');
 
   } catch(e) {
-    // ESPN box score unavailable — fall back to showing drafted players with saved points
-    try {
-      const [scoresRes] = await Promise.all([
-        fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{}}))
-      ]);
-      const savedScores = scoresRes.merged || {};
-      const draftedMap = {};
-      const normN = n => (n||'').replace(/\s+(jr\.?|sr\.?|ii|iii|iv)$/i,'').replace(/\./g,'').replace(/['’]/g,"'").replace(/\s+/g,' ').trim().toLowerCase();
-      const draftedNormMap = {};
-      TEAMS.forEach(t => t.players.forEach(p => {
-        draftedMap[p.name] = t.name;
-        draftedNormMap[normN(p.name)] = { mgr: t.name, pts: savedScores[p.name] ?? 0 };
-      }));
-      const teamSection = (schoolName) => {
-        const drafted = TEAMS.flatMap(t => t.players
-          .filter(p => p.school === normSchool(schoolName))
-          .map(p => ({ ...p, mgr: t.name, pts: savedScores[p.name] ?? p.pts ?? 0 }))
-        ).sort((a,b) => b.pts - a.pts);
-        if (!drafted.length) return '';
-        return `<div class="modal-team-section">
-          <div class="modal-team-label" style="display:flex;align-items:center;justify-content:space-between">
-            <span>${schoolName}</span>
-            <span style="font-size:10px;color:var(--orange);letter-spacing:1px">${drafted.length} DRAFTED</span>
-          </div>
-          <table class="bs-tbl">
-            <thead><tr><th style="text-align:left">Player</th><th style="text-align:left;color:var(--muted)">Manager</th><th style="text-align:right;color:var(--orange)">PTS</th></tr></thead>
-            <tbody>${drafted.map(p => `<tr>
-              <td style="text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px">${p.name}</td>
-              <td style="text-align:left;font-size:12px;color:var(--muted)">${p.mgr}</td>
-              <td style="text-align:right;color:var(--orange);font-family:'Bebas Neue',sans-serif;font-size:20px">${p.pts}</td>
-            </tr>`).join('')}</tbody>
-          </table>
-        </div>`;
-      };
-      body.innerHTML = teamSection(team1) + teamSection(team2) ||
-        `<div class="modal-error"><div style="font-size:24px;margin-bottom:10px">📋</div><div>No data available</div></div>`;
-    } catch(e2) {
-      body.innerHTML = `<div class="modal-error">
-        <div style="font-size:24px;margin-bottom:10px">📋</div>
-        <div>Box score not available</div>
-        <div style="font-size:11px;margin-top:6px;color:var(--muted)">ESPN may not have data for this game</div>
-      </div>`;
-    }
+    // ESPN box score unavailable — use the unified results view instead
+    modal.style.display = 'none';
+    unlockScroll();
+    openPreGameStats(team1, team2, gameId);
   }
 }
 
@@ -2443,104 +2408,117 @@ async function openPreGameStats(team1, team2, gameId) {
   set('modal-game-title', `${team1} vs ${team2}`);
   modal.style.display = 'flex';
   lockScroll();
-  body.innerHTML = '<div class="modal-loading">Loading stats…</div>';
+  body.innerHTML = '<div class="modal-loading">Loading…</div>';
 
-  let gameInfo = null;
+  // Find the matching bracket game for score/status info
+  let bg = null; // bracketGame
   if (BRACKET) {
+    const nT = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
+    const sim = (a,b) => { a=nT(a); b=nT(b); return a.length>2&&b.length>2&&(a.includes(b.slice(0,4))||b.includes(a.slice(0,4))); };
+    const allM = [];
     for (const reg of Object.values(BRACKET)) {
-      if (typeof reg !== 'object') continue;
-      for (const matchups of Object.values(reg)) {
-        if (!Array.isArray(matchups)) continue;
-        const found = matchups.find(m => m.t1?.name===team1 || m.t2?.name===team1 || m.t1?.name===team2 || m.t2?.name===team2);
-        if (found && (found.date || found.location)) { gameInfo = found; break; }
-      }
-      if (gameInfo) break;
+      if (!reg || typeof reg!=='object'||Array.isArray(reg)) continue;
+      for (const ms of Object.values(reg)) { if (Array.isArray(ms)) allM.push(...ms); }
     }
+    bg = allM.find(m=>(sim(m.t1?.name,team1)&&sim(m.t2?.name,team2))||(sim(m.t1?.name,team2)&&sim(m.t2?.name,team1)))||null;
   }
+
+  const isFinal = bg?.status === 'STATUS_FINAL';
+  // Orient bracket team data to match team1/team2 order in the modal
+  const nT2 = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
+  const flipped = bg && nT2(bg.t2?.name||'').includes(nT2(team1).slice(0,4));
+  const bt1 = flipped ? bg?.t2 : bg?.t1; // bracket side matching team1
+  const bt2 = flipped ? bg?.t1 : bg?.t2; // bracket side matching team2
+
+  const mkScore = (t, won) => isFinal && t?.score != null
+    ? `<div style="font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;color:${won?'var(--orange)':'var(--muted)'};margin:4px 0">${t.score}</div>`
+    : '';
 
   scoreRow.innerHTML = `
     <div class="modal-team">
-      ${TEAM_LOGOS[team1] ? `<img src="${TEAM_LOGOS[team1]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      ${TEAM_LOGOS[team1]?`<img src="${TEAM_LOGOS[team1]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      ${mkScore(bt1, bt1?.won===true)}
       <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px">${team1}</div>
     </div>
     <div style="text-align:center">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);letter-spacing:3px">VS</div>
-      ${gameInfo ? `
-        <div style="margin-top:8px;font-size:11px;color:var(--gold);font-weight:700">${gameInfo.date||''} · ${gameInfo.time||''}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:3px">${gameInfo.location||''}</div>
-        <div style="font-size:10px;color:var(--blue);margin-top:2px;font-weight:700">${gameInfo.tv||''}</div>
+      ${bg?.date||bg?.time ? `
+        <div style="margin-top:8px;font-size:11px;color:var(--gold);font-weight:700">${bg.date||''} · ${bg.time||''}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">${bg.location||''}</div>
+        <div style="font-size:10px;color:var(--blue);margin-top:2px;font-weight:700">${bg.tv||''}</div>
       ` : ''}
-      <div id="game-status-badge" style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-top:6px;text-transform:uppercase">Loading…</div>
+      <div id="game-status-badge" style="font-size:11px;font-weight:700;letter-spacing:1px;margin-top:6px;text-transform:uppercase">
+        ${isFinal ? '<span style="color:var(--muted)">FINAL</span>' : 'Loading…'}
+      </div>
     </div>
     <div class="modal-team">
-      ${TEAM_LOGOS[team2] ? `<img src="${TEAM_LOGOS[team2]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      ${TEAM_LOGOS[team2]?`<img src="${TEAM_LOGOS[team2]}" style="width:44px;height:44px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">` : ''}
+      ${mkScore(bt2, bt2?.won===true)}
       <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px">${team2}</div>
     </div>`;
 
   try {
     const [avgsRes, scoresRes] = await Promise.all([
       fetch(`${API}/api/averages`).then(r=>r.json()).catch(()=>({averages:{}})),
-      fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{}}))
+      fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{},live:{}}))
     ]);
 
-    const avgs       = avgsRes.averages  || {};
-    const liveScores = scoresRes.merged || {};
-    const liveOnly   = scoresRes.live   || {}; // only players from currently in-progress games
-    // Only show LIVE if players from these specific teams are in the live-only cache
+    const avgs     = avgsRes.averages || {};
+    const liveOnly = scoresRes.live   || {};
     const relevantPlayers = TEAMS.flatMap(t => t.players.filter(p =>
       normSchool(p.school) === normSchool(team1) || normSchool(p.school) === normSchool(team2)
     )).map(p => p.name);
-    const isLive = relevantPlayers.some(name => (liveOnly[name] ?? 0) > 0);
+    const isLive = !isFinal && relevantPlayers.some(name => (liveOnly[name]??0) > 0);
 
     const badge = document.getElementById('game-status-badge');
-    if (badge) badge.innerHTML = isLive
-      ? '<span style="color:var(--green)">● LIVE</span>'
-      : '<span style="color:var(--gold)">Upcoming Game</span>';
+    if (badge) {
+      if (isFinal)     badge.innerHTML = '<span style="color:var(--muted)">FINAL</span>';
+      else if (isLive) badge.innerHTML = '<span style="color:var(--green)">● LIVE</span>';
+      else             badge.innerHTML = '<span style="color:var(--gold)">Upcoming Game</span>';
+    }
+
+    const colLabel  = isFinal ? 'PTS'      : isLive ? 'Live PTS' : 'Season Avg';
+    const colColor  = isFinal ? 'var(--orange)' : isLive ? 'var(--green)' : 'var(--gold)';
+    const infoBg    = isFinal ? 'rgba(255,107,0,.06)' : isLive ? 'rgba(0,230,118,.06)' : 'rgba(255,184,0,.06)';
+    const infoBdr   = isFinal ? 'rgba(255,107,0,.25)' : isLive ? 'rgba(0,230,118,.25)' : 'rgba(255,184,0,.2)';
+    const infoColor = isFinal ? 'var(--orange)' : isLive ? 'var(--green)' : 'var(--gold)';
+    const infoText  = isFinal
+      ? '🏆 Final result · showing each player\'s total tournament points scored'
+      : isLive
+      ? '🏀 Game is LIVE — showing real-time points scored in this game'
+      : '📋 Showing all drafted players from each team and their season scoring average';
 
     const teamSection = (schoolName) => {
-      const draftedPlayers = [];
-      TEAMS.forEach(t => {
-        t.players.forEach(p => {
-          if (p.school === normSchool(schoolName)) {
-            draftedPlayers.push({ ...p, managerName: t.name });
-          }
-        });
+      const drafted = [];
+      TEAMS.forEach(t => t.players.forEach(p => {
+        if (p.school === normSchool(schoolName)) drafted.push({...p, managerName: t.name});
+      }));
+      drafted.sort((a,b) => {
+        const v = p => isFinal ? (p.pts||0) : isLive ? (liveOnly[p.name]||0) : (avgs[p.name]||0);
+        return v(b) - v(a);
       });
-      draftedPlayers.sort((a,b) => {
-        const aVal = isLive ? (liveScores[a.name]||0) : (avgs[a.name]||0);
-        const bVal = isLive ? (liveScores[b.name]||0) : (avgs[b.name]||0);
-        return bVal - aVal;
-      });
-
-      const colLabel  = isLive ? 'Live PTS' : 'Season Avg';
-      const colColor  = isLive ? 'var(--green)' : 'var(--gold)';
-
-      const rows = draftedPlayers.length > 0
-        ? draftedPlayers.map(p => {
-            const val     = isLive ? (liveScores[p.name] ?? p.pts ?? 0) : (avgs[p.name] ? avgs[p.name].toFixed(1) : '—');
-            const valColor = isLive ? 'var(--green)' : 'var(--orange)';
+      const rows = drafted.length > 0
+        ? drafted.map(p => {
+            const val = isFinal ? (p.pts??0) : isLive ? (liveOnly[p.name]??p.pts??0) : (avgs[p.name]?avgs[p.name].toFixed(1):'—');
             return `<tr>
-              <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">
-                ${p.name}${trendIcon(p.trend)}
-              </td>
+              <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">${p.name}${trendIcon(p.trend)}</td>
               <td style="text-align:left;font-size:12px;color:var(--muted)">${p.managerName}</td>
-              <td style="text-align:right;color:${valColor};font-family:'Bebas Neue',sans-serif;font-size:18px">${val}</td>
+              <td style="text-align:right;color:${colColor};font-family:'Bebas Neue',sans-serif;font-size:18px">${val}</td>
             </tr>`;
           }).join('')
         : `<tr><td colspan="3" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">No players drafted from this team</td></tr>`;
-
+      const logoSrc = TEAM_LOGOS[normSchool(schoolName)]||TEAM_LOGOS[schoolName];
       return `<div class="modal-team-section">
         <div class="modal-team-label" style="display:flex;align-items:center;justify-content:space-between">
           <span style="display:flex;align-items:center;gap:6px">
-            ${TEAM_LOGOS[normSchool(schoolName)]||TEAM_LOGOS[schoolName] ? `<img src="${TEAM_LOGOS[normSchool(schoolName)]||TEAM_LOGOS[schoolName]}" style="width:16px;height:16px;object-fit:contain" onerror="this.style.display='none'">` : ''}
+            ${logoSrc?`<img src="${logoSrc}" style="width:16px;height:16px;object-fit:contain" onerror="this.style.display='none'">` : ''}
             ${schoolName}
           </span>
-          <span style="font-size:10px;color:${colColor};letter-spacing:1px">${draftedPlayers.length} DRAFTED</span>
+          <span style="font-size:10px;color:${colColor};letter-spacing:1px">${drafted.length} DRAFTED</span>
         </div>
         <table class="bs-tbl">
           <thead><tr>
-            <th style="text-align:left">Player</th>
-            <th style="text-align:left">Manager</th>
+            <th style="text-align:left">Player</th><th style="text-align:left">Manager</th>
             <th style="text-align:right;color:${colColor}">${colLabel}</th>
           </tr></thead>
           <tbody>${rows}</tbody>
@@ -2548,26 +2526,13 @@ async function openPreGameStats(team1, team2, gameId) {
       </div>`;
     };
 
-    const infoBg    = isLive ? 'rgba(0,230,118,.06)' : 'rgba(255,184,0,.06)';
-    const infoBdr   = isLive ? 'rgba(0,230,118,.25)' : 'rgba(255,184,0,.2)';
-    const infoColor = isLive ? 'var(--green)' : 'var(--gold)';
-    const infoText  = isLive
-      ? '🏀 Game is LIVE — showing real-time points scored in this game'
-      : '📋 Showing all drafted players from each team and their season scoring average';
-
     body.innerHTML = `
-      <div style="background:${infoBg};border:1px solid ${infoBdr};border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:${infoColor}">
-        ${infoText}
-      </div>
+      <div style="background:${infoBg};border:1px solid ${infoBdr};border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:${infoColor}">${infoText}</div>
       ${teamSection(team1)}
       ${teamSection(team2)}`;
 
   } catch(e) {
-    body.innerHTML = `<div class="modal-error">
-      <div style="font-size:24px;margin-bottom:10px">📋</div>
-      <div>Could not load stats</div>
-      <div style="font-size:11px;margin-top:6px;color:var(--muted)">Upload your roster to see drafted players here</div>
-    </div>`;
+    body.innerHTML = `<div class="modal-error"><div style="font-size:24px;margin-bottom:10px">📋</div><div>Could not load stats</div></div>`;
   }
 }
 
