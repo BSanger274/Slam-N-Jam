@@ -50,3 +50,21 @@ Render restarts wipe in-memory state. Fetching first ensures accumulated `player
 - GitHub: `BSanger274/Slam-N-Jam`
 - Main files: `server.js`, `public/index.html`
 - Data files: `rosters.json`, `totals.json`, `gamelog.json`, `processed.json`
+
+## End-of-Season Checklist (run every April after championship)
+
+### Day of Championship game:
+1. Note Final Four results: SF1 winner/score, SF2 winner/score, Champion/score
+2. Write bracket.json with correct Final Four data:
+3. Add champion to HISTORY_DATA in server.js (line ~2332):
+   `{year:YYYY,winner:"TEAM NAME"},`
+4. Add champion to data/history.json winners array (same format)
+5. git add + commit + push all data files
+
+### Within 48 hours (before Render restarts wipe data):
+6. Admin → Archive Season (captures all 17 teams, 255 players, pts)
+7. Immediately after archive:
+### Why this matters:
+- ESPN stops serving Final Four/championship data within ~24hrs of the game ending
+- Render wipes non-git files on every deploy
+- All data files must be in git to survive deploys permanently
