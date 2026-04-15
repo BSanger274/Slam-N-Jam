@@ -398,6 +398,44 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
   .tick-upcoming{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700}
   .tick-time{font-family:'Bebas Neue',sans-serif;font-size:11px;color:#ffb800;letter-spacing:.5px}
   body{padding-bottom:34px}
+
+/* SCROLL LOCK */
+body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
+/* OFFSEASON HERO */
+.offseason-hero{background:linear-gradient(135deg,#0A0A18 0%,#0F0F1E 40%,#120A04 100%);border:1px solid var(--border);border-radius:16px;padding:28px 28px 22px;margin-bottom:20px;position:relative;overflow:hidden;}
+.offseason-hero::before{content:'';position:absolute;top:-40%;left:-20%;width:60%;height:160%;background:radial-gradient(ellipse,rgba(255,184,0,.05) 0%,transparent 65%);pointer-events:none;}
+.offseason-hero::after{content:'\1F3C0';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-size:180px;opacity:.03;pointer-events:none;line-height:1;}
+.oh-eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.oh-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold)}
+.oh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap;}
+.oh-cd-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--text);line-height:1;margin-bottom:4px;}
+.oh-cd-title em{color:var(--orange);font-style:normal}
+.oh-cd-location{font-size:11px;color:var(--muted);margin-bottom:16px}
+.oh-cd-units{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap}
+.oh-cd-unit{text-align:center;min-width:52px}
+.oh-cd-num{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;color:var(--orange);display:block;text-shadow:0 0 30px rgba(255,107,0,.25);letter-spacing:-1px;}
+.oh-cd-lbl{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;display:block}
+.oh-cd-sep{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--border);margin-bottom:14px;flex-shrink:0}
+.oh-champ{text-align:right;flex-shrink:0}
+.oh-champ-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:4px}
+.oh-champ-name{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange);letter-spacing:1px;display:block}
+.oh-champ-pts{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--text);line-height:1;display:block}
+.oh-champ-sub{font-size:10px;color:var(--muted);margin-top:2px;display:block}
+.oh-divider{height:1px;background:var(--border);margin-bottom:16px;position:relative;}
+.oh-divider::after{content:'Did You Know?';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#080810;padding:0 12px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.oh-fact{display:flex;align-items:flex-start;gap:14px;cursor:pointer;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);transition:background .2s,border-color .2s;position:relative;z-index:1;}
+.oh-fact:hover{background:rgba(255,184,0,.04);border-color:rgba(255,184,0,.15)}
+.oh-fact-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.oh-fact-body{flex:1;min-width:0}
+.oh-fact-text{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;line-height:1.5;color:var(--text);transition:opacity .25s;}
+.oh-fact-text.fade{opacity:0}
+.oh-fact-footer{display:flex;align-items:center;gap:10px;margin-top:8px}
+.oh-fact-dots{display:flex;gap:4px}
+.oh-fact-dot{width:4px;height:4px;border-radius:50%;background:var(--border);transition:all .2s}
+.oh-fact-dot.active{width:16px;border-radius:2px;background:var(--gold)}
+.oh-fact-hint{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+@media(max-width:600px){.oh-top{flex-direction:column;gap:16px}.oh-champ{text-align:left}.oh-cd-num{font-size:36px}}
+
 </style>
 </head>
 <body>
@@ -439,7 +477,42 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
 
 <!-- ══ DASHBOARD ══ -->
 <div class="page active" id="page-dashboard">
-  <div class="banner">
+    <div class="offseason-hero" id="offseason-hero">
+    <div class="oh-eyebrow">Next tip-off countdown</div>
+    <div class="oh-top">
+      <div class="oh-countdown">
+        <div class="oh-cd-title">2027 <em>NCAA</em> TOURNAMENT</div>
+        <div class="oh-cd-location">&#128205; Dayton, Ohio &middot; March 16, 2027</div>
+        <div class="oh-cd-units">
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-days">---</span><span class="oh-cd-lbl">Days</span></div>
+          <div class="oh-cd-sep">:</div>
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-hrs">--</span><span class="oh-cd-lbl">Hours</span></div>
+          <div class="oh-cd-sep">:</div>
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-min">--</span><span class="oh-cd-lbl">Mins</span></div>
+          <div class="oh-cd-sep">:</div>
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-sec">--</span><span class="oh-cd-lbl">Secs</span></div>
+        </div>
+      </div>
+      <div class="oh-champ">
+        <span class="oh-champ-lbl">&#127942; 2026 Champion</span>
+        <span class="oh-champ-name" id="oh-champ-name">One Legler Up</span>
+        <span class="oh-champ-pts" id="oh-champ-pts">606</span>
+        <span class="oh-champ-sub">tournament points</span>
+      </div>
+    </div>
+    <div class="oh-divider"></div>
+    <div class="oh-fact" onclick="ohNextFact()">
+      <span class="oh-fact-icon" id="oh-fact-icon">&#127919;</span>
+      <div class="oh-fact-body">
+        <div class="oh-fact-text" id="oh-fact-text">Loading&hellip;</div>
+        <div class="oh-fact-footer">
+          <div class="oh-fact-dots" id="oh-fact-dots"></div>
+          <span class="oh-fact-hint">tap for next fact</span>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="banner">
     <div>
       <div class="btitle">2026 <em>TOURNAMENT</em> TRACKER</div>
       <div class="bsub" id="bsub">Loading…</div>
@@ -2163,7 +2236,7 @@ async function openBoxScore(gameId, team1, team2) {
   scoreRow.innerHTML = '';
   body.innerHTML = '<div class="modal-loading">Loading box score…</div>';
   modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  lockScroll();
   try {
     const r = await fetch(`${API}/api/boxscore/${gameId}`);
     const d = await r.json();
@@ -2287,7 +2360,7 @@ async function openPreGameStats(team1, team2, gameId) {
   const scoreRow = document.getElementById('modal-score-row');
   set('modal-game-title', `${team1} vs ${team2}`);
   modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  lockScroll();
   body.innerHTML = '<div class="modal-loading">Loading stats…</div>';
 
   let gameInfo = null;
@@ -2416,8 +2489,7 @@ function closeBoxScore() {
   const m = document.getElementById('boxscore-modal');
   m.classList.add('hidden');
   m.style.display = 'none';
-
-  document.body.style.overflow = '';
+  unlockScroll();
 }
 function closeModal(e) {
   if (e.target === document.getElementById('boxscore-modal')) closeBoxScore();
@@ -2594,7 +2666,7 @@ function launchBall() {
 function openH2H() {
   const modal = document.getElementById('h2h-modal');
   modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  lockScroll();
   const opts = TEAMS.sort((a,b)=>b.totalPts-a.totalPts)
     .map(t => `<option value="${t.name}">${t.name} (${t.totalPts} pts)</option>`).join('');
   document.getElementById('h2h-team1').innerHTML = '<option value="">Select Team 1…</option>' + opts;
@@ -2759,7 +2831,7 @@ async function openRosterModal(year, teamName) {
   const modal = document.getElementById('roster-modal');
   const body  = document.getElementById('roster-body');
   modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  lockScroll();
   document.getElementById('roster-title').textContent = `${year} · ${teamName}`;
   document.getElementById('roster-subtitle').textContent = 'CHAMPIONSHIP ROSTER';
   body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Loading…</div>';
@@ -3071,6 +3143,7 @@ function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
     noLogEl.style.display = 'block';
   }
 
+  lockScroll();
   backdrop.classList.add('open');
   // Force reflow then animate in
   requestAnimationFrame(() => {
@@ -3081,12 +3154,81 @@ function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
 function closePlayerDrawer() {
   document.getElementById('player-drawer').classList.remove('open');
   document.getElementById('player-drawer-backdrop').classList.remove('open');
+  unlockScroll();
 }
 
 // Close drawer on Escape
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closePlayerDrawer();
 });
+
+
+/* === OFFSEASON HERO === */
+(function(){
+  var T=new Date("2027-03-16T12:00:00-05:00");
+  function p(n){return String(n).padStart(2,"0");}
+  function tick(){
+    var d=T-new Date();if(d<=0)return;
+    var dy=Math.floor(d/86400000),h=Math.floor(d%86400000/3600000),m=Math.floor(d%3600000/60000),s=Math.floor(d%60000/1000);
+    var a=document.getElementById("oh-days"),b=document.getElementById("oh-hrs"),c=document.getElementById("oh-min"),e=document.getElementById("oh-sec");
+    if(a)a.textContent=dy;if(b)b.textContent=p(h);if(c)c.textContent=p(m);if(e)e.textContent=p(s);
+  }
+  tick();setInterval(tick,1000);
+  var F=[
+    ["&#127919;","The First Four play-in games were added in 2011, expanding the field from 65 to 68 teams."],
+    ["&#127942;","UCLA holds the record for most championships with 11 titles, including 7 consecutive from 1967 to 1973 under coach John Wooden."],
+    ["&#128562;","In 1985, 8-seed Villanova shot 78.6% from the field to upset 1-seed Georgetown in the title game -- still the most efficient championship performance ever."],
+    ["&#128250;","The term March Madness was coined by Illinois HS director Henry V. Porter in 1939, decades before the NCAA adopted the phrase."],
+    ["&#127922;","The odds of a perfect NCAA bracket are approximately 1 in 9.2 quintillion if picking randomly -- worse than winning the lottery twice."],
+    ["&#128293;","Only one team has ever finished a season undefeated: the 1976 Indiana Hoosiers went 32-0 under Bob Knight. No team has come close since."],
+    ["&#128202;","A 16-seed beat a 1-seed for the first time in 2018 -- UMBC defeated Virginia 74-54, still the biggest first-round upset in history."],
+    ["&#127775;","Christian Laettner's buzzer-beater against Kentucky in the 1992 Elite Eight is widely considered the greatest shot in tournament history."],
+    ["&#128176;","March Madness generates over $1 billion annually for the NCAA -- by far the organization's single largest revenue event."],
+    ["&#9889;","Sister Jean, Loyola-Chicago's 98-year-old chaplain, became one of the most famous faces of the 2018 tournament during their Cinderella Final Four run."],
+    ["&#127891;","Duke's Mike Krzyzewski holds the all-time record for NCAA tournament wins with over 100 victories across 36 tournament appearances."],
+    ["&#128290;","1-seeds have won the championship roughly 60 percent of the time since seeding was introduced in 1979."],
+    ["&#127925;","One Shining Moment has closed every NCAA championship broadcast since 1987 -- one of the most enduring traditions in sports television."],
+    ["&#128336;","The longest NCAA tournament game lasted 5 overtimes -- Cincinnati vs. Bradley in 1981 -- running nearly 3 hours."],
+    ["&#128205;","Dayton's UD Arena has hosted the First Four every year since 2011 -- the traditional opening stage of March Madness."],
+    ["&#129309;","The NIT launched a year before the NCAA tournament in 1938 and was initially considered the more prestigious event."],
+    ["&#127885;","A Cinderella run -- a seed of 10 or lower reaching the Sweet 16 -- happens in nearly every tournament and is the number one bracket buster."],
+    ["&#127920;","Americans wager an estimated $15 billion or more on March Madness brackets each year -- the largest single sports betting event in the US."],
+    ["&#127967;","The Final Four has been held in massive domes since the 1990s -- venues like Lucas Oil Stadium regularly seat 70,000 or more fans."],
+    ["&#128521;","Nike, Adidas, and Under Armour each spend hundreds of millions sponsoring programs that appear in the tournament every year."]
+  ];
+  var idx=Math.floor(Math.random()*F.length);
+  function dots(){
+    var el=document.getElementById("oh-fact-dots");
+    if(!el)return;
+    el.innerHTML=F.map(function(_,i){return"<div class=\"oh-fact-dot"+(i===idx?" active":"")+"\">\x3c/div>";}).join("");
+  }
+  function show(i){
+    var t=document.getElementById("oh-fact-text"),ic=document.getElementById("oh-fact-icon");
+    if(!t||!ic)return;
+    t.classList.add("fade");
+    setTimeout(function(){
+      idx=i;
+      ic.innerHTML=F[idx][0];
+      t.innerHTML=F[idx][1];
+      t.classList.remove("fade");
+      dots();
+    },250);
+  }
+  window.ohNextFact=function(){show((idx+1)%F.length);};
+  show(idx);
+  function upd(){
+    if(typeof TEAMS==="undefined"||!TEAMS||!TEAMS.length)return;
+    var s=TEAMS.slice().sort(function(a,b){return b.totalPts-a.totalPts;});
+    var ch=s[0];
+    var n=document.getElementById("oh-champ-name"),pt=document.getElementById("oh-champ-pts");
+    if(n&&ch)n.textContent=ch.name;if(pt&&ch)pt.textContent=ch.totalPts;
+  }
+  setTimeout(upd,3000);
+})();
+/* === SCROLL LOCK === */
+var _sly=0;
+function lockScroll(){_sly=window.scrollY;document.body.style.top="-"+_sly+"px";document.body.classList.add("scroll-locked");}
+function unlockScroll(){document.body.classList.remove("scroll-locked");document.body.style.top="";window.scrollTo(0,_sly);}
 
 </script>
   <!-- CHAMPION ROSTER MODAL -->
