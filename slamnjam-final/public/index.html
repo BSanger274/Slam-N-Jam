@@ -1828,13 +1828,27 @@ function renderFinal4() {
         <div>${teamPill(sf1?.t2||{name:'South Winner'}, sf1)}</div>
       </div>
 
-      <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
-        <line x1="0"        y1="${TOP_Y}" x2="${LINE_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="0"        y1="${BOT_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="${LINE_L}" y1="${TOP_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="${LINE_L}" y1="${MID}"   x2="${LINE_L+TBD_L}" y2="${MID}" stroke="var(--border)" stroke-width="1.5"/>
-        ${(()=>{const lbl=fin?(fin.t1?.score!=null?fin.t1.name+' '+fin.t1.score+'-'+fin.t2.score+' '+fin.t2.name:fin.t1?.name||'TBD'):'TBD';const isChamp=lbl===f4.champion;return `<text x="${LINE_L + TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="${isChamp?'var(--orange)':'rgba(255,255,255,0.4)'}" letter-spacing="1">${lbl}</text>`;})()}
-      </svg>
+      ${(()=>{
+        const t=fin?.t1; const nm=(t?.name||'TBD'); const isC=nm===f4.champion; const isTbd=!nm||nm==='TBD';
+        const logoKey=nm.replace(/'/g,'');
+        const pill=`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;
+          background:${isC?'rgba(255,107,0,.13)':'var(--surface)'};
+          border:1.5px solid ${isC?'var(--orange)':'var(--border)'};
+          border-radius:22px;white-space:nowrap;pointer-events:none">
+          ${!isTbd&&TEAM_LOGOS[logoKey]?`<img src="${TEAM_LOGOS[logoKey]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` :''}
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
+            color:${isC?'var(--orange)':'rgba(255,255,255,0.5)'}">${nm}</span>
+        </div>`;
+        return `<div style="position:relative;display:inline-block;vertical-align:middle;flex-shrink:0">
+          <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:block;overflow:visible">
+            <line x1="0"        y1="${TOP_Y}" x2="${LINE_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="0"        y1="${BOT_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="${LINE_L}" y1="${TOP_Y}" x2="${LINE_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="${LINE_L}" y1="${MID}"   x2="${LINE_L+TBD_L}" y2="${MID}" stroke="var(--border)" stroke-width="1.5"/>
+          </svg>
+          <div style="position:absolute;left:${LINE_L+TBD_L/2}px;top:${MID}px;transform:translate(-50%,-50%)">${pill}</div>
+        </div>`;
+      })()}
 
       <div style="display:inline-flex;flex-direction:column;align-items:center;flex-shrink:0;white-space:normal;vertical-align:middle">
         <div class="champ-box" style="min-width:190px;text-align:center">
@@ -1844,18 +1858,31 @@ function renderFinal4() {
         </div>
         ${fin&&(fin.t1?.name&&fin.t1.name!=='TBD')||fin?.t2?.name&&fin.t2.name!=='TBD'?`
           <div style="width:1.5px;height:10px;background:var(--border)"></div>
-          <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">Championship · Apr 6</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted)">${fin?.t1?.name||''} vs <span style="color:var(--orange)">${fin?.t2?.name||''}</span></div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase">Championship · Apr 6</div>
         `:''}
       </div>
 
-      <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:inline-block;vertical-align:middle;flex-shrink:0;overflow:visible">
-        <line x1="${LINE_L+TBD_L}" y1="${TOP_Y}" x2="${TBD_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="${LINE_L+TBD_L}" y1="${BOT_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="${TBD_L}"        y1="${TOP_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
-        <line x1="${TBD_L}"        y1="${MID}"   x2="0"        y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
-        ${(()=>{const lbl=fin?(fin.t2?.score!=null?fin.t2.name+' '+fin.t2.score+'-'+fin.t1.score+' '+fin.t1.name:fin.t2?.name||'TBD'):'TBD';const isChamp=lbl===f4.champion;return `<text x="${TBD_L/2}" y="${MID - 5}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-size="11" font-weight="700" fill="${isChamp?'var(--orange)':'rgba(255,255,255,0.4)'}" letter-spacing="1">${lbl}</text>`;})()}
-      </svg>
+      ${(()=>{
+        const t=fin?.t2; const nm=(t?.name||'TBD'); const isC=nm===f4.champion; const isTbd=!nm||nm==='TBD';
+        const logoKey=nm.replace(/'/g,'');
+        const pill=`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;
+          background:${isC?'rgba(255,107,0,.13)':'var(--surface)'};
+          border:1.5px solid ${isC?'var(--orange)':'var(--border)'};
+          border-radius:22px;white-space:nowrap;pointer-events:none">
+          ${!isTbd&&TEAM_LOGOS[logoKey]?`<img src="${TEAM_LOGOS[logoKey]}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">` :''}
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
+            color:${isC?'var(--orange)':'rgba(255,255,255,0.5)'}">${nm}</span>
+        </div>`;
+        return `<div style="position:relative;display:inline-block;vertical-align:middle;flex-shrink:0">
+          <svg width="${LINE_L+TBD_L}" height="${TOTAL}" viewBox="0 0 ${LINE_L+TBD_L} ${TOTAL}" style="display:block;overflow:visible">
+            <line x1="${LINE_L+TBD_L}" y1="${TOP_Y}" x2="${TBD_L}" y2="${TOP_Y}" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="${LINE_L+TBD_L}" y1="${BOT_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="${TBD_L}"        y1="${TOP_Y}" x2="${TBD_L}" y2="${BOT_Y}" stroke="var(--border)" stroke-width="1.5"/>
+            <line x1="${TBD_L}"        y1="${MID}"   x2="0"        y2="${MID}"   stroke="var(--border)" stroke-width="1.5"/>
+          </svg>
+          <div style="position:absolute;left:${TBD_L/2}px;top:${MID}px;transform:translate(-50%,-50%)">${pill}</div>
+        </div>`;
+      })()}
 
       <div style="display:inline-flex;flex-direction:column;gap:${GAP}px;align-items:flex-start;white-space:normal;flex-shrink:0;padding-top:16px">
         <div>${teamPill(sf2?.t1||{name:'West Winner'}, sf2)}</div>
