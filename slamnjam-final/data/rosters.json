@@ -414,7 +414,7 @@
           "name": "Braylon Mullins",
           "school": "UConn",
           "pts": 62,
-          "active": true,
+          "active": false,
           "round": 4,
           "overallPick": 62
         },
@@ -653,7 +653,7 @@
           "name": "Solo Ball",
           "school": "UConn",
           "pts": 44,
-          "active": true,
+          "active": false,
           "round": 2,
           "overallPick": 30
         },
@@ -661,7 +661,7 @@
           "name": "Tarris Reed Jr.",
           "school": "UConn",
           "pts": 104,
-          "active": true,
+          "active": false,
           "round": 3,
           "jersey": "5",
           "overallPick": 39
@@ -783,7 +783,7 @@
           "name": "Alex Karaban",
           "school": "UConn",
           "pts": 80,
-          "active": true,
+          "active": false,
           "round": 2,
           "overallPick": 31
         },
@@ -1644,7 +1644,7 @@
           "name": "Eric Reibe",
           "school": "UConn",
           "pts": 6,
-          "active": true,
+          "active": false,
           "round": 13,
           "overallPick": 216
         },
@@ -1697,7 +1697,7 @@
           "name": "Silas Demary",
           "school": "UConn",
           "pts": 24,
-          "active": true,
+          "active": false,
           "round": 4,
           "jersey": "2",
           "overallPick": 53

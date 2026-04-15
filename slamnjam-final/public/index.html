@@ -2413,21 +2413,26 @@ async function openPreGameStats(team1, team2, gameId) {
   lockScroll();
   body.innerHTML = '<div class="modal-loading">Loading…</div>';
 
-  // Find the matching bracket game for score/status info
-  let bg = null; // bracketGame
+  // Find the matching bracket game for score/status info; tag each with its round label
+  let bg = null, bgRound = null;
   if (BRACKET) {
     const nT = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
     const sim = (a,b) => { a=nT(a); b=nT(b); return a.length>2&&b.length>2&&(a.includes(b.slice(0,4))||b.includes(a.slice(0,4))); };
+    const ROUND_LABEL = {r64:'R64',r32:'R32',r16:'S16',r8:'E8',sf:'F4',final:'CHAMP'};
     const allM = [];
     // Include First Four games (top-level array, skipped by the object loop below)
-    if (Array.isArray(BRACKET._firstFour)) allM.push(...BRACKET._firstFour);
+    if (Array.isArray(BRACKET._firstFour)) BRACKET._firstFour.forEach(m=>allM.push({...m,_round:'FF'}));
     for (const reg of Object.values(BRACKET)) {
       if (!reg || typeof reg!=='object'||Array.isArray(reg)) continue;
-      for (const ms of Object.values(reg)) { if (Array.isArray(ms)) allM.push(...ms); }
+      for (const [rk, ms] of Object.entries(reg)) {
+        if (!Array.isArray(ms)) continue;
+        ms.forEach(m=>allM.push({...m, _round: ROUND_LABEL[rk]||rk}));
+      }
     }
     bg = allM.find(m=>(sim(m.t1?.name,team1)&&sim(m.t2?.name,team2))||(sim(m.t1?.name,team2)&&sim(m.t2?.name,team1)))||null;
     // Fallback: if team2 is TBD (e.g. NC game where opponent unknown), match on team1 alone
     if (!bg && (team2==='TBD'||!team2)) bg = allM.find(m=>sim(m.t1?.name,team1)||sim(m.t2?.name,team1))||null;
+    bgRound = bg?._round || null;
   }
 
   const isFinal = bg?.status === 'STATUS_FINAL';
@@ -2465,12 +2470,14 @@ async function openPreGameStats(team1, team2, gameId) {
     </div>`;
 
   try {
-    const [avgsRes, scoresRes] = await Promise.all([
+    const [avgsRes, scoresRes, gamelogRes] = await Promise.all([
       fetch(`${API}/api/averages`).then(r=>r.json()).catch(()=>({averages:{}})),
-      fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{},live:{}}))
+      fetch(`${API}/api/scores`).then(r=>r.json()).catch(()=>({merged:{},live:{}})),
+      fetch(`${API}/api/gamelog`).then(r=>r.json()).catch(()=>({}))
     ]);
 
     const avgs     = avgsRes.averages || {};
+    const gamelog  = gamelogRes || {}; // {playerName: [{round, opp, pts}]}
     const liveOnly = scoresRes.live   || {};
     const relevantPlayers = TEAMS.flatMap(t => t.players.filter(p =>
       normSchool(p.school) === normSchool(team1) || normSchool(p.school) === normSchool(team2)
@@ -2484,13 +2491,22 @@ async function openPreGameStats(team1, team2, gameId) {
       else             badge.innerHTML = '<span style="color:var(--gold)">Upcoming Game</span>';
     }
 
-    const colLabel  = isFinal ? 'PTS'      : isLive ? 'Live PTS' : 'Season Avg';
+    // For final games, use per-game pts from gamelog when round is known; fall back to total
+    const getGamePts = (p) => {
+      if (!bgRound || !gamelog[p.name]) return p.pts??0;
+      const entry = gamelog[p.name].find(e => e.round === bgRound);
+      return entry ? entry.pts : (p.pts??0);
+    };
+    const hasGameLog  = isFinal && bgRound && Object.keys(gamelog).length > 0;
+    const colLabel  = isFinal ? (bgRound||'PTS') : isLive ? 'Live PTS' : 'Season Avg';
     const colColor  = isFinal ? 'var(--orange)' : isLive ? 'var(--green)' : 'var(--gold)';
     const infoBg    = isFinal ? 'rgba(255,107,0,.06)' : isLive ? 'rgba(0,230,118,.06)' : 'rgba(255,184,0,.06)';
     const infoBdr   = isFinal ? 'rgba(255,107,0,.25)' : isLive ? 'rgba(0,230,118,.25)' : 'rgba(255,184,0,.2)';
     const infoColor = isFinal ? 'var(--orange)' : isLive ? 'var(--green)' : 'var(--gold)';
     const infoText  = isFinal
-      ? '🏆 Final result · PTS = each player\'s cumulative tournament total (all rounds combined)'
+      ? (hasGameLog
+          ? `🏆 Final result · showing points scored in this game only (${bgRound})`
+          : '🏆 Final result · PTS = cumulative tournament total (all rounds combined)')
       : isLive
       ? '🏀 Game is LIVE — showing real-time points scored in this game'
       : '📋 Showing all drafted players from each team and their season scoring average';
@@ -2501,12 +2517,12 @@ async function openPreGameStats(team1, team2, gameId) {
         if (p.school === normSchool(schoolName)) drafted.push({...p, managerName: t.name});
       }));
       drafted.sort((a,b) => {
-        const v = p => isFinal ? (p.pts||0) : isLive ? (liveOnly[p.name]||0) : (avgs[p.name]||0);
+        const v = p => isFinal ? getGamePts(p) : isLive ? (liveOnly[p.name]||0) : (avgs[p.name]||0);
         return v(b) - v(a);
       });
       const rows = drafted.length > 0
         ? drafted.map(p => {
-            const val = isFinal ? (p.pts??0) : isLive ? (liveOnly[p.name]??p.pts??0) : (avgs[p.name]?avgs[p.name].toFixed(1):'—');
+            const val = isFinal ? getGamePts(p) : isLive ? (liveOnly[p.name]??p.pts??0) : (avgs[p.name]?avgs[p.name].toFixed(1):'—');
             return `<tr>
               <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">${p.name}${trendIcon(p.trend)}</td>
               <td style="text-align:left;font-size:12px;color:var(--muted)">${p.managerName}</td>
