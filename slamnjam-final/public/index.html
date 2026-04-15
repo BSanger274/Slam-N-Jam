@@ -134,7 +134,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
 /* ── CARD FLIP ── */
 .pc-wrap{perspective:900px;cursor:pointer}
-.pc-wrap .pc-inner{position:relative;transition:transform .42s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.pc-wrap .pc-inner{position:relative;transition:transform .42s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
 .pc-wrap.flipped .pc-inner{transform:rotateY(180deg)}
 .pc-front,.pc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .pc-back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px}
@@ -1149,6 +1149,7 @@ function viewTeam(name, from) {
     <div class="pc-wrap ${p.active?'':'elim'}${p.isLive?' live':''}" data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerCardClick(this)">
       <div class="pc-inner">
         <div class="pc pc-front">
+          <div style="position:absolute;bottom:8px;right:8px;font-size:9px;color:var(--muted);opacity:.5;pointer-events:none">↺</div>
           ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
           <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
           <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
@@ -2337,6 +2338,12 @@ async function openBoxScore(gameId, team1, team2) {
         <div style="font-size:10px;color:var(--muted)">${c[1]?.record||''}</div>
       </div>`;
     if (!d.teams?.length) throw new Error('No box score data');
+    // Detect ESPN returning wrong game for this ID (stale/repurposed game IDs post-season)
+    const normT = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
+    const nameMatch = (expected, actual) => { const e = normT(expected), a = normT(actual); return e.length > 2 && (a.includes(e.slice(0,5)) || e.includes(a.slice(0,5))); };
+    const t1ok = c.some(comp => nameMatch(team1, comp.name));
+    const t2ok = c.some(comp => nameMatch(team2, comp.name));
+    if (!t1ok || !t2ok) throw new Error('ESPN returned stale data for a different game');
 
     // Build drafted player lookup: playerName -> managerName
     // normN strips Jr/Sr/II/III/periods for fuzzy matching against ESPN names
@@ -2478,8 +2485,12 @@ async function openPreGameStats(team1, team2, gameId) {
 
     const avgs       = avgsRes.averages  || {};
     const liveScores = scoresRes.merged  || {};
-    const liveCount  = scoresRes.liveCount || 0;
-    const isLive     = liveCount > 0;
+    // Only show LIVE if players from these specific teams actually have live scores
+    // (avoids false LIVE when ESPN returns stale in-progress data from other games)
+    const relevantPlayers = TEAMS.flatMap(t => t.players.filter(p =>
+      normSchool(p.school) === normSchool(team1) || normSchool(p.school) === normSchool(team2)
+    )).map(p => p.name);
+    const isLive = relevantPlayers.some(name => (liveScores[name] ?? 0) > 0);
 
     const badge = document.getElementById('game-status-badge');
     if (badge) badge.innerHTML = isLive

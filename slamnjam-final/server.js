@@ -1211,6 +1211,26 @@ async function getLiveBracket() {
       if (!merged.final4.final || !merged.final4.final.length) merged.final4.final = BRACKET_2026.final4.final;
       if (!merged.final4.sf || !merged.final4.sf.length || !merged.final4.sf[0].t1.name) merged.final4.sf = BRACKET_2026.final4.sf;
     }
+
+    // Post-process: force STATUS_FINAL for any matchup where both teams have scores.
+    // Handles stale ESPN returning STATUS_IN_PROGRESS after tournament ends.
+    const forceFinalize = (matchups) => {
+      for (const m of (matchups || [])) {
+        if (m.status === 'STATUS_IN_PROGRESS' && m.t1?.score != null && m.t2?.score != null) {
+          m.status = 'STATUS_FINAL';
+          if (m.t1.won == null && m.t2.won == null) {
+            if (m.t1.score > m.t2.score) { m.t1.won = true; m.t2.won = false; }
+            else if (m.t2.score > m.t1.score) { m.t2.won = true; m.t1.won = false; }
+          }
+        }
+      }
+    };
+    for (const region of ['east','west','south','midwest']) {
+      for (const rnd of ['r64','r32','r16','r8']) forceFinalize(merged[region]?.[rnd]);
+    }
+    forceFinalize(merged.final4?.sf);
+    forceFinalize(merged.final4?.final);
+
     bracketCache     = merged;
     bracketCacheTime = Date.now();
     writeJSON(BRACKET_F, { ...merged, _cachedAt: new Date().toISOString() });
@@ -2730,10 +2750,12 @@ app.get('/api/boxscore/:gameId', async (req, res) => {
       record: c.record?.[0]?.summary || ''
     }));
     let gameStatus = competition.status?.type?.description || 'Unknown';
-    // ESPN sometimes returns stale "In Progress" after a game ends — if a winner
-    // is already marked, the game is definitively over regardless of status string
-    const hasWinner = competitors.some(c => c.winner === true);
-    if (hasWinner && /progress|live/i.test(gameStatus)) {
+    // ESPN sometimes returns stale "In Progress" after a game ends.
+    // Use multiple signals: winner flag, state='post', or completed=true
+    const hasWinner   = competitors.some(c => c.winner === true);
+    const statusState = competition.status?.type?.state || '';
+    const completed   = competition.status?.type?.completed === true;
+    if ((hasWinner || statusState === 'post' || completed) && /progress|live/i.test(gameStatus)) {
       gameStatus = 'Final';
     }
     res.json({ ok: true, gameStatus, competitors, teams });
