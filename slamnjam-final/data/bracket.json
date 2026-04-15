@@ -1,58 +1,1331 @@
 {
-  "final4": {
-    "sf": [
+  "_source": "2026-selection-sunday",
+  "_firstFour": [
+    {
+      "id": "ff3",
+      "espnId": "401856435",
+      "region": "midwest",
+      "date": "Tue Mar 17",
+      "time": "6:40 PM ET",
+      "tv": "truTV",
+      "location": "UD Arena, Dayton, OH",
+      "status": "STATUS_FINAL",
+      "t1": {
+        "seed": 16,
+        "name": "UMBC",
+        "score": 83,
+        "won": false
+      },
+      "t2": {
+        "seed": 16,
+        "name": "Howard",
+        "score": 86,
+        "won": true
+      }
+    },
+    {
+      "id": "ff1",
+      "espnId": "401856434",
+      "region": "west",
+      "date": "Tue Mar 17",
+      "time": "9:15 PM ET",
+      "tv": "truTV",
+      "location": "UD Arena, Dayton, OH",
+      "status": "STATUS_FINAL",
+      "t1": {
+        "seed": 11,
+        "name": "Texas",
+        "score": 68,
+        "won": true
+      },
+      "t2": {
+        "seed": 11,
+        "name": "NC State",
+        "score": 66,
+        "won": false
+      }
+    },
+    {
+      "id": "ff4",
+      "region": "south",
+      "date": "Wed Mar 18",
+      "time": "6:40 PM ET",
+      "tv": "truTV",
+      "location": "UD Arena, Dayton, OH",
+      "status": "STATUS_FINAL",
+      "t1": {
+        "seed": 16,
+        "name": "Prairie View A&M",
+        "score": null,
+        "won": true
+      },
+      "t2": {
+        "seed": 16,
+        "name": "Lehigh",
+        "score": null,
+        "won": false
+      }
+    },
+    {
+      "id": "ff2",
+      "region": "midwest",
+      "date": "Wed Mar 18",
+      "time": "9:15 PM ET",
+      "tv": "truTV",
+      "location": "UD Arena, Dayton, OH",
+      "status": "STATUS_FINAL",
+      "t1": {
+        "seed": 11,
+        "name": "Miami OH",
+        "score": 89,
+        "won": true
+      },
+      "t2": {
+        "seed": 11,
+        "name": "SMU",
+        "score": 79,
+        "won": false
+      }
+    }
+  ],
+  "east": {
+    "r64": [
       {
-        "id": "sf1",
+        "id": "e1",
+        "date": "Thu Mar 19",
+        "time": "2:50 PM ET",
+        "location": "Bon Secours Wellness Arena, Greenville, SC",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
         "t1": {
-          "seed": 2,
-          "name": "UConn",
+          "seed": 1,
+          "name": "Duke",
           "score": 71,
           "won": true
         },
         "t2": {
-          "seed": 3,
-          "name": "Illinois",
-          "score": 62,
+          "seed": 16,
+          "name": "Siena",
+          "score": 65,
           "won": false
-        },
-        "status": "STATUS_FINAL"
+        }
       },
       {
-        "id": "sf2",
+        "id": "e2",
+        "date": "Thu Mar 19",
+        "time": "12:15 PM ET",
+        "location": "Bon Secours Wellness Arena, Greenville, SC",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 8,
+          "name": "Ohio State",
+          "score": 64,
+          "won": false
+        },
+        "t2": {
+          "seed": 9,
+          "name": "TCU",
+          "score": 66,
+          "won": true
+        }
+      },
+      {
+        "id": "e3",
+        "espnId": "401856476",
+        "date": "Fri Mar 20",
+        "time": "7:10 PM ET",
+        "location": "Viejas Arena, San Diego, CA",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "St. John's",
+          "score": 79,
+          "won": true
+        },
+        "t2": {
+          "seed": 12,
+          "name": "Northern Iowa",
+          "score": 53,
+          "won": false
+        }
+      },
+      {
+        "id": "e4",
+        "espnId": "401856477",
+        "date": "Fri Mar 20",
+        "time": "9:45 PM ET",
+        "location": "Viejas Arena, San Diego, CA",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 4,
+          "name": "Kansas",
+          "score": 68,
+          "won": true
+        },
+        "t2": {
+          "seed": 13,
+          "name": "Cal Baptist",
+          "score": 60,
+          "won": false
+        }
+      },
+      {
+        "id": "e5",
+        "date": "Thu Mar 19",
+        "time": "1:30 PM ET",
+        "location": "KeyBank Center, Buffalo, NY",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 6,
+          "name": "Louisville",
+          "score": 83,
+          "won": true
+        },
+        "t2": {
+          "seed": 11,
+          "name": "South Florida",
+          "score": 79,
+          "won": false
+        }
+      },
+      {
+        "id": "e6",
+        "date": "Thu Mar 19",
+        "time": "4:05 PM ET",
+        "location": "KeyBank Center, Buffalo, NY",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 3,
+          "name": "Michigan St",
+          "score": 92,
+          "won": true
+        },
+        "t2": {
+          "seed": 14,
+          "name": "N. Dakota St",
+          "score": 67,
+          "won": false
+        }
+      },
+      {
+        "id": "e7",
+        "espnId": "401856480",
+        "date": "Fri Mar 20",
+        "time": "7:25 PM ET",
+        "location": "Wells Fargo Center, Philadelphia, PA",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 7,
+          "name": "UCLA",
+          "score": 75,
+          "won": true
+        },
+        "t2": {
+          "seed": 10,
+          "name": "UCF",
+          "score": 71,
+          "won": false
+        }
+      },
+      {
+        "id": "e8",
+        "espnId": "401856481",
+        "date": "Fri Mar 20",
+        "time": "10:00 PM ET",
+        "location": "Wells Fargo Center, Philadelphia, PA",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 2,
+          "name": "UConn",
+          "score": 82,
+          "won": true
+        },
+        "t2": {
+          "seed": 15,
+          "name": "Furman",
+          "score": 71,
+          "won": false
+        }
+      }
+    ],
+    "r32": [
+      {
+        "id": "e9",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
         "t1": {
           "seed": 1,
-          "name": "Michigan",
-          "score": 91,
+          "name": "Duke",
+          "score": null,
           "won": true
+        },
+        "t2": {
+          "seed": 9,
+          "name": "TCU",
+          "score": null,
+          "won": false
+        }
+      },
+      {
+        "id": "e10",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "St. John's",
+          "score": null,
+          "won": true
+        },
+        "t2": {
+          "seed": 4,
+          "name": "Kansas",
+          "score": null,
+          "won": false
+        }
+      },
+      {
+        "id": "e11",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 6,
+          "name": "Louisville",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 3,
+          "name": "Michigan St",
+          "score": null,
+          "won": true
+        }
+      },
+      {
+        "id": "e12",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 7,
+          "name": "UCLA",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 2,
+          "name": "UConn",
+          "score": null,
+          "won": true
+        }
+      }
+    ],
+    "r16": [
+      {
+        "id": "e13",
+        "date": "Fri Mar 28",
+        "time": "7:10 PM ET",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "St. John's",
+          "score": 58,
+          "won": false
+        },
+        "t2": {
+          "seed": 1,
+          "name": "Duke",
+          "score": 63,
+          "won": true
+        }
+      },
+      {
+        "id": "e14",
+        "date": "Fri Mar 28",
+        "time": "9:45 PM ET",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 3,
+          "name": "Michigan St",
+          "score": 61,
+          "won": false
+        },
+        "t2": {
+          "seed": 2,
+          "name": "UConn",
+          "score": 77,
+          "won": true
+        }
+      }
+    ],
+    "r8": [
+      {
+        "id": "e15",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Duke",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 2,
+          "name": "UConn",
+          "score": null,
+          "won": true
+        }
+      }
+    ]
+  },
+  "west": {
+    "r64": [
+      {
+        "id": "w1",
+        "espnId": "401856482",
+        "date": "Fri Mar 20",
+        "time": "1:35 PM ET",
+        "location": "Pechanga Arena, San Diego, CA",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Arizona",
+          "score": 92,
+          "won": true
+        },
+        "t2": {
+          "seed": 16,
+          "name": "LIU",
+          "score": 58,
+          "won": false
+        }
+      },
+      {
+        "id": "w2",
+        "espnId": "401856483",
+        "date": "Fri Mar 20",
+        "time": "4:10 PM ET",
+        "location": "Pechanga Arena, San Diego, CA",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 8,
+          "name": "Villanova",
+          "score": 76,
+          "won": false
+        },
+        "t2": {
+          "seed": 9,
+          "name": "Utah State",
+          "score": 86,
+          "won": true
+        }
+      },
+      {
+        "id": "w3",
+        "date": "Thu Mar 19",
+        "time": "1:50 PM ET",
+        "location": "Moda Center, Portland, OR",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "Wisconsin",
+          "score": 82,
+          "won": false
+        },
+        "t2": {
+          "seed": 12,
+          "name": "High Point",
+          "score": 83,
+          "won": true
+        }
+      },
+      {
+        "id": "w4",
+        "date": "Thu Mar 19",
+        "time": "4:25 PM ET",
+        "location": "Moda Center, Portland, OR",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 4,
+          "name": "Arkansas",
+          "score": 97,
+          "won": true
+        },
+        "t2": {
+          "seed": 13,
+          "name": "Hawai'i",
+          "score": 78,
+          "won": false
+        }
+      },
+      {
+        "id": "w5",
+        "date": "Thu Mar 19",
+        "time": "9:50 PM ET",
+        "location": "Moda Center, Portland, OR",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 6,
+          "name": "BYU",
+          "score": 71,
+          "won": false
+        },
+        "t2": {
+          "seed": 11,
+          "name": "Texas",
+          "score": 79,
+          "won": true
+        }
+      },
+      {
+        "id": "w6",
+        "date": "Thu Mar 19",
+        "time": "7:15 PM ET",
+        "location": "Moda Center, Portland, OR",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 3,
+          "name": "Gonzaga",
+          "score": 73,
+          "won": true
+        },
+        "t2": {
+          "seed": 14,
+          "name": "Kennesaw State",
+          "score": 64,
+          "won": false
+        }
+      },
+      {
+        "id": "w7",
+        "espnId": "401856486",
+        "date": "Fri Mar 20",
+        "time": "6:50 PM ET",
+        "location": "Pechanga Arena, San Diego, CA",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 7,
+          "name": "Miami FL",
+          "score": 80,
+          "won": true
+        },
+        "t2": {
+          "seed": 10,
+          "name": "Missouri",
+          "score": 66,
+          "won": false
+        }
+      },
+      {
+        "id": "w8",
+        "espnId": "401856487",
+        "date": "Fri Mar 20",
+        "time": "9:25 PM ET",
+        "location": "Pechanga Arena, San Diego, CA",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 2,
+          "name": "Purdue",
+          "score": 104,
+          "won": true
+        },
+        "t2": {
+          "seed": 15,
+          "name": "Queens",
+          "score": 71,
+          "won": false
+        }
+      }
+    ],
+    "r32": [
+      {
+        "id": "w9",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Arizona",
+          "score": null,
+          "won": true
+        },
+        "t2": {
+          "seed": 9,
+          "name": "Utah State",
+          "score": null,
+          "won": false
+        }
+      },
+      {
+        "id": "w10",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 12,
+          "name": "High Point",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 4,
+          "name": "Arkansas",
+          "score": null,
+          "won": true
+        }
+      },
+      {
+        "id": "w11",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 11,
+          "name": "Texas",
+          "score": null,
+          "won": true
+        },
+        "t2": {
+          "seed": 3,
+          "name": "Gonzaga",
+          "score": null,
+          "won": false
+        }
+      },
+      {
+        "id": "w12",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 7,
+          "name": "Miami FL",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 2,
+          "name": "Purdue",
+          "score": null,
+          "won": true
+        }
+      }
+    ],
+    "r16": [
+      {
+        "id": "w14",
+        "date": "Thu Mar 27",
+        "time": "9:45 PM ET",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 4,
+          "name": "Arkansas",
+          "score": 77,
+          "won": false
         },
         "t2": {
           "seed": 1,
           "name": "Arizona",
+          "score": 88,
+          "won": true
+        }
+      },
+      {
+        "id": "w13",
+        "date": "Thu Mar 27",
+        "time": "7:10 PM ET",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 11,
+          "name": "Texas",
+          "score": 77,
+          "won": false
+        },
+        "t2": {
+          "seed": 2,
+          "name": "Purdue",
+          "score": 87,
+          "won": true
+        }
+      }
+    ],
+    "r8": [
+      {
+        "id": "w15",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Arizona",
+          "score": null,
+          "won": true
+        },
+        "t2": {
+          "seed": 2,
+          "name": "Purdue",
+          "score": null,
+          "won": false
+        }
+      }
+    ]
+  },
+  "south": {
+    "r64": [
+      {
+        "id": "s1",
+        "espnId": "401856488",
+        "date": "Fri Mar 20",
+        "time": "9:25 PM ET",
+        "location": "Amalie Arena, Tampa, FL",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Florida",
+          "score": 114,
+          "won": true
+        },
+        "t2": {
+          "seed": 16,
+          "name": "Prairie View A&M",
+          "score": 55,
+          "won": false
+        }
+      },
+      {
+        "id": "s2",
+        "espnId": "401856489",
+        "date": "Fri Mar 20",
+        "time": "6:50 PM ET",
+        "location": "Amalie Arena, Tampa, FL",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 8,
+          "name": "Clemson",
+          "score": 61,
+          "won": false
+        },
+        "t2": {
+          "seed": 9,
+          "name": "Iowa",
+          "score": 67,
+          "won": true
+        }
+      },
+      {
+        "id": "s3",
+        "date": "Thu Mar 19",
+        "time": "9:20 PM ET",
+        "location": "Paycom Center, Oklahoma City, OK",
+        "tv": "truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "Vanderbilt",
+          "score": 78,
+          "won": true
+        },
+        "t2": {
+          "seed": 12,
+          "name": "McNeese",
+          "score": 68,
+          "won": false
+        }
+      },
+      {
+        "id": "s4",
+        "date": "Thu Mar 19",
+        "time": "6:45 PM ET",
+        "location": "Paycom Center, Oklahoma City, OK",
+        "tv": "truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 4,
+          "name": "Nebraska",
+          "score": 76,
+          "won": true
+        },
+        "t2": {
+          "seed": 13,
+          "name": "Troy",
+          "score": 47,
+          "won": false
+        }
+      },
+      {
+        "id": "s5",
+        "date": "Thu Mar 19",
+        "time": "12:10 PM ET",
+        "location": "Bon Secours Wellness Arena, Greenville, SC",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 6,
+          "name": "N. Carolina",
+          "score": 78,
+          "won": false
+        },
+        "t2": {
+          "seed": 11,
+          "name": "VCU",
+          "score": 82,
+          "won": true
+        }
+      },
+      {
+        "id": "s6",
+        "date": "Thu Mar 19",
+        "time": "2:45 PM ET",
+        "location": "Bon Secours Wellness Arena, Greenville, SC",
+        "tv": "TNT",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 3,
+          "name": "Illinois",
+          "score": 105,
+          "won": true
+        },
+        "t2": {
+          "seed": 14,
+          "name": "Penn",
+          "score": 70,
+          "won": false
+        }
+      },
+      {
+        "id": "s7",
+        "date": "Thu Mar 19",
+        "time": "7:35 PM ET",
+        "location": "Paycom Center, Oklahoma City, OK",
+        "tv": "truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 7,
+          "name": "Saint Mary's",
+          "score": 50,
+          "won": false
+        },
+        "t2": {
+          "seed": 10,
+          "name": "Texas A&M",
+          "score": 63,
+          "won": true
+        }
+      },
+      {
+        "id": "s8",
+        "date": "Thu Mar 19",
+        "time": "10:10 PM ET",
+        "location": "Paycom Center, Oklahoma City, OK",
+        "tv": "truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 2,
+          "name": "Houston",
+          "score": 78,
+          "won": true
+        },
+        "t2": {
+          "seed": 15,
+          "name": "Idaho",
+          "score": 47,
+          "won": false
+        }
+      }
+    ],
+    "r32": [
+      {
+        "id": "s9",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Florida",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 9,
+          "name": "Iowa",
+          "score": null,
+          "won": true
+        }
+      },
+      {
+        "id": "s10",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "Vanderbilt",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 4,
+          "name": "Nebraska",
+          "score": null,
+          "won": true
+        }
+      },
+      {
+        "id": "s11",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 11,
+          "name": "VCU",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 3,
+          "name": "Illinois",
+          "score": null,
+          "won": true
+        }
+      },
+      {
+        "id": "s12",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 10,
+          "name": "Texas A&M",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 2,
+          "name": "Houston",
+          "score": null,
+          "won": true
+        }
+      }
+    ],
+    "r16": [
+      {
+        "id": "s13",
+        "date": "Thu Mar 27",
+        "time": "7:30 PM ET",
+        "tv": "TBS, truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 9,
+          "name": "Iowa",
+          "score": 89,
+          "won": true
+        },
+        "t2": {
+          "seed": 4,
+          "name": "Nebraska",
+          "score": 72,
+          "won": false
+        }
+      },
+      {
+        "id": "s14",
+        "date": "Thu Mar 27",
+        "time": "10:05 PM ET",
+        "tv": "TBS, truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 3,
+          "name": "Illinois",
+          "score": 65,
+          "won": true
+        },
+        "t2": {
+          "seed": 2,
+          "name": "Houston",
+          "score": 54,
+          "won": false
+        }
+      }
+    ],
+    "r8": [
+      {
+        "id": "s15",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 9,
+          "name": "Iowa",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 3,
+          "name": "Illinois",
+          "score": null,
+          "won": true
+        }
+      }
+    ]
+  },
+  "midwest": {
+    "r64": [
+      {
+        "id": "m1",
+        "date": "Thu Mar 19",
+        "time": "7:10 PM ET",
+        "location": "KeyBank Center, Buffalo, NY",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Michigan",
+          "score": 101,
+          "won": true
+        },
+        "t2": {
+          "seed": 16,
+          "name": "Howard",
+          "score": 80,
+          "won": false
+        }
+      },
+      {
+        "id": "m2",
+        "date": "Thu Mar 19",
+        "time": "9:45 PM ET",
+        "location": "KeyBank Center, Buffalo, NY",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 8,
+          "name": "Georgia",
+          "score": 77,
+          "won": false
+        },
+        "t2": {
+          "seed": 9,
+          "name": "Saint Louis",
+          "score": 102,
+          "won": true
+        }
+      },
+      {
+        "id": "m3",
+        "espnId": "401856490",
+        "date": "Fri Mar 20",
+        "time": "12:40 PM ET",
+        "location": "Amalie Arena, Tampa, FL",
+        "tv": "truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "Texas Tech",
+          "score": 91,
+          "won": true
+        },
+        "t2": {
+          "seed": 12,
+          "name": "Akron",
+          "score": 71,
+          "won": false
+        }
+      },
+      {
+        "id": "m4",
+        "espnId": "401856491",
+        "date": "Fri Mar 20",
+        "time": "3:15 PM ET",
+        "location": "Amalie Arena, Tampa, FL",
+        "tv": "truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 4,
+          "name": "Alabama",
+          "score": 90,
+          "won": true
+        },
+        "t2": {
+          "seed": 13,
+          "name": "Hofstra",
+          "score": 70,
+          "won": false
+        }
+      },
+      {
+        "id": "m5",
+        "espnId": "401856492",
+        "date": "Fri Mar 20",
+        "time": "4:25 PM ET",
+        "location": "Wells Fargo Center, Philadelphia, PA",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 6,
+          "name": "Tennessee",
+          "score": 78,
+          "won": true
+        },
+        "t2": {
+          "seed": 11,
+          "name": "Miami OH",
+          "score": 56,
+          "won": false
+        }
+      },
+      {
+        "id": "m6",
+        "espnId": "401856493",
+        "date": "Fri Mar 20",
+        "time": "1:50 PM ET",
+        "location": "Wells Fargo Center, Philadelphia, PA",
+        "tv": "TBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 3,
+          "name": "Virginia",
+          "score": 82,
+          "won": true
+        },
+        "t2": {
+          "seed": 14,
+          "name": "Wright State",
           "score": 73,
           "won": false
+        }
+      },
+      {
+        "id": "m7",
+        "espnId": "401856494",
+        "date": "Fri Mar 20",
+        "time": "12:15 PM ET",
+        "location": "Enterprise Center, St. Louis, MO",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 7,
+          "name": "Kentucky",
+          "score": 89,
+          "won": true
+        },
+        "t2": {
+          "seed": 10,
+          "name": "Santa Clara",
+          "score": 84,
+          "won": false
+        }
+      },
+      {
+        "id": "m8",
+        "espnId": "401856495",
+        "date": "Fri Mar 20",
+        "time": "2:50 PM ET",
+        "location": "Enterprise Center, St. Louis, MO",
+        "tv": "CBS",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 2,
+          "name": "Iowa State",
+          "score": 108,
+          "won": true
+        },
+        "t2": {
+          "seed": 15,
+          "name": "Tennessee St",
+          "score": 74,
+          "won": false
+        }
+      }
+    ],
+    "r32": [
+      {
+        "id": "m9",
+        "date": "Sat Mar 22",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Michigan",
+          "score": null,
+          "won": true
+        },
+        "t2": {
+          "seed": 9,
+          "name": "Saint Louis",
+          "score": null,
+          "won": false
+        }
+      },
+      {
+        "id": "m10",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 5,
+          "name": "Texas Tech",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 4,
+          "name": "Alabama",
+          "score": null,
+          "won": true
+        }
+      },
+      {
+        "id": "m11",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 6,
+          "name": "Tennessee",
+          "score": null,
+          "won": true
+        },
+        "t2": {
+          "seed": 3,
+          "name": "Virginia",
+          "score": null,
+          "won": false
+        }
+      },
+      {
+        "id": "m12",
+        "date": "Sun Mar 23",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 7,
+          "name": "Kentucky",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 2,
+          "name": "Iowa State",
+          "score": null,
+          "won": true
+        }
+      }
+    ],
+    "r16": [
+      {
+        "id": "m13",
+        "date": "Fri Mar 28",
+        "time": "7:35 PM ET",
+        "tv": "TBS, truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 4,
+          "name": "Alabama",
+          "score": 68,
+          "won": false
+        },
+        "t2": {
+          "seed": 1,
+          "name": "Michigan",
+          "score": 72,
+          "won": true
+        }
+      },
+      {
+        "id": "m14",
+        "date": "Fri Mar 28",
+        "time": "10:10 PM ET",
+        "tv": "TBS, truTV",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 6,
+          "name": "Tennessee",
+          "score": 78,
+          "won": true
+        },
+        "t2": {
+          "seed": 2,
+          "name": "Iowa State",
+          "score": 70,
+          "won": false
+        }
+      }
+    ],
+    "r8": [
+      {
+        "id": "m15",
+        "status": "STATUS_FINAL",
+        "t1": {
+          "seed": 1,
+          "name": "Michigan",
+          "score": null,
+          "won": true
+        },
+        "t2": {
+          "seed": 6,
+          "name": "Tennessee",
+          "score": null,
+          "won": false
+        }
+      }
+    ]
+  },
+  "final4": {
+    "sf": [
+      {
+        "id": "f1",
+        "t1": {
+          "seed": 2,
+          "name": "UConn",
+          "score": null,
+          "won": null
+        },
+        "t2": {
+          "seed": 3,
+          "name": "Illinois",
+          "score": null,
+          "won": null
+        },
+        "status": "STATUS_FINAL"
+      },
+      {
+        "id": "f2",
+        "t1": {
+          "seed": 1,
+          "name": "Arizona",
+          "score": null,
+          "won": false
+        },
+        "t2": {
+          "seed": 1,
+          "name": "Michigan",
+          "score": null,
+          "won": true
         },
         "status": "STATUS_FINAL"
       }
     ],
     "final": [
       {
-        "id": "ncg",
+        "id": "f3",
         "t1": {
           "seed": 1,
           "name": "Michigan",
-          "score": 69,
+          "score": null,
           "won": true
         },
         "t2": {
-          "seed": 2,
-          "name": "UConn",
-          "score": 63,
-          "won": false
+          "seed": null,
+          "name": "TBD",
+          "score": null,
+          "won": null
         },
         "status": "STATUS_FINAL"
       }
     ],
     "champion": "Michigan"
   },
-  "_cachedAt": "2026-04-15T00:00:00.000Z"
+  "_cachedAt": "2026-04-15T12:19:13.829Z"
 }

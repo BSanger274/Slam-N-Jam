@@ -1763,7 +1763,9 @@ function renderFinal4() {
     const won = t?.won===true, lost = t?.won===false;
     const t1n = (matchup?.t1?.name||'').replace(/'/g,'');
     const t2n = (matchup?.t2?.name||'').replace(/'/g,'');
-    const canClick = !isTbd && t1n && t2n && t1n!=='TBD' && t2n!=='TBD';
+    const isFinalGame = matchup?.status === 'STATUS_FINAL';
+    // Allow clicking if this team is known; if other team is TBD but game is final (e.g. NC), still clickable
+    const canClick = !isTbd && t1n && ((t2n && t1n!=='TBD' && t2n!=='TBD') || isFinalGame);
     const hasScore = matchup?.t1?.score!=null||matchup?.t2?.score!=null;
     const isMatchupLive = matchup?.status === 'STATUS_IN_PROGRESS';
     const onclick = canClick?((isMatchupLive&&hasScore)?`openBoxScore('${matchup.id}','${t1n}','${t2n}')`:`openPreGameStats('${t1n}','${t2n}','${matchup.id}')`):'';
@@ -2417,11 +2419,15 @@ async function openPreGameStats(team1, team2, gameId) {
     const nT = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
     const sim = (a,b) => { a=nT(a); b=nT(b); return a.length>2&&b.length>2&&(a.includes(b.slice(0,4))||b.includes(a.slice(0,4))); };
     const allM = [];
+    // Include First Four games (top-level array, skipped by the object loop below)
+    if (Array.isArray(BRACKET._firstFour)) allM.push(...BRACKET._firstFour);
     for (const reg of Object.values(BRACKET)) {
       if (!reg || typeof reg!=='object'||Array.isArray(reg)) continue;
       for (const ms of Object.values(reg)) { if (Array.isArray(ms)) allM.push(...ms); }
     }
     bg = allM.find(m=>(sim(m.t1?.name,team1)&&sim(m.t2?.name,team2))||(sim(m.t1?.name,team2)&&sim(m.t2?.name,team1)))||null;
+    // Fallback: if team2 is TBD (e.g. NC game where opponent unknown), match on team1 alone
+    if (!bg && (team2==='TBD'||!team2)) bg = allM.find(m=>sim(m.t1?.name,team1)||sim(m.t2?.name,team1))||null;
   }
 
   const isFinal = bg?.status === 'STATUS_FINAL';
