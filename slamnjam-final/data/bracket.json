@@ -1,37 +1,18 @@
 {
   "final4": {
-    "champion": "Michigan",
-    "final": [
-      {
-        "id": "ncg",
-        "t1": {
-          "seed": 1,
-          "name": "UConn",
-          "score": 63,
-          "won": false
-        },
-        "t2": {
-          "seed": 11,
-          "name": "Michigan",
-          "score": 69,
-          "won": true
-        },
-        "status": "STATUS_FINAL"
-      }
-    ],
     "sf": [
       {
         "id": "sf1",
         "t1": {
-          "seed": 1,
+          "seed": 2,
           "name": "UConn",
-          "score": 75,
+          "score": 71,
           "won": true
         },
         "t2": {
-          "seed": 4,
+          "seed": 3,
           "name": "Illinois",
-          "score": 67,
+          "score": 62,
           "won": false
         },
         "status": "STATUS_FINAL"
@@ -39,20 +20,39 @@
       {
         "id": "sf2",
         "t1": {
-          "seed": 2,
-          "name": "Arizona",
-          "score": 64,
-          "won": false
+          "seed": 1,
+          "name": "Michigan",
+          "score": 91,
+          "won": true
         },
         "t2": {
-          "seed": 11,
-          "name": "Michigan",
-          "score": 72,
-          "won": true
+          "seed": 1,
+          "name": "Arizona",
+          "score": 73,
+          "won": false
         },
         "status": "STATUS_FINAL"
       }
-    ]
+    ],
+    "final": [
+      {
+        "id": "ncg",
+        "t1": {
+          "seed": 1,
+          "name": "Michigan",
+          "score": 69,
+          "won": true
+        },
+        "t2": {
+          "seed": 2,
+          "name": "UConn",
+          "score": 63,
+          "won": false
+        },
+        "status": "STATUS_FINAL"
+      }
+    ],
+    "champion": "Michigan"
   },
   "_cachedAt": "2026-04-15T00:00:00.000Z"
 }
