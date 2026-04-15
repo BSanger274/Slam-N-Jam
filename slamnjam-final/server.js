@@ -2976,6 +2976,38 @@ app.post('/api/admin/archive-season', requireAdmin, (req, res) => {
   }
 });
 
+// ─── Reset Season ─────────────────────────────────────────────────────────────
+// Clears all operational data files for a fresh new season.
+// SAFE: never touches history.json, all_time_seasons.json, champion_rosters.json,
+//       averages.json, bracket_seed.json, or jerseys.json.
+app.post('/api/admin/reset-season', requireAdmin, (req, res) => {
+  try {
+    const { confirm } = req.body;
+    if (confirm !== 'RESET') return res.status(400).json({ ok: false, error: 'Missing confirmation' });
+
+    // Clear operational files
+    writeJSON(ROSTER_F,    { teams: [] });
+    writeJSON(TOTALS_F,    {});
+    writeJSON(GAMELOG_F,   {});
+    writeJSON(PROCESSED_F, {});
+    writeJSON(OVERRIDE_F,  {});
+    writeJSON(COMPLETED_F, {});
+    writeJSON(BRACKET_F,   buildBlankBracket());
+
+    // Clear in-memory state so live data reflects the reset immediately
+    playerTotals   = {};
+    playerGameLog  = {};
+    processedGames = {};
+    Object.keys(scoreCache).forEach(k => delete scoreCache[k]);
+
+    console.log('[Reset] Season data cleared — ready for new roster upload');
+    res.json({ ok: true, message: 'Season reset complete. Upload new rosters to begin.' });
+  } catch (e) {
+    console.error('[Reset]', e);
+    res.json({ ok: false, error: e.message });
+  }
+});
+
 // ════════════════════════════════════════════════════════
 //  INIT DATA FILES
 // ════════════════════════════════════════════════════════

@@ -765,6 +765,7 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
         <button class="btn btn-s" onclick="clearOverrides()" title="🗑 Clear Round Data&#10;&#10;Clears saved game pts from the current round.&#10;&#10;WHEN TO USE: After each round ends and you have&#10;pushed the updated server.js with new HARDCODED&#10;totals to GitHub. Press this ONCE after the new&#10;deploy goes live to reset the counter cleanly&#10;for the next round.&#10;&#10;DO NOT press mid-round — it will erase pts&#10;scored in the current round." style="background:rgba(255,80,80,.15);border-color:rgba(255,80,80,.4);color:#ff8080">🗑 Clear Round Data</button>
         <button class="btn btn-s" onclick="toggleAdminHelp()" title="View admin user manual" style="background:rgba(100,160,255,.15);border-color:rgba(100,160,255,.4);color:#7ab4ff">📖 Help</button>
         <button class="btn btn-s" onclick="archiveSeason()" style="background:rgba(255,184,0,.15);border-color:rgba(255,184,0,.4);color:var(--gold)" title="🏆 Archive Season&#10;&#10;Saves the current season results to history.&#10;Use at the very end of the tournament only.">🏆 Archive Season</button>
+        <button class="btn btn-s" onclick="resetSeason()" style="background:rgba(180,40,255,.12);border-color:rgba(180,40,255,.4);color:#c97eff" title="🔄 Reset for New Season&#10;&#10;Clears rosters, scores, gamelog, and bracket data.&#10;History and Hall of Fame are NEVER affected.&#10;&#10;Use this before uploading the next year's draft.">🔄 New Season</button>
         <button class="btn btn-s" onclick="doLogout()">Logout</button>
       </div>
     </div>
@@ -775,6 +776,7 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
         <div><span style="color:var(--orange);font-weight:700">⚡ Force Refresh</span><br>Manually pulls the latest scores from ESPN. Scores update automatically every 30 seconds — only use this if something looks stuck or stale.</div>
         <div><span style="color:#ff8080;font-weight:700">🗑 Clear Round Data</span><br>Clears the pts saved from the current/last round. <strong style="color:#fff">Only press this once after:</strong> (1) a round has fully completed, (2) you've sent box scores and Claude updated server.js, and (3) you've pushed to GitHub and the new deploy is live. This resets the counter so the next round starts clean.<br><span style="color:var(--red)">⚠ Never press mid-round — it will erase live pts.</span></div>
         <div><span style="color:var(--green);font-weight:700">🏆 Archive Season</span><br>Saves final standings to the Hall of Fame history. Use this only at the very end of the tournament after the champion is crowned.</div>
+        <div><span style="color:#c97eff;font-weight:700">🔄 New Season</span><br>Wipes rosters, scores, gamelog, bracket, and processed game data so the site is blank for a fresh draft. <strong style="color:#fff">History is completely safe</strong> — Hall of Fame, champion rosters, and all prior year data are never touched. Requires typing "RESET" to confirm.</div>
         <div><span style="color:var(--gold);font-weight:700">Between-Round Workflow</span><br>          <ol style="margin:6px 0 0 16px;padding:0">
             <li>Games end → site tracks pts live automatically ✓</li>
             <li>Send Claude the box scores</li>
@@ -2895,6 +2897,56 @@ async function archiveSeason() {
       status.textContent = `✅ Saved! ${d.year} · ${d.teams} teams · ${d.players} players · Champion: ${d.champion || 'TBD'}`;
       status.style.color = 'var(--green)';
       CHAMPION_ROSTERS_CACHE = null;
+    } else {
+      status.textContent = `❌ ${d.error}`;
+      status.style.color = '#ff4444';
+    }
+  } catch(e) {
+    status.textContent = '❌ Network error';
+    status.style.color = '#ff4444';
+  }
+}
+
+// ── RESET SEASON ──
+async function resetSeason() {
+  const status = document.getElementById('archive-status');
+
+  // Step 1: first warning
+  if (!confirm(
+    '🔄 RESET FOR NEW SEASON\n\n' +
+    'This will permanently clear:\n' +
+    '  • Rosters (all 17 teams + players)\n' +
+    '  • Scores & gamelog\n' +
+    '  • Bracket data\n' +
+    '  • Processed game history\n\n' +
+    'This will NOT affect:\n' +
+    '  ✅ History / Hall of Fame\n' +
+    '  ✅ Champion rosters (all years)\n' +
+    '  ✅ All-time season archives\n\n' +
+    'Continue to confirmation step?'
+  )) return;
+
+  // Step 2: type-to-confirm
+  const typed = prompt('Type RESET to confirm clearing all season data.\n\nThis cannot be undone.');
+  if (typed !== 'RESET') {
+    if (typed !== null) alert('Cancelled — confirmation text did not match.');
+    return;
+  }
+
+  status.textContent = 'Resetting…';
+  status.style.color = 'var(--muted)';
+  try {
+    const r = await fetch(`${API}/api/admin/reset-season`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-admin-token': adminTok },
+      body: JSON.stringify({ confirm: 'RESET' })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      status.textContent = '✅ Season reset complete — upload new rosters to begin.';
+      status.style.color = '#c97eff';
+      // Refresh local data so dashboard/teams/players reflect the blank state
+      TEAMS = []; renderDraftStrip(); renderScoreTicker();
     } else {
       status.textContent = `❌ ${d.error}`;
       status.style.color = '#ff4444';
