@@ -438,8 +438,8 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
 .oh-champ-name{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange);letter-spacing:1px;display:block}
 .oh-champ-pts{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--text);line-height:1;display:block}
 .oh-champ-sub{font-size:10px;color:var(--muted);margin-top:2px;display:block}
-.oh-f4logo{display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
-.oh-f4logo img{height:110px;width:auto;object-fit:contain;filter:drop-shadow(0 0 18px rgba(255,107,0,.18));transition:filter .3s}
+.oh-f4logo{display:flex;justify-content:flex-start;align-items:center;margin:10px 0 14px}
+.oh-f4logo img{height:90px;width:auto;object-fit:contain;filter:drop-shadow(0 0 18px rgba(255,107,0,.18));transition:filter .3s}
 .oh-f4logo img:hover{filter:drop-shadow(0 0 28px rgba(255,184,0,.35))}
 .oh-divider{height:1px;background:var(--border);margin-bottom:16px;position:relative;}
 .oh-divider::after{content:'Did You Know?';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#080810;padding:0 12px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
@@ -503,19 +503,17 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
       <div class="oh-countdown">
         <div class="oh-cd-title">2027 <em>NCAA</em> TOURNAMENT</div>
         <div class="oh-cd-location">&#128205; Dayton, Ohio &middot; March 16, 2027</div>
-        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-          <div class="oh-cd-units">
-            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-days">---</span><span class="oh-cd-lbl">Days</span></div>
-            <div class="oh-cd-sep">:</div>
-            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-hrs">--</span><span class="oh-cd-lbl">Hours</span></div>
-            <div class="oh-cd-sep">:</div>
-            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-min">--</span><span class="oh-cd-lbl">Mins</span></div>
-            <div class="oh-cd-sep">:</div>
-            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-sec">--</span><span class="oh-cd-lbl">Secs</span></div>
-          </div>
-          <div class="oh-f4logo">
-            <img src="/final-four-2027.png" alt="2027 NCAA Final Four — Detroit">
-          </div>
+        <div class="oh-f4logo">
+          <img src="/final-four-2027.png" alt="2027 NCAA Final Four — Detroit">
+        </div>
+        <div class="oh-cd-units">
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-days">---</span><span class="oh-cd-lbl">Days</span></div>
+          <div class="oh-cd-sep">:</div>
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-hrs">--</span><span class="oh-cd-lbl">Hours</span></div>
+          <div class="oh-cd-sep">:</div>
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-min">--</span><span class="oh-cd-lbl">Mins</span></div>
+          <div class="oh-cd-sep">:</div>
+          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-sec">--</span><span class="oh-cd-lbl">Secs</span></div>
         </div>
       </div>
       <div class="oh-champ">
