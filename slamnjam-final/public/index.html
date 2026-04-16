@@ -3361,7 +3361,7 @@ function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
 
     const displayTotal = liveScore !== null ? baseTotal + liveScore : pts;
     rows += `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;border-top:2px solid var(--border);margin-top:4px">
-      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Tournament Total</div>
+      <div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange)">Tournament Total</div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange)">${displayTotal ?? 0}</div>
     </div>`;
     logEl.innerHTML = rows;
@@ -3510,6 +3510,65 @@ function unlockScroll(){document.body.classList.remove("scroll-locked");document
     <div id="pd-nolog" style="display:none;font-size:12px;color:var(--muted);padding:8px 0">No game log data yet</div>
   </div>
 </div>
+
+<script>
+// ── Drag-to-dismiss player drawer (mobile) ─────────────────────────────────
+(function () {
+  const drawer   = document.getElementById('player-drawer');
+  const backdrop = document.getElementById('player-drawer-backdrop');
+  let startY = 0, lastY = 0, startScrollTop = 0, dragging = false;
+
+  drawer.addEventListener('touchstart', function (e) {
+    startY        = e.touches[0].clientY;
+    lastY         = startY;
+    startScrollTop = drawer.scrollTop;
+    dragging      = false;
+  }, { passive: true });
+
+  drawer.addEventListener('touchmove', function (e) {
+    lastY = e.touches[0].clientY;
+    const dy = lastY - startY;
+
+    // Only intercept when at the top of the scroll AND dragging downward
+    if (dy > 0 && startScrollTop === 0) {
+      dragging = true;
+      e.preventDefault();                          // stop the page from scrolling
+      drawer.style.transition  = 'none';
+      drawer.style.transform   = `translateY(${dy}px)`;
+      backdrop.style.opacity   = String(Math.max(0, 1 - dy / 260));
+    }
+  }, { passive: false });
+
+  function onEnd() {
+    if (!dragging) return;
+    dragging = false;
+    const dy = lastY - startY;
+
+    if (dy > 110) {
+      // Flick off-screen, then clean up
+      drawer.style.transition  = 'transform .28s cubic-bezier(.4,0,.2,1)';
+      drawer.style.transform   = 'translateY(110%)';
+      backdrop.style.transition = 'opacity .28s';
+      backdrop.style.opacity   = '0';
+      setTimeout(() => {
+        drawer.style.transition  = '';
+        drawer.style.transform   = '';
+        backdrop.style.transition = '';
+        backdrop.style.opacity   = '';
+        closePlayerDrawer();
+      }, 290);
+    } else {
+      // Snap back
+      drawer.style.transition = '';
+      drawer.style.transform  = '';
+      backdrop.style.opacity  = '';
+    }
+  }
+
+  drawer.addEventListener('touchend',    onEnd, { passive: true });
+  drawer.addEventListener('touchcancel', onEnd, { passive: true });
+})();
+</script>
 
 </body>
 </html>
