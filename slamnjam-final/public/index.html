@@ -454,7 +454,15 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
 .oh-fact-dot{width:4px;height:4px;border-radius:50%;background:var(--border);transition:all .2s}
 .oh-fact-dot.active{width:16px;border-radius:2px;background:var(--gold)}
 .oh-fact-hint{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-@media(max-width:600px){.oh-top{flex-direction:column;gap:16px}.oh-champ{text-align:left}.oh-cd-num{font-size:36px}.oh-f4logo img{height:80px}}
+@media(max-width:600px){
+  .oh-top{flex-direction:column;gap:16px}
+  .oh-champ{text-align:left}
+  .oh-cd-num{font-size:36px}
+  /* Stack logo below timer on mobile so timer gets full width and doesn't wrap */
+  .oh-countdown{flex-direction:column !important;align-items:flex-start !important;gap:10px !important}
+  .oh-f4logo{margin-top:2px}
+  .oh-f4logo img{height:72px}
+}
 
 </style>
 </head>
