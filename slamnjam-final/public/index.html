@@ -443,7 +443,7 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
 .offseason-hero::before{content:'';position:absolute;top:-40%;left:-20%;width:60%;height:160%;background:radial-gradient(ellipse,rgba(255,184,0,.05) 0%,transparent 65%);pointer-events:none;}
 .offseason-hero::after{content:'\1F3C0';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-size:180px;opacity:.03;pointer-events:none;line-height:1;}
 .oh-eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
-.oh-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold)}
+.oh-eyebrow::before,.oh-eyebrow::after{content:'';display:inline-block;width:24px;height:1px;background:var(--gold)}
 .oh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap;}
 .oh-cd-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--text);line-height:1;margin-bottom:4px;}
 .oh-cd-title em{color:var(--orange);font-style:normal}
@@ -531,7 +531,7 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
       <div class="oh-countdown" style="display:flex;align-items:center;gap:24px">
         <div>
           <div class="oh-cd-title">2027 <em>NCAA</em> TOURNAMENT</div>
-          <div class="oh-cd-location">&#128205; Dayton, Ohio &middot; March 16, 2027</div>
+          <div class="oh-cd-location">&#128205; Detroit, Michigan &middot; April 5, 2027</div>
           <div class="oh-cd-units">
             <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-days">---</span><span class="oh-cd-lbl">Days</span></div>
             <div class="oh-cd-sep">:</div>
@@ -3429,7 +3429,7 @@ document.addEventListener('keydown', e => {
 
 /* === OFFSEASON HERO === */
 (function(){
-  var T=new Date("2027-03-16T12:00:00-05:00");
+  var T=new Date("2027-04-05T18:00:00-05:00");
   function p(n){return String(n).padStart(2,"0");}
   function tick(){
     var d=T-new Date();if(d<=0)return;
