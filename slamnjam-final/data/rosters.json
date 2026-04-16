@@ -647,7 +647,8 @@
           "pts": 95,
           "active": true,
           "round": 1,
-          "overallPick": 5
+          "overallPick": 5,
+          "seasonAvg": 15.1
         },
         {
           "name": "Solo Ball",
