@@ -83,6 +83,8 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .tbl td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px;vertical-align:middle}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:rgba(255,255,255,.02)}
+.tbl tr[onclick]{transition:background .15s}
+.tbl tr[onclick]:hover td{background:rgba(255,255,255,.05);padding-left:16px}
 .rnk{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);width:30px}
 .rnk.r1{color:var(--gold)}.rnk.r2{color:#bbb}.rnk.r3{color:#cd7f32}
 .tn{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;cursor:pointer;transition:color .2s}
@@ -102,6 +104,8 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);border-radius:6px;transition:background .15s}
 .pr:last-child{border-bottom:none}
 .pr[onclick]:hover{background:rgba(255,255,255,.05);padding-left:6px}
+.spr{transition:background .15s,padding-left .15s}
+.spr:hover{background:rgba(255,255,255,.05);padding-left:12px!important}
 .pnum{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--muted);width:22px;flex-shrink:0}
 .pi{flex:1}
 .pi-n{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700}
@@ -1267,7 +1271,7 @@ function renderRoundBreakdown(t) {
     <div style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Top Scorers</div>
     ${[...t.players].sort((a,b)=>b.pts-a.pts).slice(0,5).map(p => {
       const pct = Math.round((p.pts/Math.max(totalPts,1))*100);
-      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      return `<div class="spr" onclick="handlePlayerRowClick('${p.name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;border-radius:6px;padding:4px 6px;margin-left:-6px;margin-right:-6px">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:${p.active?'var(--text)':'var(--muted)'}">${p.name}${trendIcon(p.trend)}${!p.active?' <span style="font-size:9px;color:var(--red)">OUT</span>':''}</div>
         <div style="width:100px;background:var(--dark3);border-radius:4px;height:6px;overflow:hidden;flex-shrink:0">
           <div style="height:100%;width:${pct}%;background:${p.active?'var(--orange)':'rgba(255,255,255,.2)'};border-radius:4px"></div>
