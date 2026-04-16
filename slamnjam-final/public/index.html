@@ -503,18 +503,20 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
       <div class="oh-countdown">
         <div class="oh-cd-title">2027 <em>NCAA</em> TOURNAMENT</div>
         <div class="oh-cd-location">&#128205; Dayton, Ohio &middot; March 16, 2027</div>
-        <div class="oh-cd-units">
-          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-days">---</span><span class="oh-cd-lbl">Days</span></div>
-          <div class="oh-cd-sep">:</div>
-          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-hrs">--</span><span class="oh-cd-lbl">Hours</span></div>
-          <div class="oh-cd-sep">:</div>
-          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-min">--</span><span class="oh-cd-lbl">Mins</span></div>
-          <div class="oh-cd-sep">:</div>
-          <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-sec">--</span><span class="oh-cd-lbl">Secs</span></div>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+          <div class="oh-cd-units">
+            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-days">---</span><span class="oh-cd-lbl">Days</span></div>
+            <div class="oh-cd-sep">:</div>
+            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-hrs">--</span><span class="oh-cd-lbl">Hours</span></div>
+            <div class="oh-cd-sep">:</div>
+            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-min">--</span><span class="oh-cd-lbl">Mins</span></div>
+            <div class="oh-cd-sep">:</div>
+            <div class="oh-cd-unit"><span class="oh-cd-num" id="oh-sec">--</span><span class="oh-cd-lbl">Secs</span></div>
+          </div>
+          <div class="oh-f4logo">
+            <img src="/final-four-2027.png" alt="2027 NCAA Final Four — Detroit">
+          </div>
         </div>
-      </div>
-      <div class="oh-f4logo">
-        <img src="/final-four-2027.png" alt="2027 NCAA Final Four — Detroit">
       </div>
       <div class="oh-champ">
         <span class="oh-champ-lbl">&#127942; 2026 Champion</span>
@@ -1828,11 +1830,12 @@ function renderFinal4() {
   return `<div style="max-width:960px;margin:0 auto">
 
     <div style="text-align:center;margin-bottom:28px">
-      <img src="/final-four-2027.png" alt="2027 Final Four — Detroit"
-        style="height:135px;width:auto;object-fit:contain;border-radius:6px;filter:drop-shadow(0 0 16px rgba(255,107,0,.15))"
+      <!-- 2027 SEASON: swap src to /final-four-2027.png and update venue line below -->
+      <img src="/final-four-logo.svg" alt="2026 Final Four"
+        style="height:135px;width:auto;object-fit:contain;border-radius:6px"
         onerror="this.style.display='none'">
       <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:8px">
-        Little Caesars Arena · Detroit · April 2 &amp; 4, 2027
+        Lucas Oil Stadium · Indianapolis · April 4 &amp; 6
       </div>
     </div>
 
