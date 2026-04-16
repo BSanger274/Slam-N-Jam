@@ -197,6 +197,7 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
     0 -14px 36px rgba(255,107,0,.2);
 }
 #player-drawer.open { transform: translateY(0); }
+#player-drawer:not(.open) { box-shadow: none !important; }
 .pd-header {
   padding: 16px 18px 20px;
   background: linear-gradient(160deg, rgba(255,107,0,.22) 0%, rgba(255,184,0,.08) 45%, transparent 100%);
@@ -422,7 +423,8 @@ textarea.fi{resize:vertical;min-height:110px;font-size:12px;font-family:monospac
   .ticker-bar{position:fixed;bottom:0;left:0;right:0;z-index:998;height:34px;background:#0a0c12;border-top:1px solid rgba(255,184,0,.25);display:flex;align-items:stretch;overflow:hidden}
   .ticker-label{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:0 14px;background:#111520;border-right:1px solid rgba(255,184,0,.25);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#ffb800;white-space:nowrap}
   .ticker-track-wrap{flex:1;overflow:hidden;position:relative}
-  .ticker-track{display:flex;align-items:center;height:34px;white-space:nowrap;position:absolute;left:0;top:0}
+  @keyframes ticker-roll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-track{display:flex;align-items:center;height:34px;white-space:nowrap;position:absolute;left:0;top:0;animation:ticker-roll var(--ticker-dur,40s) linear infinite}
   .tick-item{display:inline-flex;align-items:center;padding:0 6px;height:34px;flex-shrink:0}
   .tick-sep{display:inline-flex;align-items:center;color:rgba(255,255,255,.15);font-size:18px;padding:0 4px;flex-shrink:0}
   .tick-live{display:inline-flex;align-items:center;gap:6px;background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.2);border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700}
@@ -3150,21 +3152,22 @@ function buildTickerItem(m, type) {
   </div></div>${sep}`;
 }
 
-// ── JS-DRIVEN TICKER SCROLL ──
-let tickerPos = 0;
-let tickerRAF = null;
-let tickerHalfWidth = 0;
-const TICKER_SPEED = 0.6;
+// ── CSS-DRIVEN TICKER SCROLL ──
+// Speed in px/s — CSS animation handles the loop, no JS position tracking needed
+const TICKER_PX_PER_SEC = 55;
 
-function tickerLoop() {
-  const track = document.getElementById('ticker-track');
-  if (!track) { tickerRAF = requestAnimationFrame(tickerLoop); return; }
-  if (tickerHalfWidth > 0) {
-    tickerPos += TICKER_SPEED;
-    if (tickerPos >= tickerHalfWidth) tickerPos -= tickerHalfWidth;
-    track.style.transform = `translateX(${-tickerPos}px)`;
-  }
-  tickerRAF = requestAnimationFrame(tickerLoop);
+function setTickerContent(track, html) {
+  const newHtml = html + html; // doubled for seamless -50% loop
+  if (track.innerHTML === newHtml) return;
+  track.innerHTML = newHtml;
+  // Measure actual rendered width after paint, then set animation duration
+  requestAnimationFrame(() => {
+    const halfW = track.scrollWidth / 2;
+    if (halfW > 0) {
+      const dur = Math.round(halfW / TICKER_PX_PER_SEC);
+      track.style.setProperty('--ticker-dur', dur + 's');
+    }
+  });
 }
 
 function refreshTicker() {
@@ -3250,53 +3253,15 @@ function refreshTicker() {
     ).join('');
 
     const spacer = '<span style="display:inline-block;width:80px;flex-shrink:0"></span>';
-    const html = f4Html + spacer;
-
-    const probe = document.createElement('div');
-    probe.style.cssText = 'position:fixed;visibility:hidden;top:-9999px;white-space:nowrap;display:flex;align-items:center;height:34px;';
-    probe.innerHTML = html;
-    document.body.appendChild(probe);
-    const halfW = probe.offsetWidth;
-    document.body.removeChild(probe);
-
-    const newHtml = html + html;
-    if (halfW > 0 && track.innerHTML !== newHtml) {
-      tickerHalfWidth = halfW;
-      tickerPos = 0;
-      track.innerHTML = newHtml;
-    } else if (halfW > 0) {
-      tickerHalfWidth = halfW;
-    }
+    setTickerContent(track, f4Html + spacer);
     return;
   }
 
   const spacer = '<span style="display:inline-block;width:80px;flex-shrink:0"></span>';
-  const html = allItems.join('') + spacer;
-
-  // Measure one copy's width using an off-screen clone — never touch the live track
-  const probe = document.createElement('div');
-  probe.style.cssText = 'position:fixed;visibility:hidden;top:-9999px;white-space:nowrap;display:flex;align-items:center;height:34px;';
-  probe.innerHTML = html;
-  document.body.appendChild(probe);
-  const halfW = probe.offsetWidth;
-  document.body.removeChild(probe);
-
-  // Only update DOM + reset position if content actually changed
-  const newHtml = html + html;
-  if (halfW > 0 && track.innerHTML !== newHtml) {
-    tickerHalfWidth = halfW;
-    tickerPos = 0;
-    track.innerHTML = newHtml;
-  } else if (halfW > 0) {
-    // Content unchanged — just update the measured width in case fonts shifted
-    tickerHalfWidth = halfW;
-  }
-
+  setTickerContent(track, allItems.join('') + spacer);
   if (dot) dot.style.background = liveItems.length ? '#00e676' : '#ffb800';
 }
 
-// Start the animation loop once
-tickerRAF = requestAnimationFrame(tickerLoop);
 setInterval(refreshTicker, 60000);
 
 
