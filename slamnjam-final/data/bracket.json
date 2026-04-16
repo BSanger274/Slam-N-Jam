@@ -56,13 +56,13 @@
       "t1": {
         "seed": 16,
         "name": "Prairie View A&M",
-        "score": null,
+        "score": 67,
         "won": true
       },
       "t2": {
         "seed": 16,
         "name": "Lehigh",
-        "score": null,
+        "score": 55,
         "won": false
       }
     },
