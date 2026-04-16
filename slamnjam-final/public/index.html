@@ -185,14 +185,31 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 /* ── Player detail drawer ── */
 #player-drawer {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 1100;
-  background: var(--card); border-top: 1px solid var(--border);
+  background: #0F0F1A;
+  border: 1px solid rgba(255,107,0,.35);
   border-radius: 18px 18px 0 0;
   transform: translateY(100%);
   transition: transform .32s cubic-bezier(.4,0,.2,1);
   max-height: 82vh; overflow-y: auto;
-  box-shadow: 0 -8px 40px rgba(0,0,0,.55);
+  box-shadow:
+    0 -8px 40px rgba(0,0,0,.7),
+    0 -2px 0 0 var(--orange),
+    0 -14px 36px rgba(255,107,0,.2);
 }
 #player-drawer.open { transform: translateY(0); }
+.pd-header {
+  padding: 16px 18px 20px;
+  background: linear-gradient(160deg, rgba(255,107,0,.22) 0%, rgba(255,184,0,.08) 45%, transparent 100%);
+  border-bottom: 1px solid rgba(255,107,0,.2);
+  position: relative;
+}
+.pd-header::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--orange), transparent 60%);
+}
 #player-drawer-backdrop {
   position: fixed; inset: 0; z-index: 1099; background: rgba(0,0,0,.5);
   backdrop-filter: blur(3px); display: none;
@@ -3333,12 +3350,24 @@ function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
     logEl.style.display = 'block';
     noLogEl.style.display = 'none';
 
+    // Round badge colors (Option C palette)
+    const badgeStyles = {
+      'FF':  'background:rgba(255,255,255,.1);color:rgba(255,255,255,.65)',
+      'R64': 'background:rgba(255,107,0,.18);color:#FF6B00',
+      'R32': 'background:rgba(255,184,0,.18);color:#FFB800',
+      'S16': 'background:rgba(61,139,255,.18);color:#3d8bff',
+      'E8':  'background:rgba(0,230,118,.18);color:#00E676',
+      'F4':  'background:rgba(180,0,255,.18);color:#cc44ff',
+      'NC':  'background:rgba(255,184,0,.22);color:#FFB800',
+    };
+
     // Historical entries
     let rows = log.map(g => {
       const label = roundLabels[g.round] || g.round;
       const ptsClass = (!g.pts || g.pts === 0) ? 'zero' : '';
+      const bStyle = badgeStyles[g.round] || 'background:rgba(255,255,255,.1);color:rgba(255,255,255,.65)';
       return `<div class="game-log-row">
-        <div class="game-log-round">${g.round}</div>
+        <div class="game-log-round" style="${bStyle}">${g.round}</div>
         <div class="game-log-opp">
           <div style="font-size:11px;font-weight:500">${label}</div>
           <div>vs ${g.opp}</div>
@@ -3360,7 +3389,7 @@ function openPlayerDrawer(name, school, pts, active, avg, jersey, teamName) {
     }
 
     const displayTotal = liveScore !== null ? baseTotal + liveScore : pts;
-    rows += `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;border-top:2px solid var(--border);margin-top:4px">
+    rows += `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;border-top:2px solid rgba(255,107,0,.45);margin-top:4px">
       <div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange)">Tournament Total</div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange)">${displayTotal ?? 0}</div>
     </div>`;
@@ -3489,17 +3518,17 @@ function unlockScroll(){document.body.classList.remove("scroll-locked");document
 <!-- ── Player detail drawer ── -->
 <div id="player-drawer-backdrop" onclick="closePlayerDrawer()"></div>
 <div id="player-drawer">
-  <div style="padding:16px 18px 0">
+  <div class="pd-header">
     <!-- handle bar -->
-    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px"></div>
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.18);border-radius:2px;margin:0 auto 14px"></div>
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
       <div style="flex:1;min-width:0">
-        <div id="pd-name" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-        <div id="pd-meta" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
+        <div id="pd-name" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff"></div>
+        <div id="pd-meta" style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px"></div>
       </div>
       <div style="text-align:right;flex-shrink:0">
-        <div id="pd-total" style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--orange);line-height:1"></div>
-        <div style="font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">Total Pts</div>
+        <div id="pd-total" style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#fff;line-height:1;text-shadow:0 0 22px rgba(255,107,0,.65)"></div>
+        <div style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase">Total Pts</div>
       </div>
     </div>
     <div id="pd-status" style="margin-top:8px;margin-bottom:2px;font-size:11px;font-weight:700;letter-spacing:1px"></div>
