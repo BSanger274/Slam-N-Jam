@@ -1279,13 +1279,13 @@
         "t1": {
           "seed": 2,
           "name": "UConn",
-          "score": null,
+          "score": 71,
           "won": true
         },
         "t2": {
           "seed": 3,
           "name": "Illinois",
-          "score": null,
+          "score": 62,
           "won": false
         },
         "status": "STATUS_FINAL"
@@ -1295,13 +1295,13 @@
         "t1": {
           "seed": 1,
           "name": "Arizona",
-          "score": null,
+          "score": 73,
           "won": false
         },
         "t2": {
           "seed": 1,
           "name": "Michigan",
-          "score": null,
+          "score": 91,
           "won": true
         },
         "status": "STATUS_FINAL"
@@ -1313,13 +1313,13 @@
         "t1": {
           "seed": 2,
           "name": "UConn",
-          "score": null,
+          "score": 63,
           "won": false
         },
         "t2": {
           "seed": 1,
           "name": "Michigan",
-          "score": null,
+          "score": 69,
           "won": true
         },
         "status": "STATUS_FINAL"
