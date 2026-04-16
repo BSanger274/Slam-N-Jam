@@ -68,6 +68,8 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .sb-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-weight:600}
 .sb-v{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1.1;margin-top:4px}
 .sb-s{font-size:11px;color:var(--muted);margin-top:2px}
+.sb.clickable{cursor:pointer;transition:border-color .15s,transform .15s}
+.sb.clickable:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
 
 /* ── GRID / CARD ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -581,10 +583,10 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
     </div>
   </div>
   <div class="sbs">
-    <div class="sb go"><div class="sb-l">Current Leader</div><div class="sb-v" id="sb-lead">—</div><div class="sb-s" id="sb-lead-s"></div></div>
-    <div class="sb or"><div class="sb-l">Top Player Scorer</div><div class="sb-v" id="sb-tp">—</div><div class="sb-s" id="sb-tp-s"></div></div>
-    <div class="sb gr"><div class="sb-l">Most Players Alive</div><div class="sb-v" id="sb-ma">—</div><div class="sb-s" id="sb-ma-s"></div></div>
-    <div class="sb re"><div class="sb-l">Fully Eliminated</div><div class="sb-v" id="sb-el">—</div><div class="sb-s" id="sb-el-s"></div></div>
+    <div class="sb go" id="sb-lead-card"><div class="sb-l">Current Leader</div><div class="sb-v" id="sb-lead">—</div><div class="sb-s" id="sb-lead-s"></div></div>
+    <div class="sb or" id="sb-tp-card"><div class="sb-l">Top Player Scorer</div><div class="sb-v" id="sb-tp">—</div><div class="sb-s" id="sb-tp-s"></div></div>
+    <div class="sb gr" id="sb-ma-card"><div class="sb-l">Most Players Alive</div><div class="sb-v" id="sb-ma">—</div><div class="sb-s" id="sb-ma-s"></div></div>
+    <div class="sb re" id="sb-el-card"><div class="sb-l">Fully Eliminated</div><div class="sb-v" id="sb-el">—</div><div class="sb-s" id="sb-el-s"></div></div>
   </div>
   <div class="g2">
     <div class="card">
@@ -1005,6 +1007,15 @@ function renderAll() {
   const ac = byAlive?.players.filter(p=>p.active).length||0;
   set('sb-ma',    byAlive?.name||'—');set('sb-ma-s',   `${ac} player${ac!==1?'s':''} still in`);
   set('sb-el',    elim.length?elim[0].name:'None yet'); set('sb-el-s', elim.length?'All players out':'All teams active');
+  // Wire up stat card click handlers
+  const sbLead = document.getElementById('sb-lead-card');
+  const sbTp   = document.getElementById('sb-tp-card');
+  const sbMa   = document.getElementById('sb-ma-card');
+  const sbEl   = document.getElementById('sb-el-card');
+  if (leader)  { sbLead.classList.add('clickable'); sbLead.onclick = () => viewTeam(leader.name, 'dashboard'); } else { sbLead.classList.remove('clickable'); sbLead.onclick=null; }
+  if (topP)    { sbTp.classList.add('clickable');   sbTp.onclick   = () => handlePlayerRowClick(topP.name); } else { sbTp.classList.remove('clickable'); sbTp.onclick=null; }
+  if (byAlive) { sbMa.classList.add('clickable');   sbMa.onclick   = () => viewTeam(byAlive.name, 'dashboard'); } else { sbMa.classList.remove('clickable'); sbMa.onclick=null; }
+  if (elim.length) { sbEl.classList.add('clickable'); sbEl.onclick = () => viewTeam(elim[0].name, 'dashboard'); } else { sbEl.classList.remove('clickable'); sbEl.onclick=null; }
   renderStandings(sorted);
   renderTopScorers(allP);
   renderPlayersRem(sorted);
