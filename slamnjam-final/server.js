@@ -44,9 +44,17 @@ const TOTALS_F     = path.join(DATA, 'totals.json');      // auto-accumulated pl
 const GAMELOG_F    = path.join(DATA, 'gamelog.json');     // auto-saved game log entries
 const PROCESSED_F  = path.join(DATA, 'processed.json');   // tracks which ESPN game IDs already processed
 const BRACKET_F  = path.join(DATA, 'bracket.json');
+const SEEDS_F    = path.join(DATA, 'seeds.json');    // auto-locked round scores (replaces manual HARDCODED_OVERRIDES edits)
 const HISTORY_F  = path.join(DATA, 'history.json');
 const AVERAGES_F = path.join(__dirname, 'data', 'averages.json');
 const JERSEY_F   = path.join(DATA, 'jerseys.json');
+
+// ─── Seeds — auto-locked round scores, lives in data/ so it survives deploys ──
+// Written by the admin "Lock Round" button after each round ends.
+// Replaces manual HARDCODED_OVERRIDES edits. HARDCODED_OVERRIDES remains as
+// a last-resort fallback for players not yet in seeds.
+let seeds = readJSON(SEEDS_F, { totals: {}, gamelog: {} });
+console.log(`[Seeds] Loaded ${Object.keys(seeds.totals||{}).length} seed totals, ${Object.keys(seeds.gamelog||{}).length} seed gamelog entries`);
 
 // ─── Admin auth ───────────────────────────────────────
 const ADMIN_PASS  = process.env.ADMIN_PASSWORD || 'slamnjam2026';
@@ -135,10 +143,19 @@ let completedTodayCache = (() => {
 let playerTotals = readJSON(TOTALS_F, {});
 console.log('[Totals] Loaded ' + Object.keys(playerTotals).length + ' player totals');
 function ensureTotals() {
-  if (Object.keys(playerTotals).length === 0 && Object.keys(HARDCODED_OVERRIDES).length > 0) {
-    console.log('[Totals] totals.json empty — seeding from HARDCODED_OVERRIDES (' + Object.keys(HARDCODED_OVERRIDES).length + ' players)');
-    playerTotals = { ...HARDCODED_OVERRIDES };
-    writeJSON(TOTALS_F, playerTotals);
+  if (Object.keys(playerTotals).length === 0) {
+    const seedTotals = seeds.totals || {};
+    const hardcoded  = HARDCODED_OVERRIDES;
+    // Prefer seeds.json (updated via admin button), fall back to HARDCODED_OVERRIDES
+    const base = Object.keys(seedTotals).length > 0 ? seedTotals
+               : Object.keys(hardcoded).length  > 0 ? hardcoded
+               : null;
+    if (base) {
+      const src = base === seedTotals ? 'seeds.json' : 'HARDCODED_OVERRIDES';
+      console.log(`[Totals] totals.json empty — seeding from ${src} (${Object.keys(base).length} players)`);
+      playerTotals = { ...base };
+      writeJSON(TOTALS_F, playerTotals);
+    }
   }
 }
 
@@ -160,10 +177,18 @@ function ensureTotals() {
 let playerGameLog = readJSON(GAMELOG_F, {});
 console.log('[GameLog] Loaded ' + Object.keys(playerGameLog).length + ' player game logs');
 function ensureGameLog() {
-  if (Object.keys(playerGameLog).length === 0 && Object.keys(GAME_LOG).length > 0) {
-    console.log('[GameLog] gamelog.json empty — seeding from GAME_LOG constant (' + Object.keys(GAME_LOG).length + ' players)');
-    playerGameLog = JSON.parse(JSON.stringify(GAME_LOG));
-    writeJSON(GAMELOG_F, playerGameLog);
+  if (Object.keys(playerGameLog).length === 0) {
+    const seedLog  = seeds.gamelog || {};
+    const staticLog = GAME_LOG;
+    const base = Object.keys(seedLog).length  > 0 ? seedLog
+               : Object.keys(staticLog).length > 0 ? staticLog
+               : null;
+    if (base) {
+      const src = base === seedLog ? 'seeds.json' : 'GAME_LOG constant';
+      console.log(`[GameLog] gamelog.json empty — seeding from ${src} (${Object.keys(base).length} players)`);
+      playerGameLog = JSON.parse(JSON.stringify(base));
+      writeJSON(GAMELOG_F, playerGameLog);
+    }
   }
 }
 
@@ -2352,9 +2377,8 @@ async function getMergedScores() {
     (rosters.teams || []).flatMap(t => t.players.filter(p => p.active !== false).map(p => p.name))
   );
 
-  // playerTotals is the single source of truth — accumulated automatically from ESPN
-  // Falls back to HARDCODED_OVERRIDES for any player not yet in playerTotals
-  const allTotals = { ...HARDCODED_OVERRIDES, ...playerTotals };
+  // Priority: playerTotals (live ESPN) > seeds.totals (locked rounds) > HARDCODED_OVERRIDES (last resort)
+  const allTotals = { ...HARDCODED_OVERRIDES, ...(seeds.totals||{}), ...playerTotals };
 
   const merged = {};
 
@@ -2808,9 +2832,9 @@ app.get('/api/scores', async (req, res) => {
 
 // Game log — auto-accumulated from ESPN, used by player drawer
 app.get('/api/gamelog', (req, res) => {
-  ensureGameLog(); // seed from GAME_LOG constant if gamelog.json was empty
-  // Merge static GAME_LOG (base) with auto-accumulated playerGameLog (takes priority)
-  const merged = { ...GAME_LOG };
+  ensureGameLog(); // seed from seeds.json (or GAME_LOG fallback) if gamelog.json was empty
+  // Priority: playerGameLog (live ESPN) > seeds.gamelog (locked rounds) > GAME_LOG (last resort)
+  const merged = { ...GAME_LOG, ...(seeds.gamelog||{}) };
   for (const [name, entries] of Object.entries(playerGameLog)) {
     merged[name] = entries;
   }
@@ -2933,7 +2957,8 @@ app.post('/api/admin/archive-season', requireAdmin, (req, res) => {
     const overrides = readJSON(OVERRIDE_F, {});
     // For archive: accumulate hardcoded base + final scores
     const merged = { ...scoreCache };
-    for (const [name, basePts] of Object.entries(HARDCODED_OVERRIDES)) {
+    const archiveBase = { ...HARDCODED_OVERRIDES, ...(seeds.totals||{}) };
+    for (const [name, basePts] of Object.entries(archiveBase)) {
       merged[name] = (scoreCache[name] || 0) + basePts;
     }
     for (const [name, pts] of Object.entries(overrides)) { merged[name] = pts; }
@@ -2980,6 +3005,33 @@ app.post('/api/admin/archive-season', requireAdmin, (req, res) => {
 // Clears all operational data files for a fresh new season.
 // SAFE: never touches history.json, all_time_seasons.json, champion_rosters.json,
 //       averages.json, bracket_seed.json, or jerseys.json.
+// ─── Lock Round ───────────────────────────────────────────────────────────────
+// Snapshots current playerTotals + playerGameLog into seeds.json.
+// Run this once after all games in a round are final. Seeds.json is committed
+// to git so deploys never lose score history. Replaces manual HARDCODED_OVERRIDES edits.
+app.post('/api/admin/lock-round', requireAdmin, (req, res) => {
+  try {
+    const { round } = req.body; // optional label e.g. "R64", "R32", "S16", "E8", "F4", "CHAMP"
+    ensureTotals();
+    ensureGameLog();
+
+    seeds = {
+      totals:    { ...playerTotals },
+      gamelog:   JSON.parse(JSON.stringify(playerGameLog)),
+      _lockedAt: new Date().toISOString(),
+      _round:    round || 'manual',
+      _players:  Object.keys(playerTotals).length,
+    };
+    writeJSON(SEEDS_F, seeds);
+
+    console.log(`[LockRound] Locked ${Object.keys(seeds.totals).length} players after ${seeds._round}`);
+    res.json({ ok: true, round: seeds._round, players: seeds._players, lockedAt: seeds._lockedAt });
+  } catch (e) {
+    console.error('[LockRound]', e);
+    res.json({ ok: false, error: e.message });
+  }
+});
+
 app.post('/api/admin/reset-season', requireAdmin, (req, res) => {
   try {
     const { confirm } = req.body;
@@ -2998,7 +3050,9 @@ app.post('/api/admin/reset-season', requireAdmin, (req, res) => {
     playerTotals   = {};
     playerGameLog  = {};
     processedGames = {};
+    seeds          = { totals: {}, gamelog: {} };
     Object.keys(scoreCache).forEach(k => delete scoreCache[k]);
+    writeJSON(SEEDS_F, seeds);
 
     console.log('[Reset] Season data cleared — ready for new roster upload');
     res.json({ ok: true, message: 'Season reset complete. Upload new rosters to begin.' });

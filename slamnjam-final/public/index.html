@@ -762,6 +762,7 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px">ADMIN PANEL</h2>
       <div style="display:flex;gap:8px">
         <button class="btn btn-s" onclick="forceRefresh()" title="⚡ Force Refresh&#10;&#10;Manually triggers an immediate ESPN data pull.&#10;Use when scores seem stale or stuck.&#10;Normally runs automatically every 30 seconds.">⚡ Force Refresh</button>
+        <button class="btn btn-s" onclick="lockRound()" title="🔒 Lock Round&#10;&#10;Snapshots current scores into seeds.json after&#10;all games in a round finish.&#10;&#10;WHEN TO USE: Once every game in a round shows FINAL.&#10;This replaces the old manual HARDCODED_OVERRIDES&#10;workflow — no code edits needed.&#10;&#10;After locking, commit seeds.json to git to make&#10;it survive deploys permanently." style="background:rgba(0,200,120,.1);border-color:rgba(0,200,120,.4);color:#00c878">🔒 Lock Round</button>
         <button class="btn btn-s" onclick="clearOverrides()" title="🗑 Clear Round Data&#10;&#10;Clears saved game pts from the current round.&#10;&#10;WHEN TO USE: After each round ends and you have&#10;pushed the updated server.js with new HARDCODED&#10;totals to GitHub. Press this ONCE after the new&#10;deploy goes live to reset the counter cleanly&#10;for the next round.&#10;&#10;DO NOT press mid-round — it will erase pts&#10;scored in the current round." style="background:rgba(255,80,80,.15);border-color:rgba(255,80,80,.4);color:#ff8080">🗑 Clear Round Data</button>
         <button class="btn btn-s" onclick="toggleAdminHelp()" title="View admin user manual" style="background:rgba(100,160,255,.15);border-color:rgba(100,160,255,.4);color:#7ab4ff">📖 Help</button>
         <button class="btn btn-s" onclick="archiveSeason()" style="background:rgba(255,184,0,.15);border-color:rgba(255,184,0,.4);color:var(--gold)" title="🏆 Archive Season&#10;&#10;Saves the current season results to history.&#10;Use at the very end of the tournament only.">🏆 Archive Season</button>
@@ -774,17 +775,18 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
       <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#7ab4ff;margin-bottom:12px">📖 ADMIN USER MANUAL</div>
       <div style="display:grid;gap:14px">
         <div><span style="color:var(--orange);font-weight:700">⚡ Force Refresh</span><br>Manually pulls the latest scores from ESPN. Scores update automatically every 30 seconds — only use this if something looks stuck or stale.</div>
-        <div><span style="color:#ff8080;font-weight:700">🗑 Clear Round Data</span><br>Clears the pts saved from the current/last round. <strong style="color:#fff">Only press this once after:</strong> (1) a round has fully completed, (2) you've sent box scores and Claude updated server.js, and (3) you've pushed to GitHub and the new deploy is live. This resets the counter so the next round starts clean.<br><span style="color:var(--red)">⚠ Never press mid-round — it will erase live pts.</span></div>
+        <div><span style="color:#00c878;font-weight:700">🔒 Lock Round</span><br>Snapshots all current scores into seeds.json the moment a round's last game goes FINAL. <strong style="color:#fff">This is the only action needed between rounds</strong> — no more code edits. After clicking, commit seeds.json to git so scores survive any future Render restart permanently.</div>
+        <div><span style="color:#ff8080;font-weight:700">🗑 Clear Round Data</span><br>Legacy button — only needed if you're still on the old HARDCODED_OVERRIDES workflow. If you're using 🔒 Lock Round you don't need this.<br><span style="color:var(--red)">⚠ Never press mid-round — it will erase live pts.</span></div>
         <div><span style="color:var(--green);font-weight:700">🏆 Archive Season</span><br>Saves final standings to the Hall of Fame history. Use this only at the very end of the tournament after the champion is crowned.</div>
         <div><span style="color:#c97eff;font-weight:700">🔄 New Season</span><br>Wipes rosters, scores, gamelog, bracket, and processed game data so the site is blank for a fresh draft. <strong style="color:#fff">History is completely safe</strong> — Hall of Fame, champion rosters, and all prior year data are never touched. Requires typing "RESET" to confirm.</div>
-        <div><span style="color:var(--gold);font-weight:700">Between-Round Workflow</span><br>          <ol style="margin:6px 0 0 16px;padding:0">
-            <li>Games end → site tracks pts live automatically ✓</li>
-            <li>Send Claude the box scores</li>
-            <li>Claude updates server.js HARDCODED totals</li>
-            <li>Push server.js to GitHub → Render redeploys</li>
-            <li>Press <strong>🗑 Clear Round Data</strong> once</li>
-            <li>Done — next round starts clean ✓</li>
+        <div><span style="color:var(--gold);font-weight:700">New Between-Round Workflow (Automated)</span><br>          <ol style="margin:6px 0 0 16px;padding:0">
+            <li>Games run → site tracks pts live automatically ✓</li>
+            <li>Last game of the round hits FINAL</li>
+            <li>Press <strong>🔒 Lock Round</strong> once</li>
+            <li>Commit seeds.json to git → push to GitHub</li>
+            <li>Done — scores are locked forever, next round starts clean ✓</li>
           </ol>
+          <div style="margin-top:8px;font-size:11px;color:var(--muted)">No box score entry, no code edits, no manual overrides needed.</div>
         </div>
       </div>
     </div>
@@ -2245,6 +2247,36 @@ async function forceRefresh() {
 function toggleAdminHelp() {
   const el = document.getElementById('admin-help');
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+async function lockRound() {
+  const status = document.getElementById('archive-status');
+  const rounds = ['R64','R32','S16','E8','F4','CHAMP'];
+  const round = prompt(
+    '🔒 Lock Round\n\nEnter the round label to lock (scores are saved to seeds.json):\n\n' +
+    rounds.join('  ·  ') + '\n\nOr leave blank for "manual".'
+  );
+  if (round === null) return; // cancelled
+  status.textContent = 'Locking…';
+  status.style.color = 'var(--muted)';
+  try {
+    const r = await fetch(`${API}/api/admin/lock-round`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-admin-token': adminTok },
+      body: JSON.stringify({ round: round.trim() || 'manual' })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      status.textContent = `🔒 ${d.round} locked — ${d.players} players saved to seeds.json. Now commit seeds.json to git.`;
+      status.style.color = '#00c878';
+    } else {
+      status.textContent = `❌ ${d.error}`;
+      status.style.color = '#ff4444';
+    }
+  } catch(e) {
+    status.textContent = '❌ Network error';
+    status.style.color = '#ff4444';
+  }
 }
 
 async function clearOverrides() {
