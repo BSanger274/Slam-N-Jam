@@ -151,6 +151,36 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc-back-link:hover{border-color:var(--orange);color:var(--orange)}
 
 /* ── HISTORY ── */
+/* ── ROUND-BY-ROUND LEADERBOARD ── */
+.rr-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.rr-tab{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;padding:4px 12px;border-radius:16px;border:1.5px solid var(--border);color:var(--muted);cursor:pointer;background:none;transition:all .2s}
+.rr-tab:hover{border-color:#444;color:#aaa}
+.rr-tab.rr-active{border-color:var(--orange);color:var(--orange);background:rgba(255,107,0,.08)}
+.rr-info{font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:10px;display:flex;gap:12px;flex-wrap:wrap}
+.rr-info b{color:#aaa}
+.rr-list{display:flex;flex-direction:column;gap:5px}
+.rr-row{display:grid;grid-template-columns:28px 26px 1fr 50px;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:9px;transition:border-color .2s}
+.rr-row.rr-gold  {border-color:rgba(255,184,0,.4);background:rgba(255,184,0,.05)}
+.rr-row.rr-silver{border-color:rgba(180,180,180,.25);background:rgba(180,180,180,.04)}
+.rr-row.rr-bronze{border-color:rgba(180,100,30,.25);background:rgba(180,100,30,.04)}
+.rr-row.rr-champ {border-color:rgba(255,184,0,.55)!important;background:rgba(255,184,0,.09)!important;box-shadow:0 0 14px rgba(255,184,0,.1)}
+.rr-rank{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1;text-align:center}
+.rr-gold .rr-rank{color:var(--gold)}.rr-silver .rr-rank{color:#b8b8b8}.rr-bronze .rr-rank{color:#cd7f32}
+.rr-row:not(.rr-gold):not(.rr-silver):not(.rr-bronze) .rr-rank{color:#383b45}
+.rr-move{font-size:10px;font-weight:700;text-align:center;line-height:1.2}
+.rr-up{color:var(--green)}.rr-down{color:var(--red)}.rr-same{color:#383b45;font-size:14px}
+.rr-new{font-size:8px;letter-spacing:1px;border:1px solid #333;border-radius:3px;padding:1px 3px;color:#666}
+.rr-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr-gold .rr-name{color:#ffd54f}.rr-silver .rr-name{color:#e8e8e8}.rr-bronze .rr-name{color:#e8a060}
+.rr-row:not(.rr-gold):not(.rr-silver):not(.rr-bronze) .rr-name{color:var(--text)}
+.rr-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.rr-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1}
+.rr-gold .rr-pts{color:var(--gold)}.rr-silver .rr-pts{color:#c0c0c0}.rr-bronze .rr-pts{color:#cd7f32}
+.rr-row:not(.rr-gold):not(.rr-silver):not(.rr-bronze) .rr-pts{color:var(--orange)}
+.rr-bar-wrap{width:50px;height:3px;background:var(--border);border-radius:2px}
+.rr-bar{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.rr-gold .rr-bar{background:var(--gold)}.rr-silver .rr-bar{background:#b0b0b0}.rr-bronze .rr-bar{background:#cd7f32}
+.rr-row:not(.rr-gold):not(.rr-silver):not(.rr-bronze) .rr-bar{background:var(--orange)}
 .hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:9px}
 .hc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 13px;transition:border-color .2s}
 .hc:hover{border-color:var(--gold)}
@@ -725,6 +755,12 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
     <div class="sb gr"><div class="sb-l">Defending Champ</div><div class="sb-v">One Legler Up</div><div class="sb-s">2026 Winner</div></div>
     <div class="sb"><div class="sb-l">Tournaments</div><div class="sb-v">41</div><div class="sb-s">Completed</div></div>
   </div>
+  <!-- Season Replay -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="chd"><span class="ctitle">📊 2026 Season Replay</span><span style="font-size:10px;color:var(--muted);margin-left:8px;letter-spacing:1px">CUMULATIVE STANDINGS BY ROUND</span></div>
+    <div class="cbody" id="hist-replay" style="padding-top:12px"></div>
+  </div>
+
   <div class="card">
     <div class="chd"><span class="ctitle">📅 Year-by-Year</span></div>
     <div class="cbody"><div class="hgrid" id="hist-grid"></div>
@@ -2006,6 +2042,112 @@ function showRegion(r) {
 // ═══════════════════════════════════════════════
 // HISTORY
 // ═══════════════════════════════════════════════
+function renderSeasonReplay() {
+  const el = document.getElementById('hist-replay');
+  if (!el) return;
+
+  const ROUNDS = ['FF','R64','R32','S16','E8','F4','CHAMP'];
+  const ROUND_LABEL = {FF:'First Four',R64:'Round of 64',R32:'Round of 32',S16:'Sweet 16',E8:'Elite Eight',F4:'Final Four',CHAMP:'Championship'};
+
+  // Find which rounds actually have gamelog data
+  const played = new Set();
+  Object.values(GAME_LOG).forEach(entries => entries.forEach(e => { if (ROUNDS.includes(e.round)) played.add(e.round); }));
+  if (!played.size) { el.innerHTML = '<p style="color:var(--muted);font-size:13px">No gamelog data yet.</p>'; return; }
+
+  // Compute per-team cumulative scores at each played round
+  const teamData = TEAMS.map(t => {
+    let cum = 0;
+    const roundCum = {};
+    for (const rd of ROUNDS) {
+      for (const p of t.players) {
+        const entry = (GAME_LOG[p.name] || []).find(e => e.round === rd);
+        if (entry) cum += entry.pts;
+      }
+      if (played.has(rd)) roundCum[rd] = cum;
+    }
+    return { name: t.name, roundCum };
+  });
+
+  // Default: most recent round with data
+  const defaultRound = ROUNDS.filter(r => played.has(r)).pop();
+  let prevRankMap = {};
+
+  function buildRankMap(ranking) {
+    const m = {}; ranking.forEach((t,i) => m[t.name] = i+1); return m;
+  }
+  function getRanking(round) {
+    return [...teamData].map(t => ({ name:t.name, pts:t.roundCum[round]||0 }))
+      .filter(t => t.pts > 0).sort((a,b) => b.pts - a.pts);
+  }
+
+  function renderRound(round) {
+    const ranking = getRanking(round);
+    const maxPts  = ranking[0]?.pts || 1;
+    const champion = TEAMS.find(t => t.champion)?.name || null;
+
+    const infoHtml = `<div class="rr-info">
+      <span><b>${ROUND_LABEL[round]}</b></span>
+      <span>${ranking.length} teams scored</span>
+      <span>Leader: <b>${ranking[0]?.pts} pts</b></span>
+      <span>Last: <b>${ranking[ranking.length-1]?.pts} pts</b></span>
+    </div>`;
+
+    const rowsHtml = ranking.map((t,i) => {
+      const rank = i+1;
+      const prev = prevRankMap[t.name];
+      const noHistory = Object.keys(prevRankMap).length === 0;
+      const isChamp = round === 'CHAMP' && t.name === champion;
+      const medal = rank===1?'rr-gold':rank===2?'rr-silver':rank===3?'rr-bronze':'';
+      const barPct = Math.round((t.pts / maxPts)*100);
+
+      let movHtml;
+      if (noHistory || prev == null) movHtml = `<span class="rr-new">NEW</span>`;
+      else {
+        const d = prev - rank;
+        if (d > 0)      movHtml = `<span class="rr-up">▲${d}</span>`;
+        else if (d < 0) movHtml = `<span class="rr-down">▼${Math.abs(d)}</span>`;
+        else            movHtml = `<span class="rr-same">—</span>`;
+      }
+
+      return `<div class="rr-row ${medal}${isChamp?' rr-champ':''}">
+        <div class="rr-rank">${rank}</div>
+        <div class="rr-move">${movHtml}</div>
+        <div class="rr-name">${t.name}${isChamp?' 🏆':''}</div>
+        <div class="rr-right">
+          <div class="rr-pts">${t.pts}</div>
+          <div class="rr-bar-wrap"><div class="rr-bar" style="width:${barPct}%"></div></div>
+        </div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('rr-list').innerHTML = infoHtml + rowsHtml;
+    prevRankMap = buildRankMap(ranking);
+    document.querySelectorAll('.rr-tab').forEach(b => b.classList.toggle('rr-active', b.dataset.round === round));
+  }
+
+  // Build tabs
+  const tabsHtml = ROUNDS.filter(r => played.has(r)).map(r =>
+    `<button class="rr-tab" data-round="${r}" onclick="rrSelectRound('${r}')">${r==='CHAMP'?'🏆 CHAMP':r}</button>`
+  ).join('');
+
+  el.innerHTML = `<div class="rr-tabs">${tabsHtml}</div><div id="rr-list"></div>`;
+
+  // Expose round-select globally so onclick works
+  window.rrSelectRound = (round) => {
+    const playedArr = ROUNDS.filter(r => played.has(r));
+    const idx = playedArr.indexOf(round);
+    prevRankMap = {};
+    for (let i = 0; i < idx; i++) prevRankMap = buildRankMap(getRanking(playedArr[i]));
+    renderRound(round);
+  };
+
+  // Render default (most current) round — build prevRankMap up to it
+  const playedArr = ROUNDS.filter(r => played.has(r));
+  const defIdx = playedArr.indexOf(defaultRound);
+  for (let i = 0; i < defIdx; i++) prevRankMap = buildRankMap(getRanking(playedArr[i]));
+  renderRound(defaultRound);
+}
+
 function renderHistory() {
   if (!HISTORY.length) return;
   const HOF = new Set(['Juice / Steve Dyer','Committee','Jim & Frank','Montreal Jacques','Reese']);
@@ -2022,6 +2164,7 @@ function renderHistory() {
       <div class="hc-t">${h.year===2020?'⚠ COVID-19':i===0?'🏆 Defending':'🏀 Champion'}</div>
     </div>`).join('');
 
+  renderSeasonReplay();
   renderDraftPositionBest();
   renderAllTimeTopPlayers();
   renderDynastyTracker();
