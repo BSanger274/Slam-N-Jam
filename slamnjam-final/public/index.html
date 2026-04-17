@@ -133,7 +133,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;transition:border-color .2s;position:relative}
 .pc:not(.elim):hover{border-color:var(--orange)}.pc.live{border-left:3px solid var(--green)!important}.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:live-pulse 1.4s ease-in-out infinite;display:inline-block;margin-right:3px}@keyframes live-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
 .pc.elim{opacity:.4}
-.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;gap:3px;min-width:0}.pc-name{white-space:nowrap}
+.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;gap:3px;min-width:0;overflow:hidden}.pc-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 .pc-s{font-size:11px;color:var(--muted);margin-top:2px}
 .pc-p{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);margin-top:5px}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
@@ -319,9 +319,9 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .do-nm:hover{color:var(--orange)}
 /* ── HOT / COLD TREND CHIPS ── */
 .trend-chip{display:inline-flex;align-items:center;gap:3px;padding:1px 6px 1px 4px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.4px;margin-left:4px;flex-shrink:0;vertical-align:middle;line-height:1.6}
-.trend-chip.hot1{background:rgba(255,107,0,.11);color:#FF6B00;border:1px solid rgba(255,107,0,.28)}
-.trend-chip.hot2{background:rgba(255,80,0,.16);color:#FF5500;border:1px solid rgba(255,80,0,.38)}
-.trend-chip.hot3{background:rgba(255,50,0,.20);color:#FF3D00;border:1px solid rgba(255,50,0,.50);animation:chip-glow-hot 2.2s ease-in-out infinite}
+.trend-chip.hot1{background:rgba(255,107,0,.06);color:#FF7A20;border:1px solid rgba(255,107,0,.32)}
+.trend-chip.hot2{background:rgba(255,80,0,.07);color:#FF6010;border:1px solid rgba(255,80,0,.42)}
+.trend-chip.hot3{background:rgba(255,50,0,.08);color:#FF4500;border:1px solid rgba(255,50,0,.52);animation:chip-glow-hot 2.2s ease-in-out infinite}
 .trend-chip.cold1{background:rgba(0,170,230,.10);color:#29B8EC;border:1px solid rgba(0,170,230,.26)}
 .trend-chip.cold2{background:rgba(0,150,215,.16);color:#00A8DD;border:1px solid rgba(0,150,215,.38)}
 .trend-chip.cold3{background:rgba(0,130,200,.20);color:#0099CC;border:1px solid rgba(0,130,200,.50);animation:chip-glow-cold 2.2s ease-in-out infinite}
