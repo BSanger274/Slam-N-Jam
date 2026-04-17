@@ -1301,11 +1301,20 @@ function viewTeam(name, from) {
     </div>`).join('');
 
   // Shrink trend chips on long names so nothing wraps
-  requestAnimationFrame(fitChips);
+  requestAnimationFrame(() => { fixCardHeights(); fitChips(); });
 
   // Round-by-round breakdown
   renderRoundBreakdown(t);
   showPage('team-detail');
+}
+
+// Give .pc-inner an explicit pixel height so .pc-back can fill it correctly
+// inside the preserve-3d context (inset:0 can't compute height from a rotated parent)
+function fixCardHeights() {
+  document.querySelectorAll('.pc-inner').forEach(inner => {
+    const front = inner.querySelector('.pc-front');
+    if (front) inner.style.height = front.offsetHeight + 'px';
+  });
 }
 
 // Shrink the trend chip (and name if needed) on any .pc-n that overflows
