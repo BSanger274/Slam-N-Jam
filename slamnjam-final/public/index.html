@@ -139,11 +139,11 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
 
 /* ── CARD FLIP ── */
-.pc-wrap{perspective:900px;cursor:pointer}
+.pc-wrap{perspective:900px;cursor:pointer;overflow:hidden;border-radius:9px}
 .pc-wrap .pc-inner{position:relative;transition:transform .42s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
 .pc-wrap.flipped .pc-inner{transform:rotateY(180deg)}
 .pc-front,.pc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.pc-back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px}
+.pc-back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px 8px}
 .pc-wrap.elim .pc-front{opacity:.62;border-color:rgba(255,60,60,.28)!important}
 .pc-wrap.live .pc-front{border-left:3px solid var(--green)!important}
 .pc-wrap:not(.elim):hover .pc-front{border-color:var(--orange)}
@@ -1282,16 +1282,16 @@ function viewTeam(name, from) {
           </div>
         </div>
         <div class="pc pc-back">
-          <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
           <div style="font-size:10px;color:var(--muted);margin-top:1px">${p.school}</div>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;flex:1">
             <div>
               <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Season Avg</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1.1">${p.seasonAvg||'—'}<span style="font-size:11px;color:var(--muted)"> ppg</span></div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);line-height:1.1">${p.seasonAvg||'—'}<span style="font-size:11px;color:var(--muted)"> ppg</span></div>
             </div>
             <div style="text-align:right">
               <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Tournament</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange);line-height:1.1">${p.pts}<span style="font-size:11px;color:var(--muted)"> pts</span></div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--orange);line-height:1.1">${p.pts}<span style="font-size:11px;color:var(--muted)"> pts</span></div>
             </div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">
