@@ -606,8 +606,8 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
     </div>
   </div>
   <div class="card">
-    <div class="chd"><span class="ctitle">📊 Players Remaining Per Team</span></div>
-    <div class="cbody" id="players-rem"></div>
+    <div class="chd"><span class="ctitle">📊 Season Replay</span><span style="font-size:10px;color:var(--muted);margin-left:8px;letter-spacing:1px">CUMULATIVE STANDINGS BY ROUND</span></div>
+    <div class="cbody" id="hist-replay" style="padding-top:12px"></div>
   </div>
 </div>
 
@@ -755,12 +755,6 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
     <div class="sb gr"><div class="sb-l">Defending Champ</div><div class="sb-v">One Legler Up</div><div class="sb-s">2026 Winner</div></div>
     <div class="sb"><div class="sb-l">Tournaments</div><div class="sb-v">41</div><div class="sb-s">Completed</div></div>
   </div>
-  <!-- Season Replay -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="chd"><span class="ctitle">📊 2026 Season Replay</span><span style="font-size:10px;color:var(--muted);margin-left:8px;letter-spacing:1px">CUMULATIVE STANDINGS BY ROUND</span></div>
-    <div class="cbody" id="hist-replay" style="padding-top:12px"></div>
-  </div>
-
   <div class="card">
     <div class="chd"><span class="ctitle">📅 Year-by-Year</span></div>
     <div class="cbody"><div class="hgrid" id="hist-grid"></div>
@@ -1028,7 +1022,7 @@ function renderAll() {
   if (elim.length) { sbEl.classList.add('clickable'); sbEl.onclick = () => viewTeam(elim[0].name, 'dashboard'); } else { sbEl.classList.remove('clickable'); sbEl.onclick=null; }
   renderStandings(sorted);
   renderTopScorers(allP);
-  renderPlayersRem(sorted);
+  renderSeasonReplay();
   renderTCards(sorted);
   renderHistory();
   if (document.getElementById('page-players').classList.contains('active')) renderPlayers();
@@ -2164,7 +2158,6 @@ function renderHistory() {
       <div class="hc-t">${h.year===2020?'⚠ COVID-19':i===0?'🏆 Defending':'🏀 Champion'}</div>
     </div>`).join('');
 
-  renderSeasonReplay();
   renderDraftPositionBest();
   renderAllTimeTopPlayers();
   renderDynastyTracker();
