@@ -1310,26 +1310,36 @@ function viewTeam(name, from) {
   showPage('team-detail');
 }
 
-// Shrink the trend chip on any .pc-n that overflows its container
+// Shrink the trend chip (and name if needed) on any .pc-n that overflows
 function fitChips() {
   document.querySelectorAll('.pc-n').forEach(row => {
     const chip = row.querySelector('.trend-chip');
+    const name = row.querySelector('.pc-name');
     if (!chip) return;
     // Reset to default
     chip.style.fontSize = '';
     chip.style.padding = '';
     chip.style.marginLeft = '';
-    // Step 1: slightly smaller
+    if (name) name.style.fontSize = '';
+    // Step 1: shrink chip slightly
     if (row.scrollWidth > row.clientWidth + 1) {
       chip.style.fontSize = '8px';
       chip.style.padding = '1px 4px 1px 2px';
       chip.style.marginLeft = '4px';
     }
-    // Step 2: minimal
+    // Step 2: shrink chip to minimal
     if (row.scrollWidth > row.clientWidth + 1) {
       chip.style.fontSize = '7px';
       chip.style.padding = '1px 3px';
       chip.style.marginLeft = '3px';
+    }
+    // Step 3: also shrink name font by 1px
+    if (row.scrollWidth > row.clientWidth + 1 && name) {
+      name.style.fontSize = '14px';
+    }
+    // Step 4: shrink name font by another 0.5px
+    if (row.scrollWidth > row.clientWidth + 1 && name) {
+      name.style.fontSize = '13.5px';
     }
   });
 }
