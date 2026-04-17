@@ -130,10 +130,10 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .back{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:6px 12px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-bottom:14px;transition:all .2s}
 .back:hover{border-color:var(--orange);color:var(--orange)}
 .rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.pc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;transition:border-color .2s;position:relative}
+.pc{background:var(--surface);border:1.5px solid rgba(0,200,100,.22);border-radius:9px;padding:12px 14px;transition:border-color .2s;position:relative}
 .pc:not(.elim):hover{border-color:var(--orange)}.pc.live{border-left:3px solid var(--green)!important}.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:live-pulse 1.4s ease-in-out infinite;display:inline-block;margin-right:3px}@keyframes live-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
-.pc.elim{opacity:.62}
-.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:flex-start;gap:3px;min-width:0}.pc-name{white-space:normal;line-height:1.2;word-break:break-word}
+.pc.elim{opacity:.62;border-color:rgba(255,60,60,.28)!important}
+.pc-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;gap:3px;min-width:0;overflow:hidden}.pc-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 .pc-s{font-size:11px;color:var(--muted);margin-top:2px}
 .pc-p{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);margin-top:5px}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
@@ -144,7 +144,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc-wrap.flipped .pc-inner{transform:rotateY(180deg)}
 .pc-front,.pc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .pc-back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px}
-.pc-wrap.elim .pc-front{opacity:.62}
+.pc-wrap.elim .pc-front{opacity:.62;border-color:rgba(255,60,60,.28)!important}
 .pc-wrap.live .pc-front{border-left:3px solid var(--green)!important}
 .pc-wrap:not(.elim):hover .pc-front{border-color:var(--orange)}
 .pc-back-link{background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;font-weight:700;letter-spacing:1px;border-radius:4px;padding:3px 7px;cursor:pointer;margin-top:auto;align-self:flex-end;transition:border-color .15s,color .15s}
@@ -355,7 +355,7 @@ button.nb.active #dashboard-logo { opacity:1 !important; stroke:#ff6b00; }
 .do-nm{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;flex:1;cursor:pointer;transition:color .2s}
 .do-nm:hover{color:var(--orange)}
 /* ── HOT / COLD TREND CHIPS ── */
-.trend-chip{display:inline-flex;align-items:center;gap:3px;padding:1px 6px 1px 4px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.4px;margin-left:4px;flex-shrink:0;vertical-align:middle;line-height:1.6}
+.trend-chip{display:inline-flex;align-items:center;gap:2px;padding:1px 5px 1px 3px;border-radius:8px;font-size:9px;font-weight:700;letter-spacing:.3px;margin-left:3px;flex-shrink:0;vertical-align:middle;line-height:1.7;white-space:nowrap}
 .trend-chip.hot1{background:rgba(255,107,0,.06);color:#FF7A20;border:1px solid rgba(255,107,0,.32)}
 .trend-chip.hot2{background:rgba(255,80,0,.07);color:#FF6010;border:1px solid rgba(255,80,0,.42)}
 .trend-chip.hot3{background:rgba(255,50,0,.08);color:#FF4500;border:1px solid rgba(255,50,0,.52);animation:chip-glow-hot 2.2s ease-in-out infinite}
@@ -658,7 +658,35 @@ body.scroll-locked{position:fixed;width:100%;overflow-y:scroll;}
   <button class="back" id="detail-back">← Back</button>
   <div class="dhd" id="dhd"></div>
   <div class="card">
-    <div class="chd"><span class="ctitle">Roster</span><span id="d-alive" style="font-size:11px;color:var(--green);font-weight:700"></span></div>
+    <div class="chd" style="position:relative">
+      <span class="ctitle">Roster</span><span id="d-alive" style="font-size:11px;color:var(--green);font-weight:700"></span>
+      <button onclick="toggleRosterKey()" style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:10px;font-weight:700;padding:3px 9px;cursor:pointer;letter-spacing:.5px;transition:background .15s" onmouseenter="this.style.background='rgba(255,255,255,.12)'" onmouseleave="this.style.background='rgba(255,255,255,.06)'">? Key</button>
+      <div id="roster-key" style="display:none;position:absolute;right:0;top:calc(100% + 6px);z-index:200;background:#1a1d24;border:1px solid var(--border);border-radius:10px;padding:12px 14px;width:230px;box-shadow:0 8px 24px rgba(0,0,0,.5)">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">CARD LEGEND</div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase">Performance vs Avg × Games</div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="trend-chip hot3" style="margin-left:0">🔥 +75%+</span><span style="color:#aaa">Way above avg — on fire</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="trend-chip hot2" style="margin-left:0">🔥 +50%+</span><span style="color:#aaa">Significantly above avg</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="trend-chip hot1" style="margin-left:0">🔥 +35%+</span><span style="color:#aaa">Above avg</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="trend-chip cold1" style="margin-left:0">❄️ −35%+</span><span style="color:#aaa">Below avg</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="trend-chip cold2" style="margin-left:0">❄️ −50%+</span><span style="color:#aaa">Significantly below avg</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="trend-chip cold3" style="margin-left:0">❄️ −75%+</span><span style="color:#aaa">Way below avg — ice cold</span></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase">Draft Round Badge</div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="rd-badge rd-steal">RD 12 +47%</span><span style="color:#aaa">Steal — late pick overdelivered</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="rd-badge rd-solid">RD 5 +18%</span><span style="color:#aaa">Solid — slightly above expected</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="rd-badge rd-avg">RD 8</span><span style="color:#aaa">Average — within ±15%</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="rd-badge rd-below">RD 3 −22%</span><span style="color:#aaa">Below — underperformed slot</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="rd-badge rd-bust">RD 2 −48%</span><span style="color:#aaa">Bust — big early-pick miss</span></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:5px;text-transform:uppercase">Card Border</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="width:12px;height:12px;border-radius:3px;border:1.5px solid rgba(0,200,100,.5);display:inline-block;flex-shrink:0"></span><span style="color:#aaa">Green — still active in tournament</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="width:12px;height:12px;border-radius:3px;border:1.5px solid rgba(255,60,60,.5);display:inline-block;flex-shrink:0"></span><span style="color:#aaa">Red — eliminated from tournament</span></div>
+        </div>
+      </div>
+    </div>
     <div class="cbody"><div class="rgrid" id="d-roster"></div></div>
   </div>
   <div class="card" style="margin-top:12px">
@@ -1247,8 +1275,8 @@ function viewTeam(name, from) {
           <div style="position:absolute;bottom:8px;left:8px;font-size:9px;color:var(--muted);opacity:.4;pointer-events:none">↺</div>
           ${p.round != null ? `<span style="position:absolute;bottom:8px;right:8px">${rdEffBadge(p)}</span>` : ''}
           ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
-          <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name" style="white-space:normal;overflow:visible;text-overflow:unset">${p.name}</span></div>
-          <div class="pc-s" style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:2px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}${trendIcon(p.trend, p.trendPct)}</div>
+          <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend, p.trendPct)}</div>
+          <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
           <div style="margin-top:2px">
             <div class="pc-p">${p.pts}</div>
           </div>
@@ -3182,6 +3210,17 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') closeH2H(); });
 
 // ── HISTORY SECTION TOGGLES ──
 const histSectionOpen = { dynasty: true, 'draft-best': true, 'top-players': true };
+function toggleRosterKey() {
+  const el = document.getElementById('roster-key');
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if (!open) {
+    const close = (e) => { if (!el.contains(e.target) && !e.target.closest('[onclick*="toggleRosterKey"]')) { el.style.display='none'; document.removeEventListener('click',close); } };
+    setTimeout(() => document.addEventListener('click', close), 10);
+  }
+}
+
 function toggleHistSection(id) {
   histSectionOpen[id] = !histSectionOpen[id];
   const el = document.getElementById('hist-' + id);
