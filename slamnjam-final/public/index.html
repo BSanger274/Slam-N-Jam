@@ -138,15 +138,13 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc-p{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);margin-top:5px}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
 
-/* ── CARD FLIP ── */
-.pc-wrap{perspective:900px;cursor:pointer}
-.pc-wrap .pc-inner{position:relative;transition:transform .42s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
-.pc-wrap.flipped .pc-inner{transform:rotateY(180deg)}
-.pc-front,.pc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.pc-back{position:absolute;inset:0;transform:rotateY(180deg) translateZ(1px);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px 8px}
-/* Stop chip animations on flipped front face — animated elements create
-   separate GPU compositor layers on desktop Chrome that ignore backface-visibility */
-.pc-wrap.flipped .pc-front,.pc-wrap.flipped .pc-front *{animation:none!important}
+/* ── CARD REVEAL (crossfade — no 3D, zero bleed) ── */
+.pc-wrap{cursor:pointer}
+.pc-wrap .pc-inner{position:relative}
+.pc-front{transition:opacity .2s ease,transform .2s ease}
+.pc-back{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px 8px;opacity:0;transform:scale(.97);transition:opacity .2s ease,transform .2s ease;pointer-events:none}
+.pc-wrap.flipped .pc-front{opacity:0;transform:scale(.97);pointer-events:none}
+.pc-wrap.flipped .pc-back{opacity:1;transform:scale(1);pointer-events:auto}
 .pc-wrap.elim .pc-front{opacity:.62;border-color:rgba(255,60,60,.28)!important}
 .pc-wrap.live .pc-front{border-left:3px solid var(--green)!important}
 .pc-wrap:not(.elim):hover .pc-front{border-color:var(--orange)}
