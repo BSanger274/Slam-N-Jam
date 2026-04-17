@@ -3130,7 +3130,7 @@ function openH2H() {
 
 function closeH2H() {
   document.getElementById('h2h-modal').style.display = 'none';
-  document.body.style.overflow = '';
+  unlockScroll();
 }
 
 function renderH2H() {
@@ -3398,7 +3398,7 @@ async function openRosterModal(year, teamName) {
 function closeRosterModal() {
   const m = document.getElementById('roster-modal');
   if (m) m.style.display = 'none';
-  document.body.style.overflow = '';
+  unlockScroll();
 }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeRosterModal(); });
 
