@@ -1058,19 +1058,21 @@ function renderStandings(sorted, filter='') {
 
 // ── HOT/COLD TIERED ICON HELPERS ──
 const TIER_CHIP = {
-  hot1:  { icon:'🔥', label:'+20–29%', tip:'Scoring 20–29% above season average' },
-  hot2:  { icon:'🔥', label:'+30–49%', tip:'Scoring 30–49% above season average' },
-  hot3:  { icon:'🔥', label:'+50%+',  tip:'Scoring 50%+ above season average — ON FIRE' },
-  cold1: { icon:'❄️', label:'−20–29%', tip:'Scoring 20–29% below season average' },
-  cold2: { icon:'❄️', label:'−30–49%', tip:'Scoring 30–49% below season average' },
-  cold3: { icon:'❄️', label:'−50%+',  tip:'Scoring 50%+ below season average — ICE COLD' },
+  hot1:  { icon:'🔥', tip:'35%+ above season average' },
+  hot2:  { icon:'🔥', tip:'50%+ above season average' },
+  hot3:  { icon:'🔥', tip:'75%+ above season average — ON FIRE' },
+  cold1: { icon:'❄️', tip:'35%+ below season average' },
+  cold2: { icon:'❄️', tip:'50%+ below season average' },
+  cold3: { icon:'❄️', tip:'75%+ below season average — ICE COLD' },
 };
 
-function trendIcon(trend) {
+function trendIcon(trend, pct) {
   if (!trend) return '';
   const t = TIER_CHIP[trend];
   if (!t) return '';
-  return `<span class="trend-chip ${trend}" title="${t.tip}"><span class="tci">${t.icon}</span>${t.label}</span>`;
+  const sign = trend.startsWith('hot') ? '+' : '';
+  const label = pct != null ? `${sign}${pct}%` : (trend.startsWith('hot') ? '+35%' : '−35%');
+  return `<span class="trend-chip ${trend}" title="${t.tip}"><span class="tci">${t.icon}</span>${label}</span>`;
 }
 
 function renderTopScorers(allP) {
@@ -1085,7 +1087,7 @@ function renderTopScorers(allP) {
           <div class="pnum">${i+1}</div>
           <div style="width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center">${logoHtml}</div>
           <div class="pi">
-            <div class="pi-n" style="display:flex;align-items:center;gap:2px">${p.name}${trendIcon(p.trend)}</div>
+            <div class="pi-n" style="display:flex;align-items:center;gap:2px">${p.name}${trendIcon(p.trend, p.trendPct)}</div>
             <div class="pi-m">${p.school} · <em style="color:var(--orange);font-style:normal">${p.teamName||''}</em>${p.seasonAvg?` · <span style="color:var(--muted);font-size:10px">avg ${p.seasonAvg}ppg</span>`:''}</div>
           </div>
           <div class="p-pts">${p.pts}</div>
@@ -1190,7 +1192,7 @@ function viewTeam(name, from) {
         <div class="pc pc-front">
           <div style="position:absolute;bottom:8px;right:8px;font-size:9px;color:var(--muted);opacity:.5;pointer-events:none">↺</div>
           ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
-          <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend)}</div>
+          <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend, p.trendPct)}</div>
           <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
           <div style="position:relative;margin-top:2px">
             <div class="pc-p">${p.pts}</div>
@@ -1262,7 +1264,7 @@ function renderRoundBreakdown(t) {
     ${[...t.players].sort((a,b)=>b.pts-a.pts).slice(0,5).map(p => {
       const pct = Math.round((p.pts/Math.max(totalPts,1))*100);
       return `<div class="spr" onclick="handlePlayerRowClick('${p.name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;border-radius:6px;padding:4px 6px;margin-left:-6px;margin-right:-6px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:${p.active?'var(--text)':'var(--muted)'}">${p.name}${trendIcon(p.trend)}${!p.active?' <span style="font-size:9px;color:var(--red)">OUT</span>':''}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:${p.active?'var(--text)':'var(--muted)'}">${p.name}${trendIcon(p.trend, p.trendPct)}${!p.active?' <span style="font-size:9px;color:var(--red)">OUT</span>':''}</div>
         <div style="width:100px;background:var(--dark3);border-radius:4px;height:6px;overflow:hidden;flex-shrink:0">
           <div style="height:100%;width:${pct}%;background:${p.active?'var(--orange)':'rgba(255,255,255,.2)'};border-radius:4px"></div>
         </div>
@@ -1309,7 +1311,7 @@ function renderRoundBreakdown(t) {
 function playerRow(p, rankLabel) {
   return `<tr data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerRowClick(this.getAttribute('data-pname'))" style="cursor:pointer">
     <td class="rnk">${rankLabel}</td>
-    <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px"><span style="display:inline-flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend)}</span></td>
+    <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px"><span style="display:inline-flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend, p.trendPct)}</span></td>
     <td style="color:var(--muted);font-size:12px">${p.school}</td>
     <td><span class="tn" onclick="viewTeam('${esc(p.teamName)}','players')" style="font-size:12px">${p.teamName}</span></td>
     <td style="text-align:center"><span style="font-size:11px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.06);border-radius:4px;padding:2px 6px" title="Round ${p.round||'–'}">${p.overallPick?'#'+p.overallPick:(p.round?'Rd '+p.round:'–')}</span></td>
@@ -1394,14 +1396,14 @@ function draftInfo(playerName) {
   return results[0];
 }
 
-function getTrend(schoolName) {
+function getTrendData(schoolName) {
   const norm = normSchool(schoolName);
   for (const t of TEAMS) {
     for (const p of t.players) {
-      if (p.school === norm) return p.trend || null;
+      if (p.school === norm) return { trend: p.trend || null, pct: p.trendPct || null };
     }
   }
-  return null;
+  return { trend: null, pct: null };
 }
 
 function slotCls(won, name) {
@@ -1609,7 +1611,7 @@ function renderMatchup(m) {
         dp = myPlayers.map(p =>
           `<span class="draft-pip" title="${p.name}">${p.pts??0}p</span>`
         ).join('');
-        ti = trendIcon(getTrend(t.name));
+        const _td = getTrendData(t.name); ti = trendIcon(_td.trend, _td.pct);
       }
     } else {
       if (allDrafted.length) {
@@ -2705,7 +2707,7 @@ async function openPreGameStats(team1, team2, gameId) {
         ? drafted.map(p => {
             const val = isFinal ? getGamePts(p) : isLive ? (liveOnly[p.name]??p.pts??0) : (avgs[p.name]?avgs[p.name].toFixed(1):'—');
             return `<tr>
-              <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">${p.name}${trendIcon(p.trend)}</td>
+              <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-align:left">${p.name}${trendIcon(p.trend, p.trendPct)}</td>
               <td style="text-align:left;font-size:12px;color:var(--muted)">${p.managerName}</td>
               <td style="text-align:right;color:${colColor};font-family:'Bebas Neue',sans-serif;font-size:18px">${val}</td>
             </tr>`;
@@ -3004,11 +3006,11 @@ function renderH2H() {
         const p2wins = p1&&p2 ? p2.pts>p1.pts : false;
         return `
           <div style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:4px;opacity:${p1&&!p1.active?0.45:1}">
-            ${p1?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:${p1wins?'var(--orange)':'var(--text)'}">${p1.name}${trendIcon(p1.trend)}</span><span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${p1wins?'var(--orange)':'var(--muted)'};flex-shrink:0">${p1.pts}</span>`:'<span></span>'}
+            ${p1?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:${p1wins?'var(--orange)':'var(--text)'}">${p1.name}${trendIcon(p1.trend, p1.trendPct)}</span><span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${p1wins?'var(--orange)':'var(--muted)'};flex-shrink:0">${p1.pts}</span>`:'<span></span>'}
           </div>
           <div style="padding:5px 0;text-align:center;border-bottom:1px solid rgba(255,255,255,.05);font-size:9px;color:rgba(255,255,255,.15)">·</div>
           <div style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:flex-end;gap:4px;opacity:${p2&&!p2.active?0.45:1}">
-            ${p2?`<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${p2wins?'var(--orange)':'var(--muted)'};flex-shrink:0">${p2.pts}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;color:${p2wins?'var(--orange)':'var(--text)'}">${trendIcon(p2.trend)}${p2.name}</span>`:'<span></span>'}
+            ${p2?`<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${p2wins?'var(--orange)':'var(--muted)'};flex-shrink:0">${p2.pts}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;color:${p2wins?'var(--orange)':'var(--text)'}">${trendIcon(p2.trend, p2.trendPct)}${p2.name}</span>`:'<span></span>'}
           </div>`;
       }).join('')}
     </div>`;

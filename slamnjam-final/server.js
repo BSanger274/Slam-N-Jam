@@ -2676,28 +2676,26 @@ app.get('/api/teams', async (req, res) => {
       // Fallback: at least 1 game if they have any pts
       if (gamesPlayed === 0 && pts > 0) gamesPlayed = 1;
 
+      let trendPct = 0;
+      const applyTrend = (ratio) => {
+        trendPct = Math.round((ratio - 1) * 100);
+        if      (ratio >= 1.75) trend = 'hot3';
+        else if (ratio >= 1.50) trend = 'hot2';
+        else if (ratio >= 1.35) trend = 'hot1';
+        else if (ratio <= 0.25) trend = 'cold3';
+        else if (ratio <= 0.50) trend = 'cold2';
+        else if (ratio <= 0.65) trend = 'cold1';
+        else trendPct = 0;
+      };
       if (avg && avg > 0 && minsPlayed >= 8) {
         // LIVE right now: project today's pts vs single-game avg
         if (livePtsOnly > 0) {
           const projectedFinal = livePtsOnly / (minsPlayed / GAME_MINUTES);
-          const ratio = projectedFinal / avg;
-          if      (ratio >= 1.5) trend = 'hot3';
-          else if (ratio >= 1.3) trend = 'hot2';
-          else if (ratio >= 1.2) trend = 'hot1';
-          else if (ratio <= 0.5) trend = 'cold3';
-          else if (ratio <= 0.7) trend = 'cold2';
-          else if (ratio <= 0.8) trend = 'cold1';
+          applyTrend(projectedFinal / avg);
         }
       } else if (avg && avg > 0 && minsPlayed === 0 && pts > 0) {
         // Not live: compare cumulative pts vs (avg * gamesPlayed)
-        const expectedTotal = avg * gamesPlayed;
-        const ratio = pts / expectedTotal;
-        if      (ratio >= 1.5) trend = 'hot3';
-        else if (ratio >= 1.3) trend = 'hot2';
-        else if (ratio >= 1.2) trend = 'hot1';
-        else if (ratio <= 0.5) trend = 'cold3';
-        else if (ratio <= 0.7) trend = 'cold2';
-        else if (ratio <= 0.8) trend = 'cold1';
+        applyTrend(pts / (avg * gamesPlayed));
       }
 
       // ── OPTION 2 (SAVED): No animations during 1st half ──
@@ -2713,7 +2711,7 @@ app.get('/api/teams', async (req, res) => {
       const jersey = fuzzyLookup(jerseys) || null;
       const active = eliminatedSchools.has(normSchool(p.school)) ? false : (p.active !== false);
       const isLive = p.active !== false && (minutesCache[p.name] > 0 || Object.entries(minutesCache).some(([k,v]) => v > 0 && normalizeName(k) === normP));
-      return { ...p, pts, seasonAvg: avg, trend, jersey, active, isLive };
+      return { ...p, pts, seasonAvg: avg, trend, trendPct, jersey, active, isLive };
     });
     return { ...team, players, totalPts: total };
   });
