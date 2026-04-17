@@ -139,7 +139,7 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
 
 /* ── CARD FLIP ── */
-.pc-wrap{perspective:900px;cursor:pointer;overflow:hidden;border-radius:9px}
+.pc-wrap{perspective:900px;cursor:pointer}
 .pc-wrap .pc-inner{position:relative;transition:transform .42s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
 .pc-wrap.flipped .pc-inner{transform:rotateY(180deg)}
 .pc-front,.pc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
@@ -3585,34 +3585,21 @@ setInterval(refreshTicker, 60000);
 // ═══════════════════════════════════════════════
 // PLAYER DRAWER
 // ═══════════════════════════════════════════════
-function setCardFlip(card, open) {
-  const front = card.querySelector('.pc-front');
-  if (open) {
-    card.classList.add('flipped');
-    // After animation completes, hard-hide the front so nothing bleeds through
-    if (front) setTimeout(() => { front.style.visibility = 'hidden'; }, 430);
-  } else {
-    // Restore front before un-flipping so it's visible during the return animation
-    if (front) front.style.visibility = '';
-    card.classList.remove('flipped');
-  }
-}
-
 function handlePlayerCardClick(el) {
   const name = el.getAttribute('data-pname');
   if (!name) return;
   // Un-flip any other open cards
-  document.querySelectorAll('.pc-wrap.flipped').forEach(c => { if (c !== el) setCardFlip(c, false); });
+  document.querySelectorAll('.pc-wrap.flipped').forEach(c => { if (c !== el) c.classList.remove('flipped'); });
   // Toggle flip
   if (el.classList.contains('flipped')) {
-    setCardFlip(el, false);
+    el.classList.remove('flipped');
     return;
   }
-  setCardFlip(el, true);
+  el.classList.add('flipped');
   // Click outside un-flips
   const unflip = (e) => {
     if (!el.contains(e.target)) {
-      setCardFlip(el, false);
+      el.classList.remove('flipped');
       document.removeEventListener('click', unflip, true);
     }
   };
@@ -3620,7 +3607,7 @@ function handlePlayerCardClick(el) {
 }
 
 function openDrawerFromCard(name) {
-  document.querySelectorAll('.pc-wrap.flipped').forEach(c => setCardFlip(c, false));
+  document.querySelectorAll('.pc-wrap.flipped').forEach(c => c.classList.remove('flipped'));
   for (const t of TEAMS) {
     for (const p of t.players) {
       if (p.name === name) {
