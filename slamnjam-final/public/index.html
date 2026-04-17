@@ -1256,7 +1256,7 @@ function viewTeam(name, from) {
   const teamRank = allSorted.findIndex(x=>x.name===t.name)+1;
 
   document.getElementById('dhd').innerHTML = `
-    <div style="flex:1;min-width:0">
+    <div style="flex:1;min-width:0;padding-right:16px;overflow:hidden">
       <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px">Team Roster</div>
       <div class="dn">${t.name}</div>
       <div style="font-size:11px;color:var(--muted);margin-top:3px">${t.players.length} drafted · <span style="color:var(--orange)">#${teamRank} of ${TEAMS.length}</span></div>
@@ -1281,7 +1281,7 @@ function viewTeam(name, from) {
           </div>
         </div>
         <div class="pc pc-back">
-          <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);font-family:'Barlow Condensed',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
           <div style="font-size:10px;color:var(--muted);margin-top:1px">${p.school}</div>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;flex:1">
             <div>
