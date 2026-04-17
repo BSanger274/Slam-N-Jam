@@ -181,6 +181,13 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .rr-bar{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 .rr-gold .rr-bar{background:var(--gold)}.rr-silver .rr-bar{background:#b0b0b0}.rr-bronze .rr-bar{background:#cd7f32}
 .rr-row:not(.rr-gold):not(.rr-silver):not(.rr-bronze) .rr-bar{background:var(--orange)}
+/* ── DRAFT EFFICIENCY BADGE ── */
+.rd-badge{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:1.2px;padding:2px 6px;border-radius:7px;white-space:nowrap}
+.rd-steal{background:rgba(0,230,118,.12);color:#00E676;border:1px solid rgba(0,230,118,.32)}
+.rd-solid{background:rgba(0,200,100,.07);color:#00C878;border:1px solid rgba(0,200,100,.24)}
+.rd-avg  {background:rgba(255,255,255,.05);color:#555;border:1px solid rgba(255,255,255,.08)}
+.rd-below{background:rgba(255,110,0,.08);color:#FF7040;border:1px solid rgba(255,110,0,.25)}
+.rd-bust {background:rgba(255,50,50,.10);color:#FF4444;border:1px solid rgba(255,50,50,.30)}
 .hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:9px}
 .hc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 13px;transition:border-color .2s}
 .hc:hover{border-color:var(--gold)}
@@ -1087,6 +1094,23 @@ function renderStandings(sorted, filter='') {
 
 
 // ── HOT/COLD TIERED ICON HELPERS ──
+function rdEffBadge(p) {
+  if (p.round == null) return '';
+  const games = (GAME_LOG[p.name] || []).length;
+  let cls = 'rd-avg', pctStr = '';
+  if (p.seasonAvg > 0 && games > 0) {
+    const ratio = p.pts / (p.seasonAvg * games);
+    const pct   = Math.round((ratio - 1) * 100);
+    pctStr      = (pct > 0 ? ' +' : ' ') + pct + '%';
+    if      (ratio >= 1.35) cls = 'rd-steal';
+    else if (ratio >= 1.15) cls = 'rd-solid';
+    else if (ratio <= 0.65) cls = 'rd-bust';
+    else if (ratio <= 0.85) cls = 'rd-below';
+    else pctStr = ''; // within normal range — just show round, no pct
+  }
+  return `<span class="rd-badge ${cls}">RD ${p.round}${pctStr}</span>`;
+}
+
 const TIER_CHIP = {
   hot1:  { icon:'🔥', tip:'35%+ above season average' },
   hot2:  { icon:'🔥', tip:'50%+ above season average' },
@@ -1226,7 +1250,7 @@ function viewTeam(name, from) {
           <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
           <div style="position:relative;margin-top:2px">
             <div class="pc-p">${p.pts}</div>
-            ${p.round != null ? '<span style="position:absolute;bottom:2px;right:0;font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Rd '+p.round+'</span>' : ''}
+            ${p.round != null ? `<span style="position:absolute;bottom:6px;right:8px">${rdEffBadge(p)}</span>` : ''}
           </div>
         </div>
         <div class="pc pc-back">
@@ -1344,7 +1368,7 @@ function playerRow(p, rankLabel) {
     <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px"><span style="display:inline-flex;align-items:center;gap:3px">${p.name}${trendIcon(p.trend, p.trendPct)}</span></td>
     <td style="color:var(--muted);font-size:12px">${p.school}</td>
     <td><span class="tn" onclick="viewTeam('${esc(p.teamName)}','players')" style="font-size:12px">${p.teamName}</span></td>
-    <td style="text-align:center"><span style="font-size:11px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.06);border-radius:4px;padding:2px 6px" title="Round ${p.round||'–'}">${p.overallPick?'#'+p.overallPick:(p.round?'Rd '+p.round:'–')}</span></td>
+    <td style="text-align:center">${rdEffBadge(p)||'–'}</td>
     <td class="pts" style="font-size:18px">${p.pts}</td>
     <td style="text-align:right"><span class="chip ${p.active?'':'out'}">${p.active?'<span class="status-check">✓ </span>Active':'✗ Out'}</span></td>
   </tr>`;
