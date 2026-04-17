@@ -1234,20 +1234,20 @@ function viewTeam(name, from) {
   const bustPick = busts[0] || null;
   const fmtGap = g => (g>=0?'+':'')+Math.round(g)+' vs avg';
   const badgeRow = (bestPick||bustPick) ? `
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
-      ${bestPick?`<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);border-radius:20px;padding:4px 10px;font-size:11px;white-space:nowrap">
-        <span style="color:var(--green);font-weight:700">💎 Sleeper Pick</span>
-        <span style="color:var(--muted)">·</span>
-        <span style="font-weight:600">${bestPick.name}</span>
-        <span style="color:var(--green);font-weight:700">${fmtGap(bestPick.gap)}</span>
-        <span style="color:var(--muted);font-size:10px">Rd${bestPick.round}</span>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin-top:10px">
+      ${bestPick?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);border-radius:20px;padding:3px 8px;font-size:11px;white-space:nowrap;max-width:100%;overflow:hidden">
+        <span style="color:var(--green);font-weight:700;flex-shrink:0">💎 Sleeper Pick</span>
+        <span style="color:var(--muted);flex-shrink:0">·</span>
+        <span style="font-weight:600;overflow:hidden;text-overflow:ellipsis;min-width:0">${bestPick.name}</span>
+        <span style="color:var(--green);font-weight:700;flex-shrink:0">${fmtGap(bestPick.gap)}</span>
+        <span style="color:var(--muted);font-size:10px;flex-shrink:0">Rd${bestPick.round}</span>
       </div>`:''}
-      ${bustPick?`<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,61,61,.08);border:1px solid rgba(255,61,61,.25);border-radius:20px;padding:4px 10px;font-size:11px;white-space:nowrap">
-        <span style="color:var(--red);font-weight:700">📉 Biggest Bust</span>
-        <span style="color:var(--muted)">·</span>
-        <span style="font-weight:600">${bustPick.name}</span>
-        <span style="color:var(--red);font-weight:700">${fmtGap(bustPick.gap)}</span>
-        <span style="color:var(--muted);font-size:10px">Rd${bustPick.round}</span>
+      ${bustPick?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,61,61,.08);border:1px solid rgba(255,61,61,.25);border-radius:20px;padding:3px 8px;font-size:11px;white-space:nowrap;max-width:100%;overflow:hidden">
+        <span style="color:var(--red);font-weight:700;flex-shrink:0">📉 Biggest Bust</span>
+        <span style="color:var(--muted);flex-shrink:0">·</span>
+        <span style="font-weight:600;overflow:hidden;text-overflow:ellipsis;min-width:0">${bustPick.name}</span>
+        <span style="color:var(--red);font-weight:700;flex-shrink:0">${fmtGap(bustPick.gap)}</span>
+        <span style="color:var(--muted);font-size:10px;flex-shrink:0">Rd${bustPick.round}</span>
       </div>`:''}
     </div>` : '';
 
