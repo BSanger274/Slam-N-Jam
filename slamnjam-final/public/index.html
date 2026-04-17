@@ -138,17 +138,11 @@ main{max-width:1440px;margin:0 auto;padding:20px;position:relative;z-index:1}
 .pc-p{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);margin-top:5px}
 .otag{position:absolute;top:7px;right:7px;background:rgba(255,61,90,.15);color:var(--red);font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px}
 
-/* ── CARD FLIP ── */
-.pc-wrap{perspective:900px;cursor:pointer}
-.pc-wrap .pc-inner{position:relative;transition:transform .42s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d;height:100%}
-.pc-wrap.flipped .pc-inner{transform:rotateY(180deg)}
-.pc-front,.pc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.pc-back{position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;transform:rotateY(180deg);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--orange)!important;border-radius:9px;padding:12px 14px 8px;box-sizing:border-box}
-.pc-wrap.elim .pc-front{opacity:.62;border-color:rgba(255,60,60,.28)!important}
-.pc-wrap.live .pc-front{border-left:3px solid var(--green)!important}
-.pc-wrap:not(.elim):hover .pc-front{border-color:var(--orange)}
-.pc-back-link{background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;font-weight:700;letter-spacing:1px;border-radius:4px;padding:3px 7px;cursor:pointer;margin-top:auto;align-self:flex-end;transition:border-color .15s,color .15s}
-.pc-back-link:hover{border-color:var(--orange);color:var(--orange)}
+/* ── PLAYER CARD CLICK ── */
+.pc-wrap{cursor:pointer}
+.pc-wrap.elim .pc{opacity:.62;border-color:rgba(255,60,60,.28)!important}
+.pc-wrap.live .pc{border-left:3px solid var(--green)!important}
+.pc-wrap:not(.elim):hover .pc{border-color:var(--orange)}
 
 /* ── HISTORY ── */
 /* ── ROUND-BY-ROUND LEADERBOARD ── */
@@ -1268,53 +1262,23 @@ function viewTeam(name, from) {
   document.getElementById('d-alive').textContent = `${alive} active`;
   document.getElementById('d-roster').innerHTML = [...t.players].sort((a,b)=>(a.round||99)-(b.round||99)).map(p=>`
     <div class="pc-wrap ${p.active?'':'elim'}${p.isLive?' live':''}" data-pname="${p.name.replace(/"/g,'&quot;')}" onclick="handlePlayerCardClick(this)">
-      <div class="pc-inner">
-        <div class="pc pc-front">
-          <div style="position:absolute;bottom:8px;left:8px;font-size:9px;color:var(--muted);opacity:.4;pointer-events:none">↺</div>
-          ${p.round != null ? `<span style="position:absolute;bottom:8px;right:8px">${rdEffBadge(p)}</span>` : ''}
-          ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
-          <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend, p.trendPct)}</div>
-          <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
-          <div style="margin-top:2px">
-            <div class="pc-p">${p.pts}</div>
-          </div>
-        </div>
-        <div class="pc pc-back">
-          <div style="font-size:15px;font-weight:700;color:var(--text);font-family:'Barlow Condensed',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:1px">${p.school}</div>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;flex:1">
-            <div>
-              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Season Avg</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);line-height:1.1">${p.seasonAvg||'—'}<span style="font-size:11px;color:var(--muted)"> ppg</span></div>
-            </div>
-            <div style="text-align:right">
-              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Tournament</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--orange);line-height:1.1">${p.pts}<span style="font-size:11px;color:var(--muted)"> pts</span></div>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">
-            <span style="font-size:9px;color:var(--muted);letter-spacing:1px">${p.overallPick ? 'PICK #'+p.overallPick+' · RD '+p.round : ''}</span>
-            <button class="pc-back-link" onclick="event.stopPropagation();openDrawerFromCard('${p.name.replace(/'/g,"\\'")}')">FULL STATS ›</button>
-          </div>
+      <div class="pc">
+        ${p.round != null ? `<span style="position:absolute;bottom:8px;right:8px">${rdEffBadge(p)}</span>` : ''}
+        ${!p.active?'<div class="otag" style="position:absolute;top:8px;right:8px">OUT</div>':''}
+        <div class="pc-n" style="padding-right:${!p.active?'34px':'0'}">${p.isLive?'<span class="live-dot"></span>':''}<span class="pc-name">${p.name}</span>${trendIcon(p.trend, p.trendPct)}</div>
+        <div class="pc-s">${p.jersey ? '<span style="color:var(--muted);font-size:10px;margin-right:4px">#'+p.jersey+'</span>' : ''}${p.school}${p.seasonAvg ? ' · <span style="color:var(--muted);font-size:10px">avg '+p.seasonAvg+'ppg</span>' : ''}</div>
+        <div style="margin-top:2px">
+          <div class="pc-p">${p.pts}</div>
         </div>
       </div>
     </div>`).join('');
 
   // Shrink trend chips on long names so nothing wraps
-  requestAnimationFrame(() => { fixCardHeights(); fitChips(); });
+  requestAnimationFrame(() => { fitChips(); });
 
   // Round-by-round breakdown
   renderRoundBreakdown(t);
   showPage('team-detail');
-}
-
-// Give .pc-inner an explicit pixel height so .pc-back can fill it correctly
-// inside the preserve-3d context (inset:0 can't compute height from a rotated parent)
-function fixCardHeights() {
-  document.querySelectorAll('.pc-inner').forEach(inner => {
-    const front = inner.querySelector('.pc-front');
-    if (front) inner.style.height = front.offsetHeight + 'px';
-  });
 }
 
 // Shrink the trend chip (and name if needed) on any .pc-n that overflows
@@ -3595,26 +3559,6 @@ setInterval(refreshTicker, 60000);
 function handlePlayerCardClick(el) {
   const name = el.getAttribute('data-pname');
   if (!name) return;
-  // Un-flip any other open cards
-  document.querySelectorAll('.pc-wrap.flipped').forEach(c => { if (c !== el) c.classList.remove('flipped'); });
-  // Toggle flip
-  if (el.classList.contains('flipped')) {
-    el.classList.remove('flipped');
-    return;
-  }
-  el.classList.add('flipped');
-  // Click outside un-flips
-  const unflip = (e) => {
-    if (!el.contains(e.target)) {
-      el.classList.remove('flipped');
-      document.removeEventListener('click', unflip, true);
-    }
-  };
-  setTimeout(() => document.addEventListener('click', unflip, true), 10);
-}
-
-function openDrawerFromCard(name) {
-  document.querySelectorAll('.pc-wrap.flipped').forEach(c => c.classList.remove('flipped'));
   for (const t of TEAMS) {
     for (const p of t.players) {
       if (p.name === name) {
